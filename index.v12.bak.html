@@ -2,21 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DICOM Image Viewer</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #2c2c2c; color: #f1f1f1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .header { display: flex; justify-content: center; background-color: #333; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; flex-shrink: 0; }
+        .header { display: flex; justify-content: center; background-color: #333; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; }
         .tab-button { padding: 14px 20px; cursor: pointer; border: none; background-color: #333; color: white; font-size: 16px; transition: background-color 0.3s; }
         .tab-button:hover { background-color: #555; }
         .tab-button.active { background-color: #007bff; }
-        #mobile-date-select { display: none; }
-        .viewer-container, .history-container, .pdf-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
-        .history-container, .pdf-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
-        .pdf-container embed { flex-grow: 1; border: none; }
-        .pdf-container a { color: #00aaff; text-decoration: none; padding: 10px; background-color: #333; border-radius: 5px; text-align: center; margin-top: 10px; }
-        .history-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
-        .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; flex-shrink: 0; }
+        #mobile-date-select { display: none; } /* Hidden by default */
+        .viewer-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; }
         .thumbnail-container { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; position: relative; }
         .thumbnail-container.active { border-color: #007bff; }
         .thumbnail-container img { width: 100%; display: block; border-radius: 2px; }
@@ -28,16 +24,17 @@
         .next { right: 10px; }
         .zoom-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
         .zoom-button { background-color: rgba(85, 85, 85, 0.8); color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
-        .image-adjust-controls { display: none; } /* Hidden by default on desktop */
-        .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); flex-shrink: 0; }
+        .image-adjust-controls { position: absolute; bottom: 120px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; }
+        .image-adjust-controls label { font-size: 12px; }
+        .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); }
         .metadata-sidebar p { margin: 15px 0; word-wrap: break-word; }
         .metadata-sidebar strong { color: #00aaff; }
 
         @media (max-width: 768px) {
             .header { padding: 5px; }
-            .tab-button { display: none; }
+            .tab-button { display: none; } /* Hide desktop tabs */
             #mobile-date-select {
-                display: block;
+                display: block; /* Show mobile dropdown */
                 width: 100%;
                 padding: 10px;
                 background-color: #333;
@@ -47,17 +44,19 @@
             }
             .viewer-container { 
                 flex-direction: column; 
-                height: calc(100vh - 50px); /* Adjust for header */
+                height: calc(100vh - 50px); /* Full height minus header */
             }
             .image-display-area {
                 order: 1;
-                flex: 1 1 auto;
-                min-height: 0;
+                flex: 1 1 auto; /* Allow grow/shrink */
+                min-height: 0; /* Prevent flex overflow */
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .image-adjust-controls {
                 order: 2;
-                display: flex;
-                flex: 0 0 auto;
+                flex: 0 0 auto; /* Don't grow, take content height */
                 position: relative;
                 flex-direction: row;
                 justify-content: space-around;
@@ -69,7 +68,7 @@
             }
             .thumbnail-sidebar {
                 order: 3;
-                flex: 0 0 100px;
+                flex: 0 0 100px; /* Fixed height */
                 width: 100%;
                 display: flex;
                 flex-direction: row;
@@ -79,7 +78,7 @@
             }
             .metadata-sidebar {
                 order: 4;
-                flex: 0 0 auto;
+                flex: 0 0 auto; /* Don't grow, take content height */
                 width: 100%;
                 height: auto;
                 box-shadow: none;
@@ -102,11 +101,9 @@
 <body>
 
 <div class="header">
-    <!-- Desktop tabs will be generated here -->
     <select id="mobile-date-select"></select>
 </div>
 <div class="viewer-container">
-    <div class="thumbnail-sidebar"></div>
     <div class="image-display-area">
         <div class="viewer-header"><span id="image-counter"></span></div>
         <img class="main-image" id="mainImage">
@@ -127,54 +124,12 @@
             <label for="contrast">Contrast</label>
         </div>
     </div>
+    <div class="thumbnail-sidebar"></div>
     <div class="metadata-sidebar">
         <p><strong>DOB:</strong> <span id="meta-dob-age"></span></p>
         <p><strong>Days since accident:</strong> <span id="meta-days-since"></span></p>
     </div>
 </div>
-<div class="history-container">История:
-
-14 Май 2025 ( Ден 0)
-Паднal с колело с протегнати ръце напред.
- ВМА спешно отделение  диагноза – счупена глава на радиусапоставиха гипсова лонгета
-
-5 Юни 2025г. (22 ден) 
-Сваляне на гипсовата лонгета и започва упражнения за:
--	Супинация
--	Пронация
--	Сгъване и разгъване в рамките на възможният обем на движ��ние
--	Гравитационно разгъване  на лакътя от легнало положение
-
-16 Май  - 24 Май 2025г.  (33 – 41 ден)
-Физиотерапия и рехабилитация  включваща
-Сгъване на лакътя с машина артромот
-Мануално разгъване с  рехабилитатор. 
-Упражнения за  
--	бицепс, трицепс с до 1.5кг,
--	пръчка  - гребане, опъване и сгъване зад гръб
--	Висене на  лост с подпряни крака
- Плуване
- 
-11 Юли 2025г.  (58 Ден)
-Преглед При Бахрам Фирузи.
-Установява нестабилност в лакътната става, назначава ЯМР, и ме праща за консултация при Д-р. Борислав Тасев. 
-24 Юли 2025г. (71 Ден) 10та седмица
-ЯМР Спектър 
-приложено.</div>
-<div class="pdf-container">
-    <a href="20250724_MRI_Boris_Simov.pdf" download>Download PDF</a>
-    <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
-</div>
-<div class="questions-container">1. Имам ли зарастване на ради��са и изграден костен мост, калус, какво значи това за мен?
-2. Вижда ли се на снимките сублуксация на ставата или някоя кост?
-3. Имам ли скъсани лигаменти и на какво се дължи нестабилността“
-4. Какво пречи на разгъването на лакътя ми“
-5. Имам прихрупващ звук при няколко движения?
-6. Имам изпукващ звук при  разгъване на лакътя след продължително сгъване?
-7. Имам Болки на няколко места 
-- вътрешната страна на над лакътя. 
-- над главичката на радиуса и по продължението на брахиорадиалиса
-8. Да коментираме находките от ЯМР. ?</div>
 
 <script src="metadata.js"></script>
 <script>
@@ -196,10 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const header = document.querySelector('.header');
     const mobileDateSelect = document.getElementById('mobile-date-select');
-    const viewerContainer = document.querySelector('.viewer-container');
-    const historyContainer = document.querySelector('.history-container');
-    const pdfContainer = document.querySelector('.pdf-container');
-    const questionsContainer = document.querySelector('.questions-container');
     const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
     const mainImage = document.getElementById('mainImage');
     const displayArea = document.querySelector('.image-display-area');
@@ -249,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imgHeight = mainImage.naturalHeight;
 
         if (imgWidth && imgHeight) {
-            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight);
+            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight, 1);
             pointX = 0;
             pointY = 0;
             clampPan();
@@ -260,37 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
     brightnessSlider.oninput = applyImageFilters;
     contrastSlider.oninput = applyImageFilters;
 
-    const openTab = (tabName) => {
-        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
-        const activeButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
-
-        viewerContainer.style.display = 'none';
-        historyContainer.style.display = 'none';
-        pdfContainer.style.display = 'none';
-        questionsContainer.style.display = 'none';
-
-        if (tabName === 'History') {
-            historyContainer.style.display = 'block';
-        } else if (tabName === 'MRI Report') {
-            pdfContainer.style.display = 'flex';
-        } else if (tabName === 'Questions') {
-            questionsContainer.style.display = 'block';
-        } else {
-            viewerContainer.style.display = 'flex';
-            const firstImageOfDate = imagesByDate[tabName][0];
-            currentGlobalIndex = allImages.indexOf(firstImageOfDate);
-            updateUIForCurrentImage();
-        }
-    };
-
     const updateUIForCurrentImage = () => {
         const imageFile = allImages[currentGlobalIndex];
         const datePart = imageFile.substring(0, 6);
 
-        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.tab === datePart));
+        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.datePart === datePart));
         if (mobileDateSelect.value !== datePart) {
             mobileDateSelect.value = datePart;
         }
@@ -349,46 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortedDates = Object.keys(imagesByDate).sort();
     if (sortedDates.length > 0) {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        
-        // History Tab
-        const historyButton = document.createElement('button');
-        historyButton.className = 'tab-button';
-        historyButton.textContent = 'History';
-        historyButton.dataset.tab = 'History';
-        historyButton.onclick = () => openTab('History');
-        header.appendChild(historyButton);
-
-        const historyOption = document.createElement('option');
-        historyOption.value = 'History';
-        historyOption.textContent = 'History';
-        mobileDateSelect.appendChild(historyOption);
-
-        // MRI Tab
-        const mriButton = document.createElement('button');
-        mriButton.className = 'tab-button';
-        mriButton.textContent = 'MRI Report';
-        mriButton.dataset.tab = 'MRI Report';
-        mriButton.onclick = () => openTab('MRI Report');
-        header.appendChild(mriButton);
-
-        const mriOption = document.createElement('option');
-        mriOption.value = 'MRI Report';
-        mriOption.textContent = 'MRI Report';
-        mobileDateSelect.appendChild(mriOption);
-
-        // Questions Tab
-        const questionsButton = document.createElement('button');
-        questionsButton.className = 'tab-button';
-        questionsButton.textContent = 'Questions';
-        questionsButton.dataset.tab = 'Questions';
-        questionsButton.onclick = () => openTab('Questions');
-        header.appendChild(questionsButton);
-
-        const questionsOption = document.createElement('option');
-        questionsOption.value = 'Questions';
-        questionsOption.textContent = 'Questions';
-        mobileDateSelect.appendChild(questionsOption);
-
         sortedDates.forEach((datePart) => {
             const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
             const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
@@ -396,8 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const tabButton = document.createElement('button');
             tabButton.className = 'tab-button';
             tabButton.textContent = formattedDate;
-            tabButton.dataset.tab = datePart;
-            tabButton.onclick = () => openTab(datePart);
+            tabButton.dataset.datePart = datePart;
+            tabButton.onclick = () => {
+                const firstImageOfDate = imagesByDate[datePart][0];
+                currentGlobalIndex = allImages.indexOf(firstImageOfDate);
+                updateUIForCurrentImage();
+            };
             header.appendChild(tabButton);
 
             const option = document.createElement('option');
@@ -407,10 +296,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         mobileDateSelect.onchange = () => {
-            openTab(mobileDateSelect.value);
+            const firstImageOfDate = imagesByDate[mobileDateSelect.value][0];
+            currentGlobalIndex = allImages.indexOf(firstImageOfDate);
+            updateUIForCurrentImage();
         };
 
-        openTab(sortedDates[0]); // Open the first date tab by default
+        updateUIForCurrentImage();
     } else {
         document.querySelector('.viewer-container').innerHTML = '<p style="margin: 20px;">No images found.</p>';
     }
@@ -492,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldScale = scale;
         let newScale = scale * factor;
         
-        const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight);
+        const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight, 1);
         newScale = Math.max(minScale, Math.min(newScale, 20));
 
         if (newScale === oldScale) return;

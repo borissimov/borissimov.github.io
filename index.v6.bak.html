@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICOM Image Viewer</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #2c2c2c; color: #f1f1f1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .header { display: flex; justify-content: center; background-color: #333; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; }
+        .tab-button { padding: 14px 20px; cursor: pointer; border: none; background-color: #333; color: white; font-size: 16px; transition: background-color 0.3s; }
+        .tab-button:hover { background-color: #555; }
+        .tab-button.active { background-color: #007bff; }
+        #mobile-date-select { display: none; } /* Hidden by default */
+        .viewer-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; }
+        .thumbnail-container { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; position: relative; }
+        .thumbnail-container.active { border-color: #007bff; }
+        .thumbnail-container img { width: 100%; display: block; border-radius: 2px; }
+        .image-display-area { flex-grow: 1; position: relative; cursor: grab; background-color: #000; }
+        .viewer-header { position: absolute; top: 15px; left: 20px; color: #f1f1f1; font-size: 18px; z-index: 10; background-color: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;}
+        .main-image { position: absolute; transform-origin: 0 0; will-change: transform; }
+        .nav-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(85, 85, 85, 0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px 15px; z-index: 10; user-select: none; border-radius: 5px; }
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        .zoom-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+        .zoom-button { background-color: rgba(85, 85, 85, 0.8); color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
+        .image-adjust-controls { position: absolute; bottom: 120px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; }
+        .image-adjust-controls label { font-size: 12px; }
+        .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); }
+        .metadata-sidebar p { margin: 15px 0; word-wrap: break-word; }
+        .metadata-sidebar strong { color: #00aaff; }
+
+        @media (max-width: 768px) {
+            .header { padding: 5px; }
+            .tab-button { display: none; } /* Hide desktop tabs */
+            #mobile-date-select {
+                display: block; /* Show mobile dropdown */
+                width: 100%;
+                padding: 10px;
+                background-color: #333;
+                color: white;
+                border: 1px solid #555;
+                font-size: 16px;
+            }
+            .viewer-container { flex-direction: column; }
+            .image-display-area {
+                order: 1;
+                flex-grow: 1;
+                height: calc(100vh - 250px); /* Full height minus controls/metadata */
+            }
+            .thumbnail-sidebar {
+                order: 2;
+                width: 100%;
+                height: 100px;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                border-top: 1px solid #444;
+                border-right: none;
+            }
+            .thumbnail-container { flex: 0 0 80px; margin-right: 10px; }
+            .metadata-sidebar {
+                order: 3;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                border-top: 1px solid #444;
+                padding-bottom: 80px; /* Space for controls */
+            }
+            .zoom-controls { display: none; } /* Hide zoom buttons */
+            .image-adjust-controls {
+                position: fixed; /* Stick to the bottom */
+                bottom: 0;
+                left: 0;
+                right: 0;
+                flex-direction: row;
+                justify-content: space-around;
+                background-color: #1a1a1a;
+                padding: 10px;
+                border-top: 1px solid #444;
+                border-radius: 0;
+            }
+            .image-adjust-controls label { display: none; } /* Hide labels, sliders are intuitive */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <select id="mobile-date-select"></select>
+</div>
+<div class="viewer-container">
+    <div class="thumbnail-sidebar"></div>
+    <div class="image-display-area">
+        <div class="viewer-header"><span id="image-counter"></span></div>
+        <img class="main-image" id="mainImage">
+        <button class="nav-button prev">&#10094;</button>
+        <button class="nav-button next">&#10095;</button>
+        <div class="zoom-controls">
+            <button class="zoom-button" id="zoomInBtn">+</button>
+            <button class="zoom-button" id="zoomOutBtn">-</button>
+        </div>
+        <div class="image-adjust-controls">
+            <div class="control-group">
+                <label for="brightness">Brightness</label>
+                <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
+            </div>
+            <div class="control-group">
+                <label for="contrast">Contrast</label>
+                <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
+            </div>
+        </div>
+    </div>
+    <div class="metadata-sidebar">
+        <p><strong>DOB:</strong> <span id="meta-dob-age"></span></p>
+        <p><strong>Days since accident:</strong> <span id="meta-days-since"></span></p>
+    </div>
+</div>
+
+<script src="metadata.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof metadata === 'undefined') {
+        console.error("Error: metadata.js could not be loaded or is empty. Please ensure the file exists and is correctly formatted.");
+        document.querySelector('.viewer-container').innerHTML = '<div style="padding: 20px; text-align: center; width: 100%;"><h1>Error: Metadata Not Found</h1><p>Could not load image metadata. Please run the <code>update_metadata.py</code> script to generate it.</p></div>';
+        return;
+    }
+
+    const imagesByDate = {};
+    Object.keys(metadata).sort().forEach(file => {
+        const datePart = file.substring(0, 6);
+        if (!imagesByDate[datePart]) imagesByDate[datePart] = [];
+        imagesByDate[datePart].push(file);
+    });
+
+    const allImages = Object.keys(imagesByDate).sort().flatMap(date => imagesByDate[date]);
+    
+    const header = document.querySelector('.header');
+    const mobileDateSelect = document.getElementById('mobile-date-select');
+    const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
+    const mainImage = document.getElementById('mainImage');
+    const displayArea = document.querySelector('.image-display-area');
+    const brightnessSlider = document.getElementById('brightness');
+    const contrastSlider = document.getElementById('contrast');
+
+    let currentGlobalIndex = 0;
+    let scale = 1, isPanning = false, pointX = 0, pointY = 0, start = { x: 0, y: 0 };
+    let initialDistance = -1;
+
+    const setTransform = () => { mainImage.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`; };
+
+    const applyImageFilters = () => {
+        const brightness = brightnessSlider.value;
+        const contrast = contrastSlider.value;
+        mainImage.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    };
+
+    brightnessSlider.oninput = applyImageFilters;
+    contrastSlider.oninput = applyImageFilters;
+
+    const updateUIForCurrentImage = () => {
+        const imageFile = allImages[currentGlobalIndex];
+        const datePart = imageFile.substring(0, 6);
+
+        // Sync desktop tabs and mobile dropdown
+        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.datePart === datePart));
+        if (mobileDateSelect.value !== datePart) {
+            mobileDateSelect.value = datePart;
+        }
+
+        const currentImageList = imagesByDate[datePart];
+        thumbnailSidebar.innerHTML = '';
+        currentImageList.forEach((file, index) => {
+            const thumbContainer = document.createElement('div');
+            thumbContainer.className = 'thumbnail-container';
+            thumbContainer.onclick = () => {
+                currentGlobalIndex = allImages.indexOf(file);
+                updateUIForCurrentImage();
+            };
+            const thumbImg = document.createElement('img');
+            thumbImg.src = file;
+            thumbContainer.appendChild(thumbImg);
+            thumbnailSidebar.appendChild(thumbContainer);
+        });
+        
+        const localIndex = currentImageList.indexOf(imageFile);
+        document.querySelectorAll('.thumbnail-container').forEach((thumb, idx) => {
+            thumb.classList.toggle('active', idx === localIndex);
+            if (idx === localIndex) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        mainImage.src = imageFile;
+        const meta = metadata[imageFile];
+        document.getElementById('image-counter').textContent = `${localIndex + 1} of ${currentImageList.length}`;
+
+        const birthDate = new Date('1984-01-10');
+        const studyDate = new Date(meta.study_date);
+        const firstXrayDate = new Date('2025-05-14');
+
+        let age = studyDate.getFullYear() - birthDate.getFullYear();
+        const m = studyDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && studyDate.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        const diffTime = Math.abs(studyDate - firstXrayDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        document.getElementById('meta-dob-age').textContent = `10 Jan 1984 (Age: ${age})`;
+        document.getElementById('meta-days-since').textContent = diffDays;
+
+        brightnessSlider.value = 100;
+        contrastSlider.value = 100;
+        applyImageFilters();
+
+        mainImage.onload = () => {
+            const areaWidth = displayArea.clientWidth, areaHeight = displayArea.clientHeight;
+            const imgWidth = mainImage.naturalWidth, imgHeight = mainImage.naturalHeight;
+            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight, 1) * 0.95;
+            pointX = (areaWidth - imgWidth * scale) / 2;
+            pointY = (areaHeight - imgHeight * scale) / 2;
+            setTransform();
+            mainImage.onload = null;
+        };
+    };
+
+    const sortedDates = Object.keys(imagesByDate).sort();
+    if (sortedDates.length > 0) {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        sortedDates.forEach((datePart) => {
+            const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
+            const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+            
+            // Create desktop tab
+            const tabButton = document.createElement('button');
+            tabButton.className = 'tab-button';
+            tabButton.textContent = formattedDate;
+            tabButton.dataset.datePart = datePart;
+            tabButton.onclick = () => {
+                const firstImageOfDate = imagesByDate[datePart][0];
+                currentGlobalIndex = allImages.indexOf(firstImageOfDate);
+                updateUIForCurrentImage();
+            };
+            header.appendChild(tabButton);
+
+            // Create mobile dropdown option
+            const option = document.createElement('option');
+            option.value = datePart;
+            option.textContent = formattedDate;
+            mobileDateSelect.appendChild(option);
+        });
+
+        mobileDateSelect.onchange = () => {
+            const firstImageOfDate = imagesByDate[mobileDateSelect.value][0];
+            currentGlobalIndex = allImages.indexOf(firstImageOfDate);
+            updateUIForCurrentImage();
+        };
+
+        updateUIForCurrentImage();
+    } else {
+        document.querySelector('.viewer-container').innerHTML = '<p style="margin: 20px;">No images found.</p>';
+    }
+
+    const changeImage = (direction) => {
+        currentGlobalIndex = (currentGlobalIndex + direction + allImages.length) % allImages.length;
+        updateUIForCurrentImage();
+    };
+
+    // --- Touch Controls ---
+    displayArea.addEventListener('touchstart', (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault(); // Prevent page scroll
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            start = { x: touch.clientX - pointX, y: touch.clientY - pointY };
+            isPanning = true;
+        } else if (e.touches.length === 2) {
+            isPanning = false;
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            initialDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
+    });
+
+    displayArea.addEventListener('touchend', (e) => {
+        isPanning = false;
+        initialDistance = -1;
+    });
+
+    displayArea.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Prevent page scroll
+        if (isPanning && e.touches.length === 1) {
+            const touch = e.touches[0];
+            pointX = touch.clientX - start.x;
+            pointY = touch.clientY - start.y;
+            setTransform();
+        } else if (e.touches.length === 2 && initialDistance > 0) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+            const factor = currentDistance / initialDistance;
+            zoom(factor);
+            initialDistance = currentDistance; // Update for continuous zoom
+        }
+    });
+
+
+    displayArea.onmousedown = (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault();
+        start = { x: e.clientX - pointX, y: e.clientY - pointY };
+        isPanning = true;
+        displayArea.style.cursor = 'grabbing';
+    };
+    window.onmouseup = () => { isPanning = false; displayArea.style.cursor = 'grab'; };
+    window.onmousemove = (e) => { if (isPanning) { pointX = e.clientX - start.x; pointY = e.clientY - start.y; setTransform(); } };
+    displayArea.onwheel = (e) => {
+        e.preventDefault();
+        const rect = displayArea.getBoundingClientRect();
+        const xs = (e.clientX - rect.left - pointX) / scale, ys = (e.clientY - rect.top - pointY) / scale;
+        const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+        const newScale = delta > 0 ? scale * 1.2 : scale / 1.2;
+        if (newScale > 0.1 && newScale < 20) {
+            pointX = e.clientX - rect.left - xs * newScale;
+            pointY = e.clientY - rect.top - ys * newScale;
+            scale = newScale;
+            setTransform();
+        }
+    };
+    
+    const zoom = (factor) => {
+        const rect = displayArea.getBoundingClientRect();
+        const xs = (rect.width / 2 - pointX) / scale, ys = (rect.height / 2 - pointY) / scale;
+        const newScale = scale * factor;
+        if (newScale > 0.1 && newScale < 20) {
+            pointX = rect.width / 2 - xs * newScale;
+            pointY = rect.height / 2 - ys * newScale;
+            scale = newScale;
+            setTransform();
+        }
+    };
+
+    document.getElementById("zoomInBtn").onclick = () => zoom(1.2);
+    document.getElementById("zoomOutBtn").onclick = () => zoom(0.8);
+    document.querySelector('.prev').onclick = () => changeImage(-1);
+    document.querySelector('.next').onclick = () => changeImage(1);
+});
+</script>
+</body>
+</html>

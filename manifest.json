@@ -1,26 +1,27 @@
 {
   "name": "Master Plan",
   "short_name": "Master Plan",
-  "start_url": "/?mode=standalone",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#000000",
   "theme_color": "#f39c12",
   "orientation": "portrait",
+  "categories": ["fitness", "lifestyle"],
+  "description": "The ultimate training and nutrition tracker.",
   "icons": [
     {
-      "src": "pwa-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "pwa-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "icon-mp.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
       "src": "icon-mp.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }

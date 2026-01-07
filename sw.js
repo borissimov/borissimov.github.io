@@ -1,21 +1,35 @@
-// sw.js - Basic Service Worker
-const CACHE_NAME = 'master-plan-v1';
+const CACHE_NAME = 'master-plan-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/icon-mp.svg'
+  '/icon-mp.svg',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Take control immediately
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim()); // Become active immediately
+});
+
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+  // Network First, fallback to Cache strategy for HTML
+  // Cache First for Assets
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match('/index.html'))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+    );
+  }
 });

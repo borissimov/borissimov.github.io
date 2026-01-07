@@ -136,23 +136,64 @@ export const DataModule = (function() {
         }
     }
 
+    // --- LOG SYNCING LOGIC ---
+    async function syncLogsForDay(userId, dayKey, exercises) {
+        if (!userId) return JSON.parse(localStorage.getItem(`training_logs_${dayKey}`) || '{}');
+
+        // 1. Fetch Cloud Logs for this day
+        const { data: cloudLogs } = await supabase
+            .from('workout_logs')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('day_key', dayKey)
+            .order('logged_at', { ascending: true });
+
+        if (!cloudLogs) return JSON.parse(localStorage.getItem(`training_logs_${dayKey}`) || '{}');
+
+        // 2. Map Cloud Logs to Exercise Indices
+        // We match by exercise name to be robust against routine changes
+        const mappedLogs = {};
+        
+        cloudLogs.forEach(log => {
+            // Find index of exercise with matching name (loose match)
+            // Note: If user edited exercise name, this might break. 
+            // Better: 'exercises' passed here is the current routine state.
+            const idx = exercises.findIndex(ex => ex.exercise.trim() === log.exercise_name.trim());
+            
+            if (idx !== -1) {
+                if (!mappedLogs[idx]) mappedLogs[idx] = [];
+                mappedLogs[idx].push({
+                    weight: log.weight,
+                    reps: log.reps,
+                    rpe: log.rpe,
+                    tempo: log.tempo,
+                    timestamp: log.logged_at
+                });
+            }
+        });
+
+        // 3. Update Local Storage Cache
+        localStorage.setItem(`training_logs_${dayKey}`, JSON.stringify(mappedLogs));
+        return mappedLogs;
+    }
+
     return {
         getDaysMap: () => DAYS_MAP,
         getDefaultPlan: () => fullPlanData,
         
         loadPlan: fetchActiveRoutine,
+        syncLogsForDay, // New Method Exposed
         
         updateSection: async (userId, dayKey, section, data) => {
             if (section === 'training') {
                 return await saveTrainingUpdate(userId, dayKey, data);
             }
-            // Add Nutrition/Supp logic later
             return null;
         },
 
         revertToDefault,
 
-        // Logs (Keep Local + Cloud)
+        // Logs (Local Getters)
         getTrainingLogs: (dk) => JSON.parse(localStorage.getItem(`training_logs_${dk}`) || '{}'),
         saveTrainingLogs: (dk, l) => localStorage.setItem(`training_logs_${dk}`, JSON.stringify(l)),
         getTrainingState: (dk) => JSON.parse(localStorage.getItem(`training_state_${dk}`) || '[]'),

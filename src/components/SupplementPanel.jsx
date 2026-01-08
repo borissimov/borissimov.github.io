@@ -1,158 +1,111 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePlan } from '../context/PlanContext';
-import { Trash2, Plus } from 'lucide-react';
+import { DataModule } from '../data/DataModule';
+import { Trash2, GripVertical } from 'lucide-react';
 
 export const SupplementPanel = ({ data, dayKey }) => {
-  const { isEditMode, daysMap, updateSection } = usePlan();
+  const { isEditMode, toggleEditMode, updateSection } = usePlan();
+  const [checkedState, setCheckedState] = useState({});
 
-  const updateSupplements = (newData) => {
-      updateSection(dayKey, 'supplements', newData);
+  useEffect(() => {
+      const savedChecks = JSON.parse(localStorage.getItem('nutrition_plan_checkboxes') || '{}');
+      setCheckedState(savedChecks);
+  }, []);
+
+  const toggleCheck = (id) => {
+      setCheckedState(prev => {
+          const newState = !prev[id];
+          DataModule.saveCheckboxState(id, newState);
+          return { ...prev, [id]: newState };
+      });
   };
 
-  const addItem = (eventIdx) => {
-      const newEvents = [...data.events];
-      newEvents[eventIdx].items.push({ name: "New Supp", dosage: "1 dose" });
-      updateSupplements({ ...data, events: newEvents });
+  const handleDragStart = (e, index) => { e.dataTransfer.setData('text/plain', index); };
+  const handleDragOver = (e) => e.preventDefault();
+  const handleDrop = (e, targetIndex) => {
+    const sourceIndex = parseInt(e.dataTransfer.getData('text/plain'));
+    if (sourceIndex === targetIndex) return;
+    const newItems = [...data.events];
+    const [movedItem] = newItems.splice(sourceIndex, 1);
+    newItems.splice(targetIndex, 0, movedItem);
+    updateSection(dayKey, 'supplements', { ...data, events: newItems });
   };
 
-  const deleteItem = (eventIdx, itemIdx) => {
-      if(!confirm("Delete item?")) return;
-      const newEvents = [...data.events];
-      newEvents[eventIdx].items.splice(itemIdx, 1);
-      updateSupplements({ ...data, events: newEvents });
+  const addItem = () => {
+      updateSection(dayKey, 'supplements', { ...data, events: [...data.events, { title: "New Supp", items: [] }] });
   };
 
-  const updateItem = (eventIdx, itemIdx, field, value) => {
-      const newEvents = [...data.events];
-      newEvents[eventIdx].items[itemIdx][field] = value;
-      updateSupplements({ ...data, events: newEvents });
-  };
-
-  const addEvent = () => {
-      updateSupplements({ ...data, events: [...data.events, { time: "00:00", action: "Timing", items: [] }] });
-  };
-
-  const deleteEvent = (eventIdx) => {
-      if(!confirm("Delete event?")) return;
-      const newEvents = [...data.events];
-      newEvents.splice(eventIdx, 1);
-      updateSupplements({ ...data, events: newEvents });
-  };
-
-  const updateEvent = (eventIdx, field, value) => {
-      const newEvents = [...data.events];
-      newEvents[eventIdx][field] = value;
-      updateSupplements({ ...data, events: newEvents });
-  };
-
-  const toggleCheck = (id, checked) => {
-      const s = JSON.parse(localStorage.getItem('nutrition_plan_checkboxes') || '{}');
-      s[id] = checked;
-      localStorage.setItem('nutrition_plan_checkboxes', JSON.stringify(s));
-  };
-
-  const getCheckState = (id) => {
-      return (JSON.parse(localStorage.getItem('nutrition_plan_checkboxes') || '{}'))[id] || false;
+  const deleteItem = (index) => {
+      if(!confirm("Delete?")) return;
+      updateSection(dayKey, 'supplements', { ...data, events: data.events.filter((_, i) => i !== index) });
   };
 
   return (
-    <div className="pb-24">
-      <h2 className="section-title text-blue-500 px-4 pt-4">{data.title}</h2>
+    <div className="supplements-panel pb-24">
+      <h2 className="section-title supplements px-4 pt-4">
+        {data.title}
+        <span className="header-actions">
+            <button onClick={toggleEditMode} className="action-btn edit-toggle-btn">{isEditMode ? "Save" : "Edit"}</button>
+        </span>
+      </h2>
 
-      <div className="px-4 space-y-6">
-        {data.events.map((ev, evIdx) => (
-          <div key={evIdx} className="bg-neutral-900 rounded-lg p-3 border border-gray-800">
-            {/* Header */}
-            <div className="event-header">
-                {isEditMode ? (
-                    <input 
-                        className="bg-transparent text-white font-bold w-full border-b border-gray-700 focus:outline-none"
-                        value={ev.action}
-                        onChange={(e) => updateEvent(evIdx, 'action', e.target.value)}
-                    />
-                ) : (
-                    <span className="event-title">{ev.time && ev.time !== "00:00" ? `${ev.time} - ` : ""}{ev.action}</span>
-                )}
-                {isEditMode && <button onClick={() => deleteEvent(evIdx)} className="text-red-500"><Trash2 size={16}/></button>}
-            </div>
+      <div className="px-4">
+        {(!data.events || data.events.length === 0) ? (
+            <div className="text-gray-500 text-center py-4 italic">No supplements scheduled.</div>
+        ) : (
+            data.events.map((event, idx) => (
+                <div 
+                    key={idx} 
+                    className="card supplements"
+                    draggable={isEditMode}
+                    onDragStart={(e) => handleDragStart(e, idx)}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, idx)}
+                >
+                    <div className="nutr-header">
+                        <span className="nutr-time text-blue-400">{event.time}</span>
+                        <span className="nutr-action">{event.action}</span>
+                    </div>
 
-            {/* List */}
-            <div className="supplements-list-container">
-                {ev.items.map((item, itIdx) => {
-                    const id = `${dayKey}-supp-${evIdx}-${itIdx}`;
+                    <div className="nutr-body">
+                        {event.items && event.items.map((item, itemIdx) => {
+                            const uniqueId = `${dayKey}-supp-${idx}-${itemIdx}`;
+                            const isChecked = checkedState[uniqueId];
+
+                            return (
+                                <div key={itemIdx} className="nutr-row">
+                                    <div className="nutr-left">
+                                        {!isEditMode && (
+                                            <input 
+                                                type="checkbox" 
+                                                className="supplement-check"
+                                                checked={!!isChecked} 
+                                                onChange={() => toggleCheck(uniqueId)}
+                                            />
+                                        )}
+                                        {isEditMode && <GripVertical className="text-gray-500 mr-2 cursor-grab" size={20} />}
+                                        <div className="nutr-name">{item.name}</div>
+                                    </div>
+                                    <div className="nutr-right">
+                                        <div className="nutr-dosage text-blue-200">{item.dosage}</div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                     
-                    // Logic: Split "1 scoop (5g)"
-                    let mainDose = item.dosage;
-                    let subDose = "";
-                    
-                    // Check for parenthesis
-                    const parenMatch = item.dosage.match(/(.*)(\(.*\))$/);
-                    if (parenMatch) {
-                        mainDose = parenMatch[1].trim();
-                        subDose = parenMatch[2].trim();
-                    }
-
-                    return (
-                        <div key={itIdx} className="list-item-row">
-                            <label className="list-label">
-                                <span className="left-side">
-                                    {!isEditMode && (
-                                        <input 
-                                            type="checkbox" 
-                                            defaultChecked={getCheckState(id)} 
-                                            onChange={(e) => toggleCheck(id, e.target.checked)} 
-                                        />
-                                    )}
-                                    {isEditMode ? (
-                                        <input 
-                                            className="inline-edit-input"
-                                            value={item.name}
-                                            onChange={(e) => updateItem(evIdx, itIdx, 'name', e.target.value)}
-                                        />
-                                    ) : (
-                                        <span className="item-name">{item.name}</span>
-                                    )}
-                                </span>
-                                
-                                <span className="right-side">
-                                    {isEditMode ? (
-                                        <input 
-                                            className="inline-edit-input text-right"
-                                            value={item.dosage}
-                                            onChange={(e) => updateItem(evIdx, itIdx, 'dosage', e.target.value)}
-                                        />
-                                    ) : (
-                                        <>
-                                            <span className="dosage-text">{mainDose}</span>
-                                            {subDose && <span className="sub-text">{subDose}</span>}
-                                        </>
-                                    )}
-                                </span>
-                            </label>
-                            
-                            {isEditMode && (
-                                <button onClick={() => deleteItem(evIdx, itIdx)} className="delete-item-btn">×</button>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-            
-            {isEditMode && (
-                <button onClick={() => addItem(evIdx)} className="w-full text-center text-xs text-gray-500 border border-dashed border-gray-700 mt-3 py-2 rounded hover:text-white transition-colors">
-                    + Add Supplement
-                </button>
-            )}
-          </div>
-        ))}
+                    {isEditMode && (
+                        <button onClick={() => deleteItem(idx)} className="icon-btn delete mt-2 w-full flex justify-center"><Trash2 size={18} /></button>
+                    )}
+                </div>
+            ))
+        )}
       </div>
 
       {isEditMode && (
-        <div className="px-4">
-            <button onClick={addEvent} className="add-btn-dashed flex justify-center items-center gap-2">
-                <Plus size={16} /> Add Timing
-            </button>
-        </div>
+          <div className="px-4">
+            <button onClick={addItem} className="add-btn-dashed">+ Add Block</button>
+          </div>
       )}
     </div>
   );

@@ -1,9 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Minus, Play, Square } from 'lucide-react';
 
 export const TimerBar = ({ defaultTime }) => {
   const [timeLeft, setTimeLeft] = useState(defaultTime || 0);
   const [isActive, setIsActive] = useState(false);
   const [endTime, setEndTime] = useState(null);
+  const audioCtxRef = useRef(null);
+
+  const playBeep = () => {
+    if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = audioCtxRef.current;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const now = ctx.currentTime;
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.type = 'square'; 
+    oscillator.frequency.setValueAtTime(3200, now); 
+    gainNode.gain.setValueAtTime(0.5, now);
+    gainNode.gain.linearRampToValueAtTime(0.5, now + 0.45);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.5);
+  };
 
   useEffect(() => {
     let interval = null;
@@ -13,7 +39,7 @@ export const TimerBar = ({ defaultTime }) => {
         if (remaining <= 0) {
           setIsActive(false);
           setTimeLeft(0);
-          new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+          playBeep();
         } else {
           setTimeLeft(remaining);
         }
@@ -27,6 +53,13 @@ export const TimerBar = ({ defaultTime }) => {
       const target = Date.now() + (timeLeft > 0 ? timeLeft : defaultTime) * 1000;
       setEndTime(target);
       setIsActive(true);
+      
+      // Init audio context on user interaction to bypass browser blocks
+      if (!audioCtxRef.current) {
+          audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
+
       if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(() => {});
     } else {
       setIsActive(false);
@@ -49,30 +82,32 @@ export const TimerBar = ({ defaultTime }) => {
     return `${m}:${sec}`;
   };
 
-  // Always render div, but hide via class if needed, or return null if totally hidden logic desired. 
-  // CSS handles display:none if not .visible
-  // But React component needs to know if it should add .visible class.
-  // We'll assume the parent controls visibility via props or we just render it.
-  // Actually, App.jsx conditional rendering handles the "Tab" visibility.
-  // But we want it hidden if time is 0 and inactive? No, originally it showed up if initialTime > 0.
-  
   if (!defaultTime && !isActive) return null;
 
   return (
-    <div className={`timer-bar visible`}>
-      <div className="timer-main-group">
-        <button onClick={() => adjustTime(-15)} className="timer-controls adjust-btn">-15s</button>
-        <div className="timer-display">{format(timeLeft)}</div>
-        <button onClick={() => adjustTime(15)} className="timer-controls adjust-btn">+15s</button>
-      </div>
-      <div className="timer-controls start-stop-group">
-        <button 
-            onClick={toggleTimer} 
-            className={`start-btn ${isActive ? 'stop-btn' : ''}`}
-        >
-            {isActive ? 'Stop' : 'Start'}
-        </button>
-      </div>
+    <div className="timer-bar visible">
+        <div className="timer-container">
+            {/* Left: Decrease */}
+            <button onClick={() => adjustTime(-15)} className="timer-icon-btn">
+                <Minus size={20} />
+            </button>
+
+            {/* Middle: Display */}
+            <div className="timer-display-text">{format(timeLeft)}</div>
+
+            {/* Right: Increase */}
+            <button onClick={() => adjustTime(15)} className="timer-icon-btn">
+                <Plus size={20} />
+            </button>
+
+            {/* Far Right: Toggle Action */}
+            <button 
+                onClick={toggleTimer} 
+                className={`timer-toggle-action ${isActive ? 'stop' : 'start'}`}
+            >
+                {isActive ? <Square size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+            </button>
+        </div>
     </div>
   );
 };

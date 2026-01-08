@@ -1,136 +1,139 @@
 import React, { useState, useEffect } from 'react';
-import { usePlan } from '../context/PlanContext';
 import { supabase } from '../supabaseClient';
-import { RefreshCcw, Database, Table } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 
 export const DatabaseViewer = () => {
-  const { session } = usePlan();
   const [logs, setLogs] = useState([]);
-  const [planRows, setPlanRows] = useState([]);
-  const [selectedTable, setSelectedTable] = useState('workout_logs');
+  const [routineStatus, setRoutineStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeView, setActiveView] = useState('logs');
 
-  const fetchCloudData = async () => {
-    if (!session?.user?.id) return;
+  const fetchData = async () => {
     setLoading(true);
+    
+    const { data: logData, error: logError } = await supabase
+      .from('workout_logs')
+      .select('*')
+      .order('logged_at', { ascending: false })
+      .limit(50);
 
-    if (selectedTable === 'workout_logs') {
-      const { data, error } = await supabase
-        .from('workout_logs')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('logged_at', { ascending: false });
-      
-      if (!error) setLogs(data || []);
-    } else {
-      const { data, error } = await supabase
-        .from('user_plans')
-        .select('*')
-        .eq('user_id', session.user.id);
-      
-      if (!error) setPlanRows(data || []);
-    }
+    if (logError) console.error("Error fetching logs:", logError);
+    else setLogs(logData || []);
+
+    const { data: statusData, error: statusError } = await supabase
+        .from('user_routine_status')
+        .select(`
+            *,
+            routines ( name, cycle_length )
+        `)
+        .single();
+
+    if (statusError && statusError.code !== 'PGRST116') console.error("Error fetching status:", statusError);
+    else setRoutineStatus(statusData);
+
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCloudData();
-  }, [selectedTable, session]);
+    fetchData();
+  }, []);
 
   return (
-    <div className="p-4 pb-24 text-white">
-      <div className="flex justify-between items-center mb-4">
-          <h2 className="section-title text-gray-200 mb-0 flex items-center gap-2">
-            <Database size={20} className="text-blue-500" /> 
-            Cloud Database Explorer
-          </h2>
+    <div className="pb-24 px-2 pt-4 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-4 px-2 flex-shrink-0">
+        <h2 className="section-title" style={{marginBottom:0}}>My Data</h2>
+        <button onClick={fetchData} className="action-btn">
+            <RefreshCcw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+        </button>
+      </div>
+
+      <div className="flex gap-2 mb-4 px-2 border-b border-gray-800 pb-2 flex-shrink-0">
           <button 
-            onClick={fetchCloudData}
-            disabled={loading}
-            className="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 px-3 py-2 rounded text-xs font-bold transition-colors disabled:opacity-50"
+            onClick={() => setActiveView('logs')}
+            className={`text-sm font-bold px-3 py-1 rounded-t ${activeView === 'logs' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'}`}
           >
-            <RefreshCcw size={14} className={loading ? "animate-spin" : ""} /> 
-            {loading ? "FETCHING..." : "REFRESH"}
+            Log History
+          </button>
+          <button 
+            onClick={() => setActiveView('status')}
+            className={`text-sm font-bold px-3 py-1 rounded-t ${activeView === 'status' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'}`}
+          >
+            Routine Status
           </button>
       </div>
-      
-      {/* Table Selector */}
-      <div className="flex gap-2 mb-4 border-b border-gray-700 pb-2">
-        <button 
-            className={`flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-t-lg transition-all ${selectedTable === 'workout_logs' ? 'bg-blue-600 text-white' : 'bg-neutral-900 text-gray-500 hover:text-gray-300'}`}
-            onClick={() => setSelectedTable('workout_logs')}
-        >
-            <Table size={14} /> public.workout_logs
-        </button>
-        <button 
-            className={`flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-t-lg transition-all ${selectedTable === 'user_plans' ? 'bg-blue-600 text-white' : 'bg-neutral-900 text-gray-500 hover:text-gray-300'}`}
-            onClick={() => setSelectedTable('user_plans')}
-        >
-            <Table size={14} /> public.user_plans
-        </button>
-      </div>
 
-      {loading ? (
-          <div className="py-20 text-center text-gray-500 animate-pulse">Querying Supabase...</div>
-      ) : (
-          <>
-            {selectedTable === 'workout_logs' && (
-                <div className="overflow-x-auto bg-neutral-900 rounded border border-gray-800 shadow-xl">
-                    <table className="w-full text-left text-[11px] font-mono border-collapse">
-                        <thead className="bg-neutral-800 text-gray-400 sticky top-0">
-                            <tr>
-                                <th className="p-3 border-b border-gray-700">logged_at</th>
-                                <th className="p-3 border-b border-gray-700">day_key</th>
-                                <th className="p-3 border-b border-gray-700">exercise_name</th>
-                                <th className="p-3 border-b border-gray-700">weight</th>
-                                <th className="p-3 border-b border-gray-700">reps</th>
-                                <th className="p-3 border-b border-gray-700">rpe</th>
-                                <th className="p-3 border-b border-gray-700">tempo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {logs.length === 0 ? (
-                                <tr><td colSpan="7" className="p-10 text-center text-gray-600 italic">No cloud records found. Log a set in Training to see it here.</td></tr>
-                            ) : (
-                                logs.map((row) => (
-                                    <tr key={row.id} className="border-b border-gray-800 hover:bg-blue-900/10 transition-colors">
-                                        <td className="p-3 text-gray-500">{new Date(row.logged_at).toLocaleString()}</td>
-                                        <td className="p-3 text-blue-400 font-bold">{row.day_key.toUpperCase()}</td>
-                                        <td className="p-3 text-orange-300">{row.exercise_name}</td>
-                                        <td className="p-3 font-bold">{row.weight}</td>
-                                        <td className="p-3 text-white">{row.reps}</td>
-                                        <td className="p-3 text-yellow-500 font-bold">{row.rpe || 'NULL'}</td>
-                                        <td className="p-3 text-gray-500 italic">{row.tempo || 'NULL'}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {selectedTable === 'user_plans' && (
-                <div className="space-y-4">
-                    {planRows.map(row => (
-                        <div key={row.id} className="bg-neutral-900 rounded border border-gray-800 overflow-hidden shadow-xl">
-                            <div className="bg-neutral-800 p-2 px-4 text-[10px] text-gray-500 flex justify-between">
-                                <span>ROW_ID: {row.id}</span>
-                                <span>LAST_UPDATED: {new Date(row.updated_at).toLocaleString()}</span>
-                            </div>
-                            <pre className="p-4 text-[10px] leading-relaxed text-green-500/80 overflow-auto max-h-[500px]">
-                                {JSON.stringify(row.plan_data, null, 2)}
-                            </pre>
-                        </div>
-                    ))}
-                    {planRows.length === 0 && <div className="p-10 text-center text-gray-600 italic">No plan found in cloud.</div>}
-                </div>
-            )}
-          </>
+      {activeView === 'logs' && (
+          <div className="flex-1 overflow-hidden relative rounded-lg border border-[#333]">
+            <div className="absolute inset-0 overflow-auto">
+                <table className="w-full text-left border-collapse min-w-[400px]">
+                    <thead className="sticky top-0 z-10">
+                        <tr className="bg-[#1a1a1a] text-gray-400 text-xs uppercase shadow-sm">
+                            <th className="p-3 border-b border-[#333]">Logged At</th>
+                            <th className="p-3 border-b border-[#333]">Scheduled</th> {/* NEW */}
+                            <th className="p-3 border-b border-[#333]">Key</th>
+                            <th className="p-3 border-b border-[#333]">Exercise</th>
+                            <th className="p-3 border-b border-[#333] text-center">Load</th>
+                            <th className="p-3 border-b border-[#333] text-center">Reps</th>
+                        </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                        {logs.length === 0 ? (
+                            <tr><td colSpan="6" className="p-4 text-center text-gray-500">No logs found.</td></tr>
+                        ) : (
+                            logs.map((log, i) => (
+                                <tr key={log.id} className={`${i % 2 === 0 ? 'bg-[#0a0a0a]' : 'bg-[#151515]'} hover:bg-[#222]`}>
+                                    <td className="p-3 border-b border-[#222] text-gray-500 whitespace-nowrap text-xs">
+                                        {new Date(log.logged_at).toLocaleString()}
+                                    </td>
+                                    <td className="p-3 border-b border-[#222] font-mono text-blue-400 text-xs">
+                                        {log.scheduled_for || "NULL"}
+                                    </td>
+                                    <td className="p-3 border-b border-[#222] text-xs font-mono text-gray-500">
+                                        {log.day_key}
+                                    </td>
+                                    <td className="p-3 border-b border-[#222] font-bold text-white">
+                                        {log.exercise_name}
+                                    </td>
+                                    <td className="p-3 border-b border-[#222] font-mono text-orange-400 text-center whitespace-nowrap">
+                                        {log.weight}
+                                    </td>
+                                    <td className="p-3 border-b border-[#222] text-white text-center">
+                                        {log.reps}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+          </div>
       )}
-      
-      <div className="mt-6 p-4 bg-blue-900/10 border border-blue-900/30 rounded-lg text-xs text-blue-300">
-          <strong>Tip:</strong> These tables show your live <strong>Supabase Cloud Data</strong>. When you log a workout, a row is inserted into <code>workout_logs</code>. When you edit your plan structure, it updates the JSON in <code>user_plans</code>.
-      </div>
+
+      {/* Routine Status Tab (Unchanged) */}
+      {activeView === 'status' && (
+          <div className="bg-[#111] p-4 rounded-lg border border-[#333] m-2">
+              {routineStatus ? (
+                  <div className="space-y-4">
+                      <div>
+                          <div className="text-xs text-gray-500 uppercase font-bold mb-1">Active Routine</div>
+                          <div className="text-xl font-bold text-white">{routineStatus.routines?.name || "Unknown"}</div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <div className="text-xs text-gray-500 uppercase font-bold mb-1">Start Date</div>
+                            <div className="text-white font-mono">{new Date(routineStatus.cycle_start_date).toLocaleDateString()}</div>
+                        </div>
+                        <div>
+                            <div className="text-xs text-gray-500 uppercase font-bold mb-1">Cycle Length</div>
+                            <div className="text-white">{routineStatus.routines?.cycle_length} Days</div>
+                        </div>
+                      </div>
+                  </div>
+              ) : (
+                  <div className="text-gray-500 italic">No active routine assigned.</div>
+              )}
+          </div>
+      )}
     </div>
   );
 };

@@ -54,10 +54,15 @@ function App() {
   if (weekOffset > 0) weekClass = "future";
 
   return (
-    <div className="app-container" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+    <div className="app-container">
       
       {/* WEEK HEADER */}
-      <div className={`week-navigator ${weekClass}`}>
+      <div 
+        className={`week-navigator ${weekClass}`}
+        onTouchStart={onTouchStart} 
+        onTouchMove={onTouchMove} 
+        onTouchEnd={onTouchEnd}
+      >
           <button className="week-nav-btn" onClick={prevWeek}><ChevronLeft size={20} /></button>
           <span>WEEK {weekNumber}, {year}</span>
           <button className="week-nav-btn" onClick={nextWeek}><ChevronRight size={20} /></button>

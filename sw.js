@@ -42,14 +42,16 @@ self.addEventListener('push', function(event) {
       body: data.body,
       icon: '/icon-mp.svg',
       badge: '/icon-mp.svg',
-      vibrate: [100, 50, 100],
+      vibrate: data.vibrate || [200, 100, 200, 100, 200, 100, 200], // Aggressive vibration
+      tag: 'timer-alarm', // Grouping
+      renotify: true, // Alert again even if open
+      requireInteraction: true, // Keep on screen until clicked
+      timestamp: Date.now(),
       data: {
-        dateOfArrival: Date.now(),
-        primaryKey: '2',
         url: data.url || '/'
       },
       actions: [
-        {action: 'explore', title: 'View Plan', icon: '/icon-mp.svg'}
+        {action: 'explore', title: 'Open Timer', icon: '/icon-mp.svg'}
       ]
     };
     event.waitUntil(

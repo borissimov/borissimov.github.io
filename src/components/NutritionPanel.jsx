@@ -1,45 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { usePlan } from '../context/PlanContext';
-import { DataModule } from '../data/DataModule';
+import { useSectionLogic } from '../hooks/useSectionLogic';
 import { Trash2, GripVertical } from 'lucide-react';
 
 export const NutritionPanel = ({ data, dayKey }) => {
-  const { isEditMode, toggleEditMode, updateSection } = usePlan();
-  const [checkedState, setCheckedState] = useState({});
+  const { isEditMode, toggleEditMode, checklistState, toggleChecklist, weekDates } = usePlan();
+  
+  const { handleDragStart, handleDragOver, handleDrop, addItem, deleteItem } = useSectionLogic(dayKey, 'nutrition', data);
 
-  useEffect(() => {
-      const savedChecks = JSON.parse(localStorage.getItem('nutrition_plan_checkboxes') || '{}');
-      setCheckedState(savedChecks);
-  }, []);
-
-  const toggleCheck = (idx) => {
-      const id = `${dayKey}-nutr-${idx}`;
-      setCheckedState(prev => {
-          const newState = !prev[id];
-          DataModule.saveCheckboxState(id, newState);
-          return { ...prev, [id]: newState };
-      });
+  const toggleCheck = (id, item) => {
+      const date = weekDates[dayKey]?.fullDate;
+      const stateKey = `${date}_${id}`;
+      const isChecked = checklistState[stateKey];
+      toggleChecklist(id, !isChecked, dayKey, item);
   };
 
-  const handleDragStart = (e, index) => { e.dataTransfer.setData('text/plain', index); };
-  const handleDragOver = (e) => e.preventDefault();
-  const handleDrop = (e, targetIndex) => {
-    const sourceIndex = parseInt(e.dataTransfer.getData('text/plain'));
-    if (sourceIndex === targetIndex) return;
-    const newItems = [...data.events];
-    const [movedItem] = newItems.splice(sourceIndex, 1);
-    newItems.splice(targetIndex, 0, movedItem);
-    updateSection(dayKey, 'nutrition', { ...data, events: newItems });
-  };
-
-  const addItem = () => {
-      updateSection(dayKey, 'nutrition', { ...data, events: [...data.events, { title: "New Meal", details: "Details" }] });
-  };
-
-  const deleteItem = (index) => {
-      if(!confirm("Delete?")) return;
-      updateSection(dayKey, 'nutrition', { ...data, events: data.events.filter((_, i) => i !== index) });
-  };
+  const onAddItem = () => addItem({ title: "New Meal", details: "Details", items: [] });
 
   if (!data) return <div className="p-4 text-white">No Nutrition Data Loaded</div>;
 
@@ -81,17 +57,19 @@ export const NutritionPanel = ({ data, dayKey }) => {
                     <div className="nutr-body">
                         {event.items && event.items.map((item, itemIdx) => {
                             const uniqueId = `${dayKey}-nutr-${idx}-${itemIdx}`;
-                            const isChecked = checkedState[uniqueId];
+                            const date = weekDates[dayKey]?.fullDate;
+                            const stateKey = `${date}_${uniqueId}`;
+                            const isChecked = checklistState[stateKey];
 
                             return (
-                                <div key={itemIdx} className="nutr-row">
+                                <div key={itemIdx} className={`nutr-row ${isChecked ? 'completed' : ''}`}>
                                     <div className="nutr-left">
                                         {!isEditMode && (
                                             <input 
                                                 type="checkbox" 
                                                 className="nutrition-check"
                                                 checked={!!isChecked} 
-                                                onChange={() => toggleCheck(uniqueId)}
+                                                onChange={() => toggleCheck(uniqueId, item)}
                                             />
                                         )}
                                         {isEditMode && <GripVertical className="text-gray-500 mr-2 cursor-grab" size={20} />}
@@ -115,7 +93,7 @@ export const NutritionPanel = ({ data, dayKey }) => {
 
       {isEditMode && (
           <div className="px-4">
-            <button onClick={addItem} className="add-btn-dashed">+ Add Meal Block</button>
+            <button onClick={onAddItem} className="add-btn-dashed">+ Add Meal Block</button>
           </div>
       )}
     </div>

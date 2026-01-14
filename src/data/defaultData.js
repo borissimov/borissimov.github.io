@@ -48,5 +48,5 @@ export const defaultPlanData = {
 };
 
 export const DAYS_MAP = {
-    pon: "Monday", vto: "Tuesday", sry: "Wednesday", che: "Thursday", pet: "Friday", sab: "Saturday", ned: "Sunday"
+    mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday", sat: "Saturday", sun: "Sunday"
 };

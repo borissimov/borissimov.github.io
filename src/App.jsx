@@ -1,170 +1,200 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { usePlan } from './context/PlanContext';
 import { Auth } from './components/Auth';
 import { TimerBar } from './components/TimerBar';
 import { TrainingPanel } from './components/TrainingPanel';
 import { NutritionPanel } from './components/NutritionPanel';
 import { SupplementPanel } from './components/SupplementPanel';
+import { Header } from './components/layout/Header';
+import { WeekPager } from './components/layout/WeekPager';
+import { ContinuousTimeline } from './components/layout/ContinuousTimeline';
 import { DatabaseViewer } from './components/DatabaseViewer';
-import { User, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PlannerPanel } from './components/PlannerPanel';
+import { SettingsPanel } from './components/SettingsPanel';
+import { ProfilePanel } from './components/ProfilePanel';
+import { DailyAIInsight } from './components/DailyAIInsight';
+import { useAppInitialization } from './hooks/useAppInitialization';
+import { DataManager } from './data/DataManager';
 
 function App() {
-  const { session, loading, planData, currentDay, setCurrentDay, daysMap, weekDates, logout, weekNumber, year, weekOffset, nextWeek, prevWeek } = usePlan();
+  const { 
+    session, loading, currentDay, setCurrentDay, daysMap, 
+    weekDates, weekNumber, year, weekOffset, nextWeek, prevWeek, setWeekOffset,
+    getResolvedDayData, getWeekMap 
+  } = usePlan();
+
   const [activeTab, setActiveTab] = useState('training');
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [viewMode, setViewMode] = useState('tracker'); 
+  const [navMode, setNavMode] = useState(() => localStorage.getItem('mp_nav_mode') || 'week');
+  
+  // Independent Header State for Continuous Mode
+  const [headerOffset, setHeaderOffset] = useState(weekOffset);
 
-  // SWIPE LOGIC
-  const touchStart = useRef(null);
-  const touchEnd = useRef(null);
-  const minSwipeDistance = 50;
+  // Initialization (Theme, Push)
+  useAppInitialization(session, () => {}, () => {}); 
 
-  const onTouchStart = (e) => {
-    touchEnd.current = null; 
-    touchStart.current = e.targetTouches[0].clientX;
+  // Load Nav Mode Preference
+  useEffect(() => {
+      if (session?.user?.id) {
+          DataManager.getProfile(session.user.id).then(p => {
+              if (p?.navigation_mode) setNavMode(p.navigation_mode);
+          });
+      }
+  }, [session]);
+
+  // Sync Header with Context (One-way sync: Context -> Header)
+  // This ensures if we switch modes or reset to today, header jumps to correct place.
+  // We deliberately do NOT sync Header -> Context automatically during scroll.
+  useEffect(() => {
+      setHeaderOffset(weekOffset);
+  }, [weekOffset]);
+
+  const currentDayData = useMemo(() => {
+      return getResolvedDayData ? getResolvedDayData(currentDay) : null;
+  }, [getResolvedDayData, currentDay]);
+
+  // Continuous Mode Handlers
+  const handleHeaderPrev = () => setHeaderOffset(prev => prev - 1);
+  const handleHeaderNext = () => setHeaderOffset(prev => prev + 1);
+
+  const handleContinuousDayClick = (offset, key) => {
+      const targetWeekOffset = headerOffset + offset;
+      // Update Main View Context
+      if (targetWeekOffset !== weekOffset) {
+          setWeekOffset(targetWeekOffset);
+          setHeaderOffset(targetWeekOffset); // Sync header immediately
+      }
+      setCurrentDay(key);
   };
 
-  const onTouchMove = (e) => {
-    touchEnd.current = e.targetTouches[0].clientX;
+  // Data Generation for Continuous Mode (Driven by headerOffset)
+  const prevMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset - 1) : {}, [headerOffset, getWeekMap]);
+  const currMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset) : {}, [headerOffset, getWeekMap]);
+  const nextMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset + 1) : {}, [headerOffset, getWeekMap]);
+
+  const getWeekInfo = (map) => {
+      if (!map || !map['mon']) return { number: 0, year: 0 };
+      const d = new Date(map['mon'].dateObj);
+      d.setHours(0,0,0,0);
+      d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+      const week1 = new Date(d.getFullYear(), 0, 4);
+      return {
+          number: 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7),
+          year: d.getFullYear()
+      };
   };
 
-  const onTouchEnd = () => {
-    if (!touchStart.current || !touchEnd.current) return;
-    const distance = touchStart.current - touchEnd.current;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    // Only navigate if swiping on the header or main area (not inside horizontal scroll containers)
-    // For now, global swipe:
-    if (isLeftSwipe) {
-        nextWeek();
-    } else if (isRightSwipe) {
-        prevWeek();
-    }
+  const getWeekClass = (absOffset) => {
+      if (absOffset < 0) return "past";
+      if (absOffset > 0) return "future";
+      return "current";
   };
+
+  const weeks = [
+      { map: prevMap, info: getWeekInfo(prevMap), offset: -1, class: getWeekClass(headerOffset - 1) },
+      { map: currMap, info: getWeekInfo(currMap), offset: 0, class: getWeekClass(headerOffset) },
+      { map: nextMap, info: getWeekInfo(nextMap), offset: 1, class: getWeekClass(headerOffset + 1) }
+  ];
 
   if (loading) return <div className="flex h-screen items-center justify-center text-white bg-black">Loading Plan...</div>;
   if (!session) return <Auth />;
-  if (!planData) return <div className="p-4 text-red-500">Error loading data.</div>;
 
-  const currentDayData = planData[currentDay];
+  // SEPARATE LAYOUT FOR NON-TRACKER VIEWS (Guarantees Scrolling)
+  if (viewMode !== 'tracker') {
+      return (
+          <div className="fixed inset-0 z-50 bg-black text-white overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="sticky top-0 z-50 bg-[#101010] border-b border-[#333]">
+                  <Header 
+                    viewMode={viewMode} 
+                    setViewMode={setViewMode} 
+                    activeTab={activeTab} 
+                    setActiveTab={setActiveTab} 
+                  />
+              </div>
+              <div className="min-h-full">
+                {viewMode === 'planner' ? <PlannerPanel /> : 
+                 viewMode === 'settings' ? <SettingsPanel /> : 
+                 <ProfilePanel />}
+              </div>
+          </div>
+      );
+  }
 
-  // Determine Week Style Class
-  let weekClass = "current";
-  if (weekOffset < 0) weekClass = "past";
-  if (weekOffset > 0) weekClass = "future";
-
+  // TRACKER LAYOUT
   return (
     <div className="app-container">
-      
-      {/* WEEK HEADER */}
-      <div 
-        className={`week-navigator ${weekClass}`}
-        onTouchStart={onTouchStart} 
-        onTouchMove={onTouchMove} 
-        onTouchEnd={onTouchEnd}
-      >
-          <button className="week-nav-btn" onClick={prevWeek}><ChevronLeft size={20} /></button>
-          <span>WEEK {weekNumber}, {year}</span>
-          <button className="week-nav-btn" onClick={nextWeek}><ChevronRight size={20} /></button>
-      </div>
+      <Header 
+        viewMode={viewMode} 
+        setViewMode={setViewMode} 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+      />
 
-      {/* App Header */}
-      <div className="app-header">
-        <div className="header-content">
-            <div className="header-top-row">
-                <div className="scroll-tabs">
-                {Object.entries(daysMap).map(([key, label]) => {
-                    const dateInfo = weekDates[key];
-                    return (
-                        <button 
-                            key={key}
-                            onClick={() => setCurrentDay(key)}
-                            className={`tab-btn ${currentDay === key ? 'active' : ''}`}
-                        >
-                            <div style={{lineHeight: '1.1'}}>
-                                <div style={{fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase'}}>
-                                    {label.substring(0, 3)}
-                                </div>
-                                {dateInfo && (
-                                    <div style={{fontSize: '0.65rem', opacity: '0.7', fontWeight: '500'}}>
-                                        {dateInfo.label}
-                                    </div>
-                                )}
-                            </div>
-                        </button>
-                    );
-                })}
-                </div>
-                
-                <div className="relative">
-                    <button 
-                        onClick={() => setShowProfileMenu(!showProfileMenu)}
-                        className="profile-btn"
-                    >
-                        <User size={20} />
-                    </button>
-                    
-                    {showProfileMenu && (
-                        <div className="profile-menu">
-                            <div className="profile-info">
-                                <p className="text-[10px] text-gray-500 uppercase font-bold">Logged in as</p>
-                                <p className="text-xs text-white truncate">{session.user.email}</p>
-                            </div>
-                            <button 
-                                onClick={() => { logout(); setShowProfileMenu(false); }}
-                                className="logout-btn"
-                            >
-                                <LogOut size={16} /> Logout
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
+      {navMode === 'continuous' ? (
+          <ContinuousTimeline 
+              weeks={weeks}
+              currentDay={currentDay}
+              weekOffset={headerOffset}
+              onDayClick={handleContinuousDayClick}
+              onPrev={handleHeaderPrev}
+              onNext={handleHeaderNext}
+          />
+      ) : (
+          <WeekPager 
+              weekDates={weekDates}
+              weekNumber={weekNumber}
+              year={year}
+              currentDay={currentDay}
+              setCurrentDay={setCurrentDay}
+              activeTab={activeTab}
+              currentDayData={null} 
+              onPrev={prevWeek}
+              onNext={nextWeek}
+          />
+      )}
 
-            <div className="filter-tabs">
-            {['training', 'nutrition', 'supplements', 'data'].map(tab => (
-                <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`filter-btn active ${tab} ${activeTab === tab ? '' : 'opacity-50'}`} 
-                >
-                {tab.toUpperCase()}
-                </button>
-            ))}
-            </div>
-        </div>
-
-        {/* Timer Bar */}
-        {activeTab === 'training' && (
+      {/* TIMER BAR (Fixed below nav) */}
+      {activeTab === 'training' && currentDayData && (
+        <div style={{ background: '#101010', borderBottom: '1px solid #333', paddingBottom: '4px', flexShrink: 0 }}>
             <TimerBar defaultTime={currentDayData.training.rest || 60} />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Main Content */}
       <div className="app-main">
-        {activeTab === 'training' && (
-          <TrainingPanel 
-            data={currentDayData.training} 
-            dayKey={currentDay}
-          />
-        )}
-        
-        {activeTab === 'nutrition' && (
-          <NutritionPanel
-            data={currentDayData.nutrition}
-            dayKey={currentDay}
-          />
-        )}
+        <DailyAIInsight />
 
-        {activeTab === 'supplements' && (
-           <SupplementPanel
-             data={currentDayData.supplements}
-             dayKey={currentDay}
-           />
-        )}
+        {currentDayData ? (
+            <>
+                {activeTab === 'training' && (
+                <TrainingPanel 
+                    data={currentDayData.training} 
+                    dayKey={currentDay}
+                />
+                )}
+                
+                {activeTab === 'nutrition' && (
+                <NutritionPanel
+                    data={currentDayData.nutrition}
+                    dayKey={currentDay}
+                />
+                )}
 
-        {activeTab === 'data' && (
-            <DatabaseViewer />
+                {activeTab === 'supplements' && (
+                <SupplementPanel
+                    data={currentDayData.supplements}
+                    dayKey={currentDay}
+                />
+                )}
+
+                {activeTab === 'data' && (
+                    <DatabaseViewer />
+                )}
+            </>
+        ) : (
+            <div className="p-8 text-center text-gray-500">
+                <p>No routine data for this day.</p>
+                <p className="text-xs mt-2">Check your cycle start date in the Planner.</p>
+            </div>
         )}
       </div>
     </div>

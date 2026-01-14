@@ -19,7 +19,9 @@ body, html, #root {
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  overscroll-behavior: none;
+  overscroll-behavior-y: auto;
+  overscroll-behavior-x: none;
+  scroll-padding-bottom: 250px;
 }
 
 /* --- Layout --- */
@@ -102,7 +104,7 @@ body, html, #root {
 .instructions { background: #1a1a1a; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: #bbb; margin-bottom: 16px; line-height: 1.4; border-left: 2px solid #444; }
 
 /* --- CARDS --- */
-.card { background: var(--surface-color); border-radius: 12px; padding: 16px 14px; margin-bottom: 16px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; overflow: visible; }
+.card { background: var(--surface-color); border-radius: 12px; padding: 16px 14px; margin-bottom: 16px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; overflow: visible; transition: all 0.2s ease; }
 
 /* Card Types */
 .card.training-Resistance { border-top: 2px solid var(--training-accent); }
@@ -228,12 +230,12 @@ body, html, #root {
 
 /* --- SET HISTORY --- */
 .set-history { display: flex; flex-direction: column; gap: 6px; width: 100%; border-top: 1px solid #222; padding-top: 10px; }
-.set-row { background: #0a0a0a; border-radius: 6px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; font-family: monospace; font-size: 0.95rem; border-bottom: 1px solid #222; }
-.set-index { color: #888; font-weight: 700; font-size: 0.85rem; margin-right: 10px; white-space: nowrap; }
-.set-data-text { flex-grow: 1; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.set-label { color: var(--training-accent); font-size: 0.75rem; margin-right: 4px; text-transform: uppercase; font-weight: 800; }
-.set-value { color: #fff; font-weight: 600; font-family: monospace; font-size: 1rem; }
-.set-actions { display: flex; gap: 8px; margin-left: 10px; }
+.set-row { background: #0a0a0a; border-radius: 6px; padding: 6px 8px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; font-family: monospace; font-size: 0.9rem; border-bottom: 1px solid #222; }
+.set-index { color: #888; font-weight: 700; font-size: 0.8rem; margin-right: 6px; white-space: nowrap; }
+.set-data-text { flex-grow: 1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.set-label { color: var(--training-accent); font-size: 0.75rem; margin-right: 2px; text-transform: uppercase; font-weight: 800; }
+.set-value { color: #fff; font-weight: 600; font-family: monospace; font-size: 0.95rem; }
+.set-actions { display: flex; flex-direction: row; gap: 8px; margin-left: auto; }
 .icon-btn { background: transparent; border: 1px solid transparent; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: all 0.2s; }
 .icon-btn.edit { color: var(--training-accent); border-color: var(--training-accent); }
 .icon-btn.delete { color: #e74c3c; border-color: #e74c3c; } 
@@ -252,8 +254,32 @@ body, html, #root {
 .list-item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px; background: #111; border-radius: 6px; }
 .dosage-text { font-weight: 700; color: #fff; font-size: 0.9rem; }
 .sub-text { font-size: 0.8rem; color: #888; margin-top: 1px; }
-.auth-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%); padding: 16px; box-sizing: border-box; }
-.auth-card { width: 100%; max-width: 340px; background-color: var(--surface-color); padding: 30px 24px; border-radius: 16px; border: 1px solid #333; box-shadow: 0 20px 50px rgba(0,0,0,0.7); position: relative; overflow: hidden; box-sizing: border-box; }
+.auth-container { 
+    display: flex; 
+    flex-direction: column; 
+    /* Viewport should resize with keyboard now */
+    min-height: 100vh;
+    min-height: 100dvh; 
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%); 
+    padding: 20px;
+    box-sizing: border-box; 
+    overflow-y: auto;
+}
+
+.auth-card { 
+    width: 100%; 
+    max-width: 340px; 
+    background-color: var(--surface-color); 
+    padding: 30px 24px; 
+    border-radius: 16px; 
+    border: 1px solid #333; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7); 
+    position: relative; 
+    overflow: hidden; 
+    box-sizing: border-box; 
+    flex-shrink: 0;
+    margin: auto; /* Centers vertically/horizontally in flex container */
+}
 .auth-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--training-accent); box-shadow: 0 0 15px var(--training-accent); }
 .auth-title { color: var(--training-accent); font-size: 1.6rem; font-weight: 900; text-align: center; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 .auth-subtitle { color: #666; text-align: center; margin-bottom: 25px; font-size: 0.85rem; font-weight: 500; }
@@ -269,7 +295,9 @@ body, html, #root {
 .nutr-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #333; }
 .nutr-time { font-family: monospace; font-weight: 700; color: #fff; font-size: 0.9rem; }
 .nutr-action { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; }
-.nutr-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+.nutr-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; transition: all 0.2s; }
+.nutr-row.completed { opacity: 0.5; filter: grayscale(0.8); }
+.nutr-row.completed .nutr-name { text-decoration: line-through; color: #666; }
 .nutr-row:last-child { border-bottom: none; }
 .nutr-left { display: flex; align-items: center; gap: 10px; flex: 1; }
 .nutr-name { font-weight: 600; color: #fff; font-size: 0.95rem; line-height: 1.3; }
@@ -285,3 +313,246 @@ body, html, #root {
 .dark-input:focus { outline: none; border-color: #666; }
 .nutrition-panel .dark-input:focus { border-color: var(--nutrition-accent); }
 .supplements-panel .dark-input:focus { border-color: var(--supplements-accent); }
+
+/* Utilities */
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+@keyframes brain-pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+.animate-brain {
+    animation: brain-pulse 1.5s ease-in-out infinite;
+}
+
+/* --- REACT CALENDAR - SLEEK MODERN --- */
+.react-calendar {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    font-family: inherit !important;
+    line-height: 1.125em !important;
+}
+
+/* Navigation (Hidden, we use custom) */
+.react-calendar__navigation { display: none !important; }
+
+/* Weekdays */
+.react-calendar__month-view__weekdays {
+    text-align: center !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    color: #555 !important;
+    margin-bottom: 10px !important;
+}
+.react-calendar__month-view__weekdays__weekday {
+    padding: 0.5em !important;
+}
+.react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none !important;
+    cursor: default !important;
+}
+
+/* Tiles (Days) */
+.react-calendar__tile {
+    max-width: 100% !important;
+    padding: 0 !important;
+    background: none !important;
+    text-align: center !important;
+    height: 44px !important; /* Larger touch target */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    color: #fff !important;
+    position: relative !important;
+}
+
+/* Hover/Focus States */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background: #222 !important;
+    border-radius: 50% !important;
+}
+
+/* Current Day */
+.react-calendar__tile--now {
+    background: transparent !important;
+    color: var(--training-accent) !important;
+    font-weight: 900 !important;
+}
+
+/* --- RANGE STYLING --- */
+
+/* Start & End (Circle) */
+.tile-range-start, .tile-range-end {
+    background: var(--training-accent) !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+    border-radius: 50% !important; /* Perfect circle */
+}
+
+/* Middle (Continuous Strip) */
+.tile-range-middle {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: var(--training-accent) !important;
+    border-radius: 0 !important; /* Square for continuity */
+}
+
+/* Start Connector */
+.tile-range-start {
+    position: relative;
+    z-index: 10;
+}
+.tile-range-start::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; right: 0; width: 50%;
+    background: rgba(243, 156, 18, 0.15);
+    z-index: -1;
+}
+
+/* End Connector */
+.tile-range-end {
+    position: relative;
+    z-index: 10;
+}
+.tile-range-end::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0; width: 50%;
+    background: rgba(243, 156, 18, 0.15);
+    z-index: -1;
+}
+
+/* Single Day Selection (No connector) */
+.tile-range-start.tile-range-end::before {
+    display: none !important;
+}
+
+/* Booked (Subtle Dot) */
+.tile-booked {
+    color: #555 !important;
+}
+.tile-booked::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: #333;
+    border-radius: 50%;
+}
+
+/* Suggested End (Green Ring) */
+.suggested-end-date {
+    border: 2px solid var(--nutrition-accent) !important;
+    border-radius: 50% !important;
+    box-sizing: border-box !important;
+}
+/* --- MATERIAL DESIGN THEME --- */
+[data-theme="material-dark"] {
+  --background-color: #121212;
+  --surface-color: #1E1E1E;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --subtle-text-color: rgba(255, 255, 255, 0.60);
+  --border-color: #2C2C2C;
+}
+
+[data-theme="material-dark"] .app-header {
+  background-color: #1F1F1F;
+  border-bottom: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+[data-theme="material-dark"] .week-navigator {
+    background: #1F1F1F;
+    border-bottom: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-bottom: 1px;
+}
+
+[data-theme="material-dark"] .card {
+  background-color: #1E1E1E;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  border-radius: 16px;
+}
+
+[data-theme="material-dark"] .card.training-Resistance,
+[data-theme="material-dark"] .card.training-Cardio,
+[data-theme="material-dark"] .card.nutrition,
+[data-theme="material-dark"] .card.supplements {
+    border-top: none;
+    position: relative;
+    padding-left: 20px; /* Space for strip */
+}
+
+/* Material Left Strip */
+[data-theme="material-dark"] .card.training-Resistance::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--training-accent); border-radius: 16px 0 0 16px;
+}
+[data-theme="material-dark"] .card.training-Cardio::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--cardio-accent); border-radius: 16px 0 0 16px;
+}
+[data-theme="material-dark"] .card.nutrition::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--nutrition-accent); border-radius: 16px 0 0 16px;
+}
+[data-theme="material-dark"] .card.supplements::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--supplements-accent); border-radius: 16px 0 0 16px;
+}
+
+/* Rounded Buttons */
+[data-theme="material-dark"] .action-btn,
+[data-theme="material-dark"] .tab-btn,
+[data-theme="material-dark"] .filter-btn {
+    border-radius: 24px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+}
+[data-theme="material-dark"] .tab-btn.active {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Inputs */
+[data-theme="material-dark"] .set-input,
+[data-theme="material-dark"] .dark-input {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px 4px 0 0;
+}
+[data-theme="material-dark"] .set-input:focus,
+[data-theme="material-dark"] .dark-input:focus {
+    background: rgba(255,255,255,0.1);
+    border-bottom: 2px solid var(--training-accent);
+}
+
+
+/* --- CONTINUOUS TIMELINE UTILS --- */
+.continuous-scroll-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    overscroll-behavior-x: none; /* Prevent bounce */
+}
+.continuous-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Webkit */
+}
+

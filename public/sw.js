@@ -33,3 +33,36 @@ self.addEventListener('fetch', event => {
     );
   }
 });
+
+// --- PUSH NOTIFICATIONS ---
+self.addEventListener('push', function(event) {
+  if (event.data) {
+    const data = event.data.json();
+    const options = {
+      body: data.body,
+      icon: '/icon-mp.svg',
+      badge: '/icon-mp.svg',
+      vibrate: data.vibrate || [200, 100, 200, 100, 200, 100, 200], // Aggressive vibration
+      tag: 'timer-alarm', // Grouping
+      renotify: true, // Alert again even if open
+      requireInteraction: true, // Keep on screen until clicked
+      timestamp: Date.now(),
+      data: {
+        url: data.url || '/'
+      },
+      actions: [
+        {action: 'explore', title: 'Open Timer', icon: '/icon-mp.svg'}
+      ]
+    };
+    event.waitUntil(
+      self.registration.showNotification(data.title, options)
+    );
+  }
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url)
+  );
+});

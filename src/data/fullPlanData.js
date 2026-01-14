@@ -1,5 +1,5 @@
 export const fullPlanData = {
-    "pon": {
+    "mon": {
         "training": {
             "title": "Active Recovery",
             "rest": 0,
@@ -7,7 +7,8 @@ export const fullPlanData = {
             "exercises": [
                 {
                     "exercise": "Active Recovery",
-                    "config": "N/A x 30-60 min @ N/A RPE",
+                    "type": "Cardio",
+                    "config": "30-60 min",
                     "focus": "<ul><li>Walk at a light to moderate pace outdoors or on a treadmill.</li></ul>"
                 }
             ],
@@ -43,7 +44,7 @@ export const fullPlanData = {
             ]
         }
     },
-    "vto": {
+    "tue": {
         "training": {
             "title": "Heavy Leg Workout (Glycogen Depletion)",
             "rest": 60,
@@ -91,7 +92,7 @@ export const fullPlanData = {
             ]
         }
     },
-    "sry": {
+    "wed": {
         "training": {
             "title": "Push (Chest/Shoulders/Triceps) - TUT Focus",
             "rest": 75,
@@ -137,7 +138,7 @@ export const fullPlanData = {
             ]
         }
     },
-    "che": {
+    "thu": {
         "training": {
             "title": "Pull (Back/Biceps) - TUT Focus",
             "rest": 75,
@@ -185,14 +186,20 @@ export const fullPlanData = {
             ]
         }
     },
-    "pet": {
+    "fri": {
         "training": {
             "title": "Light to Moderate Swimming",
             "rest": 0,
             "instructions": "<ul><li>Goal: Active recovery, improve cardiovascular system, fat burning with low joint stress.</li><li>Low to moderate intensity, steady state (LISS).</li><li>Focus on breathing technique and smooth movement.</li></ul>",
-            "exercises": [],
-            "type": "descriptive",
-            "content": [{ "exercise": "Light to Moderate Swimming", "duration": "30-45 minutes", "details": "" }]
+            "exercises": [
+                {
+                    "exercise": "Light to Moderate Swimming",
+                    "type": "Cardio",
+                    "config": "30-45 min",
+                    "focus": ""
+                }
+            ],
+            "type": "list"
         },
         "nutrition": {
             "title": "PSMF/Keto Nutrition",
@@ -223,14 +230,20 @@ export const fullPlanData = {
             ]
         }
     },
-    "sab": {
+    "sat": {
         "training": {
             "title": "Intensive Swimming (Intervals)",
             "rest": 90,
             "instructions": "<ul><li>Goal: Max calorie burn, improve anaerobic capacity and metabolic stress.</li><li>Interval Training (HIIT).</li><li>Warm up 5-10 min, then alternate 1 length sprint (~90% effort) with 2 lengths very slow recovery swimming.</li><li>Cool down 5 min.</li></ul>",
-            "exercises": [],
-            "type": "descriptive",
-            "content": [{ "exercise": "Intensive Swimming (Intervals)", "duration": "15-20 minutes", "details": "" }]
+            "exercises": [
+                {
+                    "exercise": "Intensive Swimming (Intervals)",
+                    "type": "Cardio",
+                    "config": "15-20 min",
+                    "focus": ""
+                }
+            ],
+            "type": "list"
         },
         "nutrition": {
             "title": "PSMF/Keto Nutrition",
@@ -263,7 +276,7 @@ export const fullPlanData = {
             ]
         }
     },
-    "ned": {
+    "sun": {
         "training": {
             "title": "Metabolic Workout",
             "rest": 120,
@@ -310,4 +323,4 @@ export const fullPlanData = {
         }
     }
 };
-export const DAYS_MAP = { pon: "Monday", vto: "Tuesday", sry: "Wednesday", che: "Thursday", pet: "Friday", sab: "Saturday", ned: "Sunday" };
+export const DAYS_MAP = { mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday", sat: "Saturday", sun: "Sunday" };

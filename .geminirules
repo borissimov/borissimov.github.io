@@ -1,0 +1,47 @@
+# Regimen Pro Development Manifesto
+
+You are an expert full-stack developer working on the Regimen Pro PWA. You must adhere to the following architectural and workflow standards for every task.
+
+## 1. Core Architecture: The 3-Layers of Truth
+All plan-related logic (Training, Nutrition, Supplements) must follow the tiered resolution logic defined in `getPlanForDate(date)`:
+- **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`. (Highest priority).
+- **Layer 2 (User Templates):** `localStorage.regimen_user_template`. (Recurring weekly schedule).
+- **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object. (Ultimate fallback).
+- **CRITICAL RULE:** Never modify the `DEFAULT_PLAN` object. Always provide the user the choice between Layer 1 (Today Only) and Layer 2 (All [Days]) when saving edits.
+
+## 2. Synchronization Strategy ("System Image" Bundling)
+- **Bundling:** Every sync operation must bundle the current `regimen_user_template` from LocalStorage into the `user_template_snapshot` field of the JSON payload sent to Supabase.
+- **Restoration:** Fetch operations must iterate through logs, identify the chronologically most recent entry, and restore its `user_template_snapshot` to the local `localStorage['regimen_user_template']`.
+
+## 3. GitHub Workflow (Git Flow)
+- **No Direct Commits:** Never commit directly to the `source` or `master` branches.
+- **Branching Strategy:** 
+    - New features: `feature/<ticket-id>-<short-description>`
+    - Bug fixes: `fix/<short-description>`
+    - Releases: `release/v<version>`
+- **Pull Requests:** Use the `gh` CLI to create Pull Requests for all changes. 
+- **Issue Tracking:** Link all PRs to the relevant GitHub Issue using "Closes #<number>" or "Related to #<number>".
+
+## 4. Project Management
+- **Issue Sync:** Sync local `.md` tickets in `/features` to GitHub Issues using `gh issue create`.
+- **Project Board:** Items must be added to the GitHub Project board with appropriate "Type" (Initiative/Epic/Story/Task/Bug) and "Tier" (Numerical priority).
+
+## 5. Documentation Standards
+- **Flowcharts:** Use Mermaid.js syntax for all architectural and logic diagrams.
+- **Organization:** 
+    - Technical blue-prints and architecture guides live in `/docs`.
+    - Active development tickets live in `/features`.
+- **End-of-File Docs:** Maintain the technical architecture summary at the bottom of `public/regimen.html`.
+
+## 6. Technology Stack Constraints
+- **Standalone PWA:** `public/regimen.html` must remain a single-file application. Do not split it into multiple files unless explicitly asked. Use CDNs for all external libraries (Supabase, etc.).
+- **Supabase Client:** Access the database via the `sbClient` global variable to avoid name shadowing with the CDN-provided `supabase` object.
+- **Interactivity:** All event handler functions must be standard declarations (not anonymous arrows) and explicitly attached to the `window` object to ensure they are accessible by HTML `onclick` attributes.
+
+## 7. Two-Way Task Mirroring
+The system maintains a mirror between GitHub Issues and the `/features` folder.
+- **Action:** Run `npm run sync-tasks` at the start of every session.
+- **Pull:** Open GitHub Issues are downloaded as `.md` files into `/features`.
+- **Push:** New local `.md` files (drafts) are uploaded to GitHub as new Issues.
+- **Cleanup:** Local files are deleted automatically once the corresponding GitHub Issue is closed.
+- **Rule:** The AI must always sync tasks before picking up a new item to ensure it has the latest requirements.

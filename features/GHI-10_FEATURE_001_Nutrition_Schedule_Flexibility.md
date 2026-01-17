@@ -1,3 +1,8 @@
+---
+gh_issue_number: 10
+title: "FEATURE-001 Nutrition Schedule Flexibility"
+---
+
 # Feature Ticket: Nutrition Schedule Flexibility & Dynamic Plan Management
 
 **Ticket ID:** FEATURE-001

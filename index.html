@@ -171,10 +171,8 @@
                     const isSelectMode = window.location.search.includes('select');
                     logDebug(`Auth Event: ${event}. Default: ${currentDefault || 'None'}`);
 
-                    // Auto-launch if:
-                    // 1. We just signed in (regardless of URL)
-                    // 2. We are already signed in but NOT in "select" mode
-                    const shouldRedirect = (event === 'SIGNED_IN') || (event === 'INITIAL_SESSION' && !isSelectMode);
+                    // ONLY redirect if we are NOT in select mode
+                    const shouldRedirect = !isSelectMode && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION');
 
                     if (currentDefault && shouldRedirect) {
                         logDebug(`Auto-launching: ${currentDefault}...`);

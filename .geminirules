@@ -1,47 +1,65 @@
 # Regimen Pro Development Manifesto
 
-You are an expert full-stack developer working on the Regimen Pro PWA. You must adhere to the following architectural and workflow standards for every task.
+You are an expert full-stack developer. You MUST adhere to the following Professional Workflow for every task.
 
-## 1. Core Architecture: The 3-Layers of Truth
-All plan-related logic (Training, Nutrition, Supplements) must follow the tiered resolution logic defined in `getPlanForDate(date)`:
-- **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`. (Highest priority).
-- **Layer 2 (User Templates):** `localStorage.regimen_user_template`. (Recurring weekly schedule).
-- **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object. (Ultimate fallback).
-- **CRITICAL RULE:** Never modify the `DEFAULT_PLAN` object. Always provide the user the choice between Layer 1 (Today Only) and Layer 2 (All [Days]) when saving edits.
+## 1. The Professional Workflow
+Every request must follow these phases strictly:
 
-## 2. Synchronization Strategy ("System Image" Bundling)
-- **Bundling:** Every sync operation must bundle the current `regimen_user_template` from LocalStorage into the `user_template_snapshot` field of the JSON payload sent to Supabase.
-- **Restoration:** Fetch operations must iterate through logs, identify the chronologically most recent entry, and restore its `user_template_snapshot` to the local `localStorage['regimen_user_template']`.
+### Phase 1: Initiation (The Anchor)
+1. **Sync Workspace:** Run `npm run sync-tasks` to ensure local `/features` match GitHub.
+2. **Identify Task:** Use an existing GitHub Issue ID (e.g., #4) or create a new one (`gh issue create`).
+3. **Move to In Progress:** Update the project item status to "In Progress".
+4. **Branch Out:** Create a task-specific branch: `git checkout -b task-[ID]-short-description`.
 
-## 3. GitHub Workflow (Git Flow)
-- **No Direct Commits:** Never commit directly to the `source` or `master` branches.
-- **Branching Strategy:** 
-    - New features: `feature/<ticket-id>-<short-description>`
-    - Bug fixes: `fix/<short-description>`
-    - Releases: `release/v<version>`
-- **Pull Requests:** Use the `gh` CLI to create Pull Requests for all changes. 
-- **Issue Tracking:** Link all PRs to the relevant GitHub Issue using "Closes #<number>" or "Related to #<number>".
+### Phase 2: Implementation (The Build)
+1. **Code:** Implement changes following project patterns.
+2. **Update Docs:** Update the local `features/GHI-[ID]_...md` file with technical implementation details.
+3. **Lint:** Ensure code matches project style.
 
-## 4. Project Management
-- **Issue Sync:** Sync local `.md` tickets in `/features` to GitHub Issues using `gh issue create`.
-- **Project Board:** Items must be added to the GitHub Project board with appropriate "Type" (Initiative/Epic/Story/Task/Bug) and "Tier" (Numerical priority).
+### Phase 3: Verification (The Proof)
+1. **Compile:** Run `npm run build` to verify no syntax/import errors.
+2. **Move to Testing:** Update the project item status to "Testing" (if available) or add a "testing" label.
+3. **Runtime Test:** Run the app and verify the specific logic/UI changes.
+4. **User Review:** Present the changes and wait for user "Visual Sign-off".
 
-## 5. Documentation Standards
-- **Flowcharts:** Use Mermaid.js syntax for all architectural and logic diagrams.
-- **Organization:** 
-    - Technical blue-prints and architecture guides live in `/docs`.
-    - Active development tickets live in `/features`.
-- **End-of-File Docs:** Maintain the technical architecture summary at the bottom of `public/regimen.html`.
+### Phase 4: Delivery (The Pull Request)
+1. **Commit:** Use Conventional Commits: `feat: ...`, `fix: ...`, `refactor: ...`, `ui: ...`.
+2. **PR:** Create a Pull Request (`gh pr create`) linked to the issue ("Closes #[ID]").
+3. **Merge:** Merge the PR into `source` and delete the task branch.
 
-## 6. Technology Stack Constraints
-- **Standalone PWA:** `public/regimen.html` must remain a single-file application. Do not split it into multiple files unless explicitly asked. Use CDNs for all external libraries (Supabase, etc.).
-- **Supabase Client:** Access the database via the `sbClient` global variable to avoid name shadowing with the CDN-provided `supabase` object.
-- **Interactivity:** All event handler functions must be standard declarations (not anonymous arrows) and explicitly attached to the `window` object to ensure they are accessible by HTML `onclick` attributes.
+### Phase 5: Release (The Deployment)
+1. **Deploy:** Run `npm run deploy` to push to production.
+2. **Close Issue:** Close the GitHub Issue with a summary.
+3. **Clean Sync:** Run `npm run sync-tasks` to remove the local task file.
 
-## 7. Two-Way Task Mirroring
-The system maintains a mirror between GitHub Issues and the `/features` folder.
-- **Action:** Run `npm run sync-tasks` at the start of every session.
-- **Pull:** Open GitHub Issues are downloaded as `.md` files into `/features`.
-- **Push:** New local `.md` files (drafts) are uploaded to GitHub as new Issues.
-- **Cleanup:** Local files are deleted automatically once the corresponding GitHub Issue is closed.
-- **Rule:** The AI must always sync tasks before picking up a new item to ensure it has the latest requirements.
+---
+
+## 2. Core Architecture: The 3-Layers of Truth
+All plan-related logic (Training, Nutrition, Supplements) must follow:
+- **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`.
+- **Layer 2 (User Templates):** `localStorage.regimen_user_template`.
+- **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object.
+- **CRITICAL:** Never modify `DEFAULT_PLAN`.
+
+## 3. GitHub & Project Standards
+- **Branching:** `task-[ID]-description`.
+- **Conventional Commits:** `type: description (fixes #[ID])`.
+- **Project Board:** Every issue must have:
+    - **Tier:** 1 (Initiative), 2 (Epic), 3 (Task).
+    - **Work Type:** Feature, Bug, Enhancement, Refactor, Chore, Compatibility, Documentation, Security, Performance.
+    - **Status:** Todo, In Progress, Testing, Done.
+
+## 4. Technology Stack Constraints
+- **Standalone PWA:** `public/regimen.html` is a single-file app.
+- **Supabase:** Use `sbClient` global variable.
+- **Interactivity:** Attach event handlers to `window`.
+
+## 5. Two-Way Task Mirroring
+- Always run `npm run sync-tasks` before starting and after finishing a task.
+- Active tickets live in `/features`.
+- Documentation and architectural guides live in `/docs`.
+
+---
+
+## 6. Interaction Guidelines
+- **Brief Descriptions:** Always provide a brief, one-sentence description of what you are about to do BEFORE calling any tools. This ensures the user is informed of the intended action.

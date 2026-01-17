@@ -20,7 +20,38 @@ flowchart TD
     I --> K[Display Gap Resolution UI]
 ```
 
-## 2. Data Schema
+## 2. User Experience Flow: Gap Resolution
+
+This flow illustrates the user's perspective when the app detects a missing day or when the user wants to adjust their schedule.
+
+```mermaid
+flowchart TD
+    Start([User opens app]) --> Detection{Gap detected in past?}
+    
+    Detection -- Yes --> ResolutionUI[Display Resolution Banner]
+    Detection -- No --> Standard[Show today's planned session]
+    
+    ResolutionUI --> Choice{User's Choice}
+    
+    Choice -- "Log Retroactive" --> Log[Enter data for the past date]
+    Log --> ResultFixed[Schedule remains unchanged]
+    
+    Choice -- "Push (I'm behind)" --> Shift[Move whole routine forward 1 day]
+    Shift --> ResultLater[End date moves forward]
+    
+    Choice -- "Skip (I'll pass)" --> Skip[Mark day as missed]
+    Skip --> ResultFixed
+    
+    Standard --> Modification{Want to change today?}
+    Modification -- "Swap with Day X" --> Swap[Exchange today's plan with another day in the cycle]
+    Swap --> ResultSwap[Specific days are swapped]
+    
+    ResultFixed --> End([App updated])
+    ResultLater --> End
+    ResultSwap --> End
+```
+
+## 3. Data Schema
 
 ### Routine Definition (Template)
 Stored in `localStorage['regimen_routines']` or `REGI_routines` table.

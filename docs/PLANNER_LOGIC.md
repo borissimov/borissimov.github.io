@@ -16,7 +16,7 @@ flowchart TD
     F --> G[Calculate VirtualIndex = ResolvedDelta % RoutineLength]
     G --> H{Is Date in the Past & No Log Found?}
     H -- Yes --> I[Mark as Unresolved Gap]
-    H -- No --> J[Return Routine[VirtualIndex]]
+    H -- No --> J["Return Routine[VirtualIndex]"]
     I --> K[Display Gap Resolution UI]
 ```
 

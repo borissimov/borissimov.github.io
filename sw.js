@@ -1,7 +1,8 @@
-const CACHE_NAME = 'master-plan-v2';
+const CACHE_NAME = 'master-plan-v3';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/regimen.html',
   '/icon-mp.svg',
   '/manifest.json'
 ];

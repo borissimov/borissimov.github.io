@@ -26,6 +26,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('training');
   const [viewMode, setViewMode] = useState('tracker'); 
   const [navMode, setNavMode] = useState(() => localStorage.getItem('mp_nav_mode') || 'week');
+  const [appMode, setAppMode] = useState(null); // 'master' or 'regimen'
   
   // Independent Header State for Continuous Mode
   const [headerOffset, setHeaderOffset] = useState(weekOffset);
@@ -98,6 +99,32 @@ function App() {
 
   if (loading) return <div className="flex h-screen items-center justify-center text-white bg-black">Loading Plan...</div>;
   if (!session) return <Auth />;
+
+  // --- VERSION CHOOSER ---
+  if (!appMode) {
+      return (
+          <div className="flex flex-col items-center justify-center h-screen bg-black text-white p-4 gap-6">
+              <h1 className="text-3xl font-black text-[var(--training-accent)] uppercase tracking-widest mb-4">Master Plan</h1>
+              <div className="w-full max-w-sm flex flex-col gap-4">
+                  <button 
+                      onClick={() => setAppMode('master')}
+                      className="w-full py-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[var(--training-accent)] transition-all flex flex-col items-center group"
+                  >
+                      <span className="text-lg font-bold group-hover:text-[var(--training-accent)]">Current Version (React)</span>
+                      <span className="text-xs text-gray-500 mt-1">Full Feature Set</span>
+                  </button>
+                  
+                  <button 
+                      onClick={() => { setAppMode('regimen'); window.location.href = '/regimen.html'; }}
+                      className="w-full py-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[var(--nutrition-accent)] transition-all flex flex-col items-center group"
+                  >
+                      <span className="text-lg font-bold group-hover:text-[var(--nutrition-accent)]">Regimen Prototype</span>
+                      <span className="text-xs text-gray-500 mt-1">Single Page + Cloud Sync</span>
+                  </button>
+              </div>
+          </div>
+      );
+  }
 
   // SEPARATE LAYOUT FOR NON-TRACKER VIEWS (Guarantees Scrolling)
   if (viewMode !== 'tracker') {

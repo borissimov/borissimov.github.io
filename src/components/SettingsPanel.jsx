@@ -56,10 +56,15 @@ export const SettingsPanel = () => {
 
     const handleDevToggle = () => {
         if (isDevMode) {
-            localStorage.removeItem('mp_use_mock_db');
+            // Switching to Online
+            if(!confirm("Disable Offline Mode? App will reload and connect to Supabase.")) return;
+            localStorage.setItem('mp_use_mock_db', 'false');
+            sessionStorage.setItem('mp_is_temp_online', 'true');
         } else {
+            // Switching to Offline
             if(!confirm("Enable Development Mode (Offline/Mock)? App will reload using local data only.")) return;
             localStorage.setItem('mp_use_mock_db', 'true');
+            sessionStorage.removeItem('mp_is_temp_online');
         }
         window.location.reload();
     };
@@ -103,22 +108,36 @@ export const SettingsPanel = () => {
                 </div>
             </div>
 
-            {/* Developer Mode */}
+            {/* Connection Mode */}
             <div className="card mb-6" style={{borderTop: '2px solid #3498db'}}>
                 <div className="card-content">
-                    <div className="card-title text-sm text-gray-400 uppercase flex items-center gap-2">
-                        <Smartphone size={16} /> Development
+                    <div className="card-title text-sm text-gray-400 uppercase flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <Smartphone size={16} /> Connection Mode
+                        </div>
+                        <div 
+                            className="px-2 py-0.5 rounded text-[10px] font-bold border tracking-wider"
+                            style={{
+                                borderColor: isDevMode ? '#3498db' : '#2ecc71',
+                                color: isDevMode ? '#3498db' : '#2ecc71'
+                            }}
+                        >
+                            {isDevMode ? "OFFLINE" : "ONLINE"}
+                        </div>
                     </div>
                     <div className="mt-4">
                         <button 
                             onClick={handleDevToggle}
-                            className={`action-btn w-full justify-center py-3 ${isDevMode ? 'active-edit' : ''}`}
-                            style={{border: isDevMode ? '1px solid var(--supplements-accent)' : '1px solid #333', background: isDevMode ? 'rgba(52, 152, 219, 0.2)' : 'transparent'}}
+                            className="action-btn w-full justify-center py-3"
+                            style={{border: '1px solid #444', background: '#222'}}
                         >
-                            {isDevMode ? "ENABLED (Offline Mode)" : "Enable Offline / Mock Mode"}
+                            Switch to {isDevMode ? "Online Mode" : "Offline Mode"}
                         </button>
-                        <p className="text-xs text-gray-500 mt-2">
-                            Switch to local mock database for testing without internet or egress costs. Data is saved to local storage.
+                        
+                        <p className="text-xs text-gray-500 mt-2 text-center">
+                            {isDevMode 
+                                ? "Data is saved locally on this device only." 
+                                : "Data is synced to the cloud."}
                         </p>
                         
                         {isDevMode && (

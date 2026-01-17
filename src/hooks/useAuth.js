@@ -29,8 +29,16 @@ export const useAuth = () => {
 
     const logout = async () => {
         await supabase.auth.signOut();
+        
+        // Reset to Offline Mode on Logout
+        sessionStorage.removeItem('mp_is_temp_online');
+        localStorage.setItem('mp_use_mock_db', 'true');
+
         setSession(null);
         setProfile(null);
+        
+        // Force reload to re-initialize supabase client in Mock mode
+        window.location.reload();
     };
 
     return { session, profile, loading, logout, refreshProfile, setLoading };

@@ -73,13 +73,9 @@
         .user-badge { margin-bottom: 20px; font-size: 12px; color: var(--secondary-text); background: #252525; padding: 8px 15px; border-radius: 20px; display: inline-block; }
     </style>
     <script>
-        // IMMEDIATE REDIRECT CHECK
+        // Check for stored preference only
         const defaultApp = localStorage.getItem('regimen_default_app');
         console.log("[Portal] Boot - Stored Default:", defaultApp);
-        if (defaultApp && !window.location.search.includes('select')) {
-            console.log("[Portal] Boot - Immediate Redirecting to:", defaultApp);
-            window.location.href = defaultApp;
-        }
     </script>
 </head>
 <body>

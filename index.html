@@ -84,6 +84,7 @@
 
     <div class="portal-container">
         <h1>Master Plan</h1>
+        <div id="db-status" style="font-size: 10px; color: #555; margin-bottom: 10px;">Connecting to database...</div>
 
         <!-- Logged Out View -->
         <div id="auth-view" class="auth-container">
@@ -130,29 +131,91 @@
     <script>
         const SB_URL = 'https://vhqgufwgzspwmztpswdn.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZocWd1ZndnenNwd216dHBzd2RuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3NTc2NjUsImV4cCI6MjA4MzMzMzY2NX0.0z_hSGbzjzSWkXaZjgJ76uWsVdBa4h0OCkzEXs727pc';
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        let sbPortalClient = null;
+
+        function initPortal() {
+            console.log("Portal Initializing...");
+            const msg = document.getElementById('auth-msg');
+            const status = document.getElementById('db-status');
+
+            try {
+                if (window.supabase && window.supabase.createClient) {
+                    sbPortalClient = window.supabase.createClient(SB_URL, SB_KEY);
+                    status.innerText = "Database Connected";
+                    status.style.color = "#4caf50";
+                    console.log("Supabase Client Ready.");
+                } else {
+                    throw new Error("Supabase library not found.");
+                }
+            } catch (e) {
+                console.error(e);
+                status.innerText = "Database Error: " + e.message;
+                status.style.color = "#f44336";
+                return;
+            }
+
+            // Auth State Listener
+            sbPortalClient.auth.onAuthStateChange((event, session) => {
+                console.log("Portal Auth Event:", event);
+                const authView = document.getElementById('auth-view');
+                const appView = document.getElementById('app-view');
+                const userDisplay = document.getElementById('user-display');
+
+                if (session) {
+                    authView.classList.add('hidden');
+                    appView.classList.remove('hidden');
+                    userDisplay.innerText = `Logged in as: ${session.user.email}`;
+                    
+                    const currentDefault = localStorage.getItem('regimen_default_app');
+                    if (currentDefault === 'regimen.html') document.getElementById('check-regimen').checked = true;
+                    if (currentDefault === 'dashboard.html') document.getElementById('check-dashboard').checked = true;
+                } else {
+                    authView.classList.remove('hidden');
+                    appView.classList.add('hidden');
+                }
+            });
+        }
 
         async function handleLogin() {
+            if (!sbPortalClient) { alert("Database not ready."); return; }
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('auth-msg');
-            msg.innerText = "Authenticating...";
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-            if (error) msg.innerText = error.message;
+            if (!email || !pass) { msg.innerText = "Please enter email and password."; return; }
+            
+            msg.innerText = "Logging in...";
+            msg.style.color = "var(--accent-color)";
+
+            const { data, error } = await sbPortalClient.auth.signInWithPassword({ email, password: pass });
+            
+            if (error) {
+                console.error("Login Error:", error);
+                msg.innerText = error.message;
+                msg.style.color = "#f44336";
+            }
         }
 
         async function handleSignUp() {
+            if (!sbPortalClient) { alert("Database not ready."); return; }
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             const msg = document.getElementById('auth-msg');
+            if (!email || !pass) { msg.innerText = "Please enter email and password."; return; }
+
             msg.innerText = "Signing up...";
-            const { error } = await supabase.auth.signUp({ email, password: pass });
-            if (error) msg.innerText = error.message;
-            else msg.innerText = "Success! Check your email.";
+            const { data, error } = await sbPortalClient.auth.signUp({ email, password: pass });
+            
+            if (error) {
+                msg.innerText = error.message;
+                msg.style.color = "#f44336";
+            } else {
+                msg.innerText = "Check your email for confirmation.";
+                msg.style.color = "#4caf50";
+            }
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await sbPortalClient.auth.signOut();
             localStorage.removeItem('regimen_default_app');
             location.reload();
         }
@@ -160,7 +223,6 @@
         function setDefault(route, isChecked) {
             if (isChecked) {
                 localStorage.setItem('regimen_default_app', route);
-                // Uncheck others
                 if (route === 'regimen.html') document.getElementById('check-dashboard').checked = false;
                 else document.getElementById('check-regimen').checked = false;
             } else {
@@ -168,26 +230,12 @@
             }
         }
 
-        // Auth State Listener
-        supabase.auth.onAuthStateChange((event, session) => {
-            const authView = document.getElementById('auth-view');
-            const appView = document.getElementById('app-view');
-            const userDisplay = document.getElementById('user-display');
-
-            if (session) {
-                authView.classList.add('hidden');
-                appView.classList.remove('hidden');
-                userDisplay.innerText = `Logged in as: ${session.user.email}`;
-                
-                // Pre-check default
-                const currentDefault = localStorage.getItem('regimen_default_app');
-                if (currentDefault === 'regimen.html') document.getElementById('check-regimen').checked = true;
-                if (currentDefault === 'dashboard.html') document.getElementById('check-dashboard').checked = true;
-            } else {
-                authView.classList.remove('hidden');
-                appView.classList.add('hidden');
-            }
-        });
+        // Run Init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPortal);
+        } else {
+            initPortal();
+        }
     </script>
 </body>
 </html>

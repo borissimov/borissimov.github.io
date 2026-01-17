@@ -234,12 +234,58 @@ class QueryBuilder {
     }
 }
 
+// Auth State Management
+let authListeners = [];
+const notifyAuthListeners = (event, session) => {
+    authListeners.forEach(callback => callback(event, session));
+};
+
 export const mockSupabase = {
     from: (table) => new QueryBuilder(table),
     auth: {
-        getSession: async () => ({ data: { session: { user: { id: 'mock-user-id', email: 'test@local.com' } } } }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-        signOut: async () => {}
+        getSession: async () => {
+            const session = JSON.parse(localStorage.getItem('mock_session') || 'null');
+            // If explicit session is null, return null (logged out).
+            // However, for dev convenience, if NEVER set, we might default to logged in? 
+            // Better to stick to standard behavior: If no session, user must log in.
+            // But since previous mock was "always logged in", existing users might be confused if they are suddenly logged out.
+            // Let's check if 'mock_session' key exists at all.
+            if (localStorage.getItem('mock_session') === null) {
+                 // First time load: Default to logged in for convenience
+                 const defaultSession = { user: { id: 'mock-user-id', email: 'test@local.com' } };
+                 localStorage.setItem('mock_session', JSON.stringify(defaultSession));
+                 return { data: { session: defaultSession } };
+            }
+            return { data: { session } };
+        },
+        onAuthStateChange: (callback) => {
+            authListeners.push(callback);
+            // Immediately fire with current state? Standard Supabase doesn't always do this on subscription, 
+            // but usually 'getSession' covers the initial load.
+            return { data: { subscription: { unsubscribe: () => {
+                authListeners = authListeners.filter(l => l !== callback);
+            } } } };
+        },
+        signInWithPassword: async ({ email }) => {
+            const user = { id: 'mock-user-id', email };
+            const session = { user, access_token: 'mock-token', refresh_token: 'mock-refresh' };
+            localStorage.setItem('mock_session', JSON.stringify(session));
+            notifyAuthListeners('SIGNED_IN', session);
+            return { data: { user, session }, error: null };
+        },
+        signUp: async ({ email }) => {
+            const user = { id: 'mock-user-id', email };
+            const session = { user, access_token: 'mock-token', refresh_token: 'mock-refresh' };
+            localStorage.setItem('mock_session', JSON.stringify(session));
+            notifyAuthListeners('SIGNED_IN', session);
+            return { data: { user, session }, error: null };
+        },
+        signOut: async () => {
+            localStorage.removeItem('mock_session');
+            // Set explicit null to prevent auto-login logic in getSession
+            localStorage.setItem('mock_session', 'null'); 
+            notifyAuthListeners('SIGNED_OUT', null);
+        }
     },
     functions: {
         invoke: async (name, { body }) => {

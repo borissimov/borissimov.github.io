@@ -79,3 +79,4 @@ dist
 
 # Dynamically generated files
 *.sql
+backups/

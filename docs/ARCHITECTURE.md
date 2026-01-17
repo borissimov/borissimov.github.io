@@ -91,3 +91,33 @@ To simplify the backend while ensuring a "Self-Healing" restore process, the app
 *   **Unique Index:** `user_id`, `date`
 *   **Primary State Variable:** `masterLogs` (Indexed by ISO date string `YYYY-MM-DD`).
 *   **Template Key:** `regimen_user_template` (Indexed by Day of Week `0-6`).
+
+---
+
+## 5. Publication Lifecycle
+
+The project uses a professional separation between source code and production assets.
+
+```mermaid
+flowchart TD
+    subgraph "Development"
+        A[Feature Branch] -- "Commit & Push" --> B[Pull Request]
+    end
+
+    subgraph "Staging / Review"
+        B -- "Review & Approve" --> C[source branch]
+    end
+
+    subgraph "Publication (Manual)"
+        C -- "npm run deploy" --> D["Build Engine (Vite)"]
+        D -- "Push /dist to main" --> E[main branch]
+        E -- "GitHub Pages" --> F((LIVE SITE))
+    end
+
+    style F fill:#f29b11,stroke:#000,stroke-width:2px
+```
+
+### Steps to Publish:
+1.  **Merge PR:** Combine feature code into the `source` branch on GitHub.
+2.  **Sync Local:** `git checkout source && git pull`.
+3.  **Run Deploy:** Execute `npm run deploy`. This triggers the `predeploy` (build) and pushes the optimized bundle to the `main` branch.

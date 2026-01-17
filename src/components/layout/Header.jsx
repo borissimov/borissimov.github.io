@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlan } from '../../context/PlanContext';
-import { Menu, LogOut, Layout, Calendar, Settings, User } from 'lucide-react';
+import { Menu, LogOut, Layout, Calendar, Settings, User, Home } from 'lucide-react';
 import { COLORS } from '../../constants/theme';
 
 export const Header = ({ viewMode, setViewMode, activeTab, setActiveTab }) => {
@@ -72,6 +72,13 @@ export const Header = ({ viewMode, setViewMode, activeTab, setActiveTab }) => {
                                         style={{ color: '#ccc' }}
                                     >
                                         <Settings size={16} /> Settings
+                                    </button>
+                                    <button 
+                                        onClick={() => { window.location.href = 'index.html?select=true'; }}
+                                        className="logout-btn"
+                                        style={{ color: 'var(--accent-color)', borderTop: '1px solid #333', marginTop: '4px' }}
+                                    >
+                                        <Home size={16} /> Exit to Portal
                                     </button>
                                 </div>
 

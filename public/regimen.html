@@ -771,8 +771,9 @@
             if (isToday) card.classList.add('active');
             
             let focusLabel = plan.focus.split('(')[0].trim();
-            focusLabel = focusLabel.replace(/ACTIVE RECOVERY/gi, 'AR')
-                                   .replace(/METABOLIC/gi, 'META');
+            // Abbreviate only for the date selector cards
+            if (focusLabel.toUpperCase() === "ACTIVE RECOVERY") focusLabel = "AR";
+            if (focusLabel.toUpperCase() === "METABOLIC") focusLabel = "META";
 
             card.innerHTML = `
                 <span class="day-name">${DAYS[dateObj.getDay()]}</span>

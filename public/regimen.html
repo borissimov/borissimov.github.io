@@ -350,108 +350,6 @@
     const STACK_M2 = { time: "With Meal 2", name: "Dinner Stack", details: "Magnesium Citrate (2.7g)" };
     const HYDRA = { time: "All Day", name: "Hydration", details: "Water (4-5L), Lo Salt" };
 
-    // --- AI PLAN (Layer 1 Hydration Source) ---
-    const PLAN_JAN_18 = {
-        0: { // SUN
-            focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
-            training: [
-                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "Match Jan 4th load. High tempo for glycogen depletion." },
-                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict form. Focus on mechanical failure." },
-                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "9", tempo: "1-0-1-0", hint: "Squeeze at top. Weight matched to Jan 15th performance." },
-                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Aggressive leg drive focus." },
-                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Returning to 24kg for explosive hip snap." },
-                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Spinal flexion focus. Do not use arms." }
-            ],
-            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
-            nutrition: [
-                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
-                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 13g (1 tbsp)" },
-                { time: "19:30", name: "Meal 2", details: "Skimmed Curd - 250g, Olive Oil - 13g (1 tbsp)" },
-                { time: "20:00", name: "FAST START", details: "Begin 42h Fast" }
-            ]
-        },
-        1: { // MON
-            focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Active recovery during the fast. Prioritize electrolytes." }],
-            supplements: [S_ELEC, S_BED],
-            nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
-        },
-        2: { // TUE
-            focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
-            training: [
-                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40", rpe: "9", tempo: "2-0-1-2", hint: "Recommended starting weight. Focus on the 2s hard squeeze at the top." },
-                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th. Elbows down, deep range." },
-                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Peak contraction hold for maximum TUT." },
-                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Mind-muscle connection. Slow eccentric." },
-                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Max stretch, soft knees." },
-                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10", rpe: "10", tempo: "2-1-1-2", hint: "Recommended weight to reach failure in high rep range." },
-                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Glutes clenched hard to stabilize lumbar spine." }
-            ],
-            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
-            nutrition: [
-                { time: "14:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 250g" },
-                { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
-                { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
-            ]
-        },
-        3: { // WED
-            focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
-            training: [
-                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Strict control. Corrected weight verified from Jan 7th log." },
-                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "30-45 degree incline. Focus on chest stretch." },
-                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "75 degree incline. Neutral spine." },
-                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "10", tempo: "3-1-1-0", hint: "Lead with elbows. Strict isolation." },
-                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5", rpe: "9", tempo: "3-1-1-0", hint: "Match Jan 7th performance intensity. Spread rope at bottom." },
-                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5", rpe: "10", tempo: "3-1-1-0", hint: "Match Jan 7th performance. Focus on the deep long-head stretch." },
-                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Slow and controlled. Do not allow lower back to arch." }
-            ],
-            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
-            nutrition: [
-                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
-                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g" },
-                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Zucchini - 200g, Olive Oil - 25g (2 tbsp)" }
-            ]
-        },
-        4: { // THU
-            focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
-            training: [
-                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain Jan 15th load and strict form." },
-                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th. Keep chest high." },
-                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th. Arc DB towards hip." },
-                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "External rotation focus. Clean, technical reps." },
-                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "10", tempo: "3-1-1-0", hint: "Full stretch behind body. Do not swing." },
-                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Brachialis focus. Strict vertical pull." },
-                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Hanging leg raises with full abdominal control." }
-            ],
-            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
-            nutrition: [
-                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
-                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
-                { time: "19:30", name: "Meal 2", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
-            ]
-        },
-        5: { // FRI
-            focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Consistency and breathing focus. Steady pace." }],
-            supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
-            nutrition: [
-                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
-                { time: "16:00", name: "Meal 1", details: "Sardines - 400g, Lettuce - 200g, Olive Oil - 13g (1 tbsp)" },
-                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Skyr - 250g" }
-            ]
-        },
-        6: { // SAT
-            focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Interval Swim", target: "15-20m", hint: "1 Lap Sprint (90% effort) / 2 Laps Recovery pace." }],
-            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
-            nutrition: [
-                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
-                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g, Olive Oil - 13g (1 tbsp)" },
-                { time: "19:30", name: "Meal 2", details: "Skyr - 250g, Olive Oil - 13g (1 tbsp)" }
-            ]
-        }
-    };
-
     const DEFAULT_PLAN = {
         1: { // MON
             focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
@@ -610,11 +508,113 @@
             console.error("Load Error (Logs):", e); 
         }
 
+        // --- AI PLAN (Layer 1 Hydration Source) ---
+        const PLAN_JAN_18 = {
+            0: { // SUN
+                focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24 kg", rpe: 8, tempo: "1-0-X-0", hint: "Match Jan 4th load. Focus on high tempo before fasting." },
+                    { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: 10, tempo: "1-0-X-0", hint: "Strict mechanical failure." },
+                    { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5 kg", rpe: 9, tempo: "1-0-1-0", hint: "Squeeze at top. Matched to Jan 15th strength." },
+                    { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5 kg", rpe: 9, tempo: "X-0-X-0", hint: "Use aggressive leg drive." },
+                    { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24 kg", rpe: 9, tempo: "X-0-X-0", hint: "Explosive hip snap. Returning to 24kg." },
+                    { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55 kg", rpe: 10, tempo: "2-0-1-1", hint: "Spinal flexion focus. No arm pulling." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Skimmed Curd - 250g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "20:00", name: "FAST START", details: "Begin 42h Fast" }
+                ]
+            },
+            1: { // MON
+                focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Fat oxidation focus. Maintain electrolytes." }],
+                supplements: [S_ELEC, S_BED],
+                nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
+            },
+            2: { // TUE
+                focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "2-0-1-2", hint: "Recommended starting load. Focus on 2s hard squeeze." },
+                    { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26 kg", rpe: 9, tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th performance." },
+                    { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30 kg", rpe: 10, tempo: "2-0-1-2", hint: "Maximum TUT. Peak contraction hold." },
+                    { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5 kg", rpe: 10, tempo: "2-0-1-0", hint: "Strict mind-muscle connection." },
+                    { name: "DB RDL", sets: 3, reps: "12-15", kg: "34 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Focus on stretch." },
+                    { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10 kg", rpe: 10, tempo: "2-1-1-2", hint: "Added load to hit rep range failure." },
+                    { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "Static", hint: "Clench glutes hard to protect lower back." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
+                nutrition: [
+                    { time: "14:00", name: "Post-Workout (Refeed)", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                    { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
+                    { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
+                ]
+            },
+            3: { // WED
+                focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Strict tempo verified. Corrected load from Jan 7th." },
+                    { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "30-45 degree incline focus." },
+                    { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15 kg", rpe: 9, tempo: "3-1-1-0", hint: "Neutral spine, overhead emphasis." },
+                    { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "No swinging. Lead with elbows." },
+                    { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Spread rope at bottom." },
+                    { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Focus on long head stretch." },
+                    { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: 9, tempo: "4-0-1-0", hint: "Slow and controlled movement." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g" },
+                    { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Zucchini - 200g, Olive Oil - 25g (2 tbsp)" }
+                ]
+            },
+            4: { // THU
+                focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50 kg", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain strict performance from Jan 15th." },
+                    { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th." },
+                    { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th." },
+                    { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5 kg", rpe: 8, tempo: "3-1-1-0", hint: "Focus on external rotation." },
+                    { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6 kg", rpe: 10, tempo: "3-1-1-0", hint: "Deep stretch behind body." },
+                    { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8 kg", rpe: 10, tempo: "3-1-1-0", hint: "Strict brachialis isolation." },
+                    { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "3-1-1-0", hint: "Strict abdominal control." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
+                    { time: "19:30", name: "Meal 2 (Cod Liver Day)", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
+                ]
+            },
+            5: { // FRI
+                focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Moderate Swim", target: "30-45m", hint: "Aerobic conditioning. Focus on breathing rhythm." }],
+                supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
+                    { time: "16:00", name: "Meal 1", details: "Sardines - 400g, Lettuce - 200g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Skyr - 250g" }
+                ]
+            },
+            6: { // SAT
+                focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Interval Swim", target: "15-20m", hint: "1 Lap Sprint / 2 Laps Slow. High metabolic demand." }],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                    { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Skyr - 250g, Olive Oil - 13g (1 tbsp)" }
+                ]
+            }
+        };
+
         // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
         try {
-            const MIGRATION_KEY = 'regimen_migration_task_22_v6';
+            const MIGRATION_KEY = 'regimen_migration_task_22_v25';
             if (!localStorage.getItem(MIGRATION_KEY)) {
-                console.log("Running Migration v6: Hydrating Layer 1 for Jan 18 week...");
+                console.log("Running Migration v25: Hydrating Layer 1 for Jan 18 week...");
                 
                 const targetDates = {
                     '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
@@ -646,14 +646,6 @@
             console.error("Render Error:", e);
         }
     }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApp);
-    } else {
-        initApp();
-    }
-
-    // --- HELPER FUNCTIONS ---
 
     function isValidUUID(uuid) {
         const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -765,10 +757,7 @@
             data.forEach(row => {
                 if (row.data && row.data.user_performance) {
                     const perf = row.data.user_performance;
-                    const mobilityCount = perf.mobility ? Object.keys(perf.mobility).length : 0;
-                    console.log(`[Fetch] Merging ${row.date} (Mobility sections: ${mobilityCount})`);
                     masterLogs[row.date] = perf;
-                    
                     if (row.data.user_template_snapshot) {
                         latestTemplate = row.data.user_template_snapshot;
                     }
@@ -778,27 +767,20 @@
 
             try {
                 localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
-            } catch (e) {
-                console.error("Storage Error (History):", e);
-            }
+            } catch (e) {}
 
             if (latestTemplate) {
-                console.log("[Fetch] Restoring User Template from Cloud backup.");
                 try {
                     localStorage.setItem('regimen_user_template', JSON.stringify(latestTemplate));
-                } catch (e) {
-                    console.error("Storage Error (Template):", e);
-                }
+                } catch (e) {}
             }
 
             selectDate(selectedDate); 
-            
             statusEl.innerText = `Fetched ${count} days + Schedule.`;
             statusEl.style.color = "var(--success-color)";
             setTimeout(() => statusEl.innerText = "", 3000);
 
         } catch (err) {
-            console.error("Fetch Error", err);
             statusEl.innerText = "Fetch Failed.";
             statusEl.style.color = "var(--danger-color)";
         }
@@ -825,9 +807,6 @@
                 const plan = getPlanForDate(dateObj); 
                 const perf = masterLogs[dateKey];
                 
-                const mobilityCount = perf.mobility ? Object.values(perf.mobility).reduce((a, s) => a + Object.keys(s).length, 0) : 0;
-                console.log(`[Sync] Preparing ${dateKey} (${mobilityCount} mobility logs)`);
-
                 const snapshot = {
                     day_info: { date: dateKey, day: DAYS[dateObj.getDay()], focus: plan.focus, workout_type: plan.type },
                     plan_definitions: plan, 
@@ -859,8 +838,7 @@
             setTimeout(() => statusEl.innerText = "", 3000);
 
         } catch (err) {
-            console.error("Sync Error", err);
-            statusEl.innerText = "Sync Failed. See Console.";
+            statusEl.innerText = "Sync Failed.";
             statusEl.style.color = "var(--danger-color)";
         }
     }
@@ -904,7 +882,6 @@
             if (isToday) card.classList.add('active');
             
             let focusLabel = plan.focus.split('(')[0].trim();
-            // Abbreviate only for the date selector cards
             if (focusLabel.toUpperCase() === "ACTIVE RECOVERY") focusLabel = "AR";
             if (focusLabel.toUpperCase() === "METABOLIC") focusLabel = "META";
 
@@ -990,7 +967,7 @@
             const logData = dailyLog.training?.[0] || {};
             html += `<div class="log-item" style="display:block;">
                 <div class="exercise-header"><h3>${ex.name}</h3></div>
-                <div style="margin-bottom:10px; color:var(--secondary-text); font-size:13px;">Target: ${ex.target} | ${ex.hint}</div>
+                <div style="margin-bottom:10px; color:var(--secondary-text); font-size:13px;">Target: ${ex.target || ex.target_duration || ''} | ${ex.hint}</div>
                 <div style="display:grid; grid-template-columns: 1fr 60px; gap:10px;">
                      <input type="text" placeholder="Duration / Dist / Notes" value="${logData.note||''}" onchange="logCardio(0, this.value)" style="text-align:left;">
                      <button class="log-btn-unified ${logData.logged ? 'active-state' : ''}" onclick="toggleCardio(0)">${logData.logged ? 'DONE' : 'LOG'}</button>
@@ -1003,14 +980,15 @@
                 html += `<div style="margin-bottom:20px;">
                     <div class="exercise-header"><h3>${ex.name}</h3></div>
                     <div class="target-info">
-                        <div class="target-col"><div>${labelType}S</div><div>${ex.sets}</div></div>
-                        <div class="target-col"><div>REPS</div><div>${ex.reps}</div></div>
-                        <div class="target-col"><div>KG</div><div>${ex.kg || '-'}</div></div>
-                        <div class="target-col"><div>RPE</div><div>${ex.rpe}</div></div>
-                        <div class="target-col"><div>TEMPO</div><div>${ex.tempo}</div></div>
+                        <div class="target-col"><div>${labelType}S</div><div>${ex.sets || 0}</div></div>
+                        <div class="target-col"><div>REPS</div><div>${ex.reps || ex.target_reps || ''}</div></div>
+                        <div class="target-col"><div>KG</div><div>${ex.kg || ex.target_weight || '-'}</div></div>
+                        <div class="target-col"><div>RPE</div><div>${ex.rpe || ex.target_rpe || ''}</div></div>
+                        <div class="target-col"><div>TEMPO</div><div>${ex.tempo || ''}</div></div>
                     </div>
                     ${ex.hint ? `<div style="color:#f39c12; font-size:11px; margin-top:4px; font-weight:bold; letter-spacing:0.3px;">${ex.hint}</div>` : ''}`;
-                for(let i=0; i<ex.sets; i++) {
+                const numSets = ex.sets || (ex.target_reps === "Failure" ? 3 : 4);
+                for(let i=0; i<numSets; i++) {
                     const s = sets[i] || {};
                     html += `<div class="set-row">
                         <label>${i+1}</label>
@@ -1027,6 +1005,7 @@
         html += `</div><div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('training', this.value)">${dailyLog.notes?.training || ''}</textarea></div><div class="workout-controls"><button class="workout-btn end-btn ${dailyLog.session?.end ? 'active-state' : ''}" onclick="toggleSession('end')">${dailyLog.session?.end ? 'ENDED' : 'END WORKOUT'}</button></div>`;
         container.innerHTML = html;
     }
+
     function toggleTrainingEdit() {
         isTrainingEditMode = !isTrainingEditMode;
         if(!isTrainingEditMode) window._tempTrainingList = null;
@@ -1068,29 +1047,29 @@
             if (isLift) {
                 html += `
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                    <div><label style="font-size:10px; color:#888;">Sets</label><input type="text" placeholder="Sets" value="${ex.sets||''}" data-field="sets"></div>
-                    <div><label style="font-size:10px; color:#888;">Reps</label><input type="text" placeholder="Reps" value="${ex.reps||''}" data-field="reps"></div>
-                    <div><label style="font-size:10px; color:#888;">Target Kg</label><input type="text" placeholder="Kg" value="${ex.kg||''}" data-field="kg"></div>
+                    <div><label style="font-size:10px; color:#888;">Sets</label><input type="text" placeholder="Sets" value="${ex.sets||ex.target_sets||''}" data-field="sets"></div>
+                    <div><label style="font-size:10px; color:#888;">Reps</label><input type="text" placeholder="Reps" value="${ex.reps||ex.target_reps||''}" data-field="reps"></div>
+                    <div><label style="font-size:10px; color:#888;">Target Kg</label><input type="text" placeholder="Kg" value="${ex.kg||ex.target_weight||''}" data-field="kg"></div>
                 </div>
                 
                 <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:8px; margin-top:10px;">
-                    <div><label style="font-size:10px; color:#888;">RPE</label><input type="text" placeholder="RPE" value="${ex.rpe||''}" data-field="rpe"></div>
+                    <div><label style="font-size:10px; color:#888;">RPE</label><input type="text" placeholder="RPE" value="${ex.rpe||ex.target_rpe||''}" data-field="rpe"></div>
                     <div><label style="font-size:10px; color:#888;">Tempo</label><input type="text" placeholder="Tempo" value="${ex.tempo||''}" data-field="tempo"></div>
                 </div>
 
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Target Hint</label>
-                    <input type="text" placeholder="e.g. Max Stretch" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
+                    <input type="text" placeholder="e.g. Max Stretch" value="${ex.hint || ex.commentary || ''}" data-field="hint" style="text-align:left;">
                 </div>`;
             } else {
                 html += `
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Target (Duration / Dist / Pace)</label>
-                    <input type="text" placeholder="e.g. 30-40 mins" value="${ex.target || ''}" data-field="target" style="text-align:left;">
+                    <input type="text" placeholder="e.g. 30-40 mins" value="${ex.target || ex.target_duration || ''}" data-field="target" style="text-align:left;">
                 </div>
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Hint / Notes</label>
-                    <input type="text" placeholder="e.g. Easy Pace" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
+                    <input type="text" placeholder="e.g. Easy Pace" value="${ex.hint || ex.commentary || ''}" data-field="hint" style="text-align:left;">
                 </div>`;
             }
             html += `</div>`;
@@ -1113,7 +1092,6 @@
             handle: '.drag-handle',
             animation: 150,
             onEnd: function() {
-                // Rebuild the temp list based on new DOM order
                 const rows = document.querySelectorAll('#training-edit-list .exercise-row');
                 const newList = [];
                 rows.forEach(row => {
@@ -1131,12 +1109,9 @@
                 });
                 window._tempTrainingList = newList;
                 window._tempTrainingType = document.getElementById('edit-workout-type').value;
-                renderTrainingEdit(); // Re-render to update # numbering
+                renderTrainingEdit();
             }
         });
-
-        window._tempTrainingList = null;
-        window._tempTrainingType = null;
     }
 
     function updateTrainingEditType() {
@@ -1416,138 +1391,11 @@
         container.innerHTML = html;
     }
 
-    // --- GLOBAL ACTIONS ---
-
-    function toggleNutriEdit() {
-        isNutriEditMode = !isNutriEditMode;
-        if(!isNutriEditMode) window._tempNutriList = null;
-        renderNutri();
-    }
-
-    function toggleSuppsEdit() {
-        isSuppsEditMode = !isSuppsEditMode;
-        if(!isSuppsEditMode) window._tempSuppsList = null;
-        renderSupps();
-    }
-
-    function loadNutriDefaults() {
-        if(confirm("Discard current edits and load system defaults?")) {
-            const dayOfWeek = selectedDate.getDay();
-            const def = DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
-            window._tempNutriList = JSON.parse(JSON.stringify(def.nutrition));
-            renderNutriEdit();
-        }
-    }
-
-    function loadSuppsDefaults() {
-        if(confirm("Discard current edits and load system defaults?")) {
-            const dayOfWeek = selectedDate.getDay();
-            const def = DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
-            window._tempSuppsList = JSON.parse(JSON.stringify(def.supplements));
-            renderSuppsEdit();
-        }
-    }
-
-    function addNutriRow() {
-        const plan = getPlanForDate(selectedDate);
-        if(!plan.nutrition) plan.nutrition = [];
-        plan.nutrition.push({ time: "", name: "New Meal", details: "" });
-        renderNutriEdit();
-    }
-
-    function addSuppsRow() {
-        const plan = getPlanForDate(selectedDate);
-        if(!plan.supplements) plan.supplements = [];
-        plan.supplements.push({ time: "", name: "New Stack", details: "" });
-        renderSuppsEdit();
-    }
-
-    function removeNutriRow(idx) {
-        const plan = getPlanForDate(selectedDate);
-        plan.nutrition.splice(idx, 1);
-        renderNutriEdit();
-    }
-
-    function removeSuppsRow(idx) {
-        const plan = getPlanForDate(selectedDate);
-        plan.supplements.splice(idx, 1);
-        renderSuppsEdit();
-    }
-
-    function saveNutriEdit(isTemplate) {
-        const rows = document.querySelectorAll('#nutri-edit-list .log-item');
-        const newList = [];
-        rows.forEach(row => {
-            const time = row.querySelector('[data-field="time"]').value;
-            const name = row.querySelector('[data-field="name"]').value;
-            const details = row.querySelector('[data-field="details"]').value;
-            newList.push({ time, name, details });
-        });
-
-        const currentPlan = getPlanForDate(selectedDate);
-        const newPlan = { ...currentPlan, nutrition: newList };
-
-        if (isTemplate) {
-            const dayOfWeek = selectedDate.getDay();
-            let userTemplates = {};
-            try {
-                const saved = localStorage.getItem('regimen_user_template');
-                if(saved) userTemplates = JSON.parse(saved);
-            } catch(e) {}
-            userTemplates[dayOfWeek] = newPlan;
-            localStorage.setItem('regimen_user_template', JSON.stringify(userTemplates));
-            alert(`Updated schedule for all ${DAYS[dayOfWeek]}s.`);
-        } else {
-            if (!dailyLog.plan_overrides) dailyLog.plan_overrides = {};
-            dailyLog.plan_overrides = newPlan;
-            save(); 
-            alert("Updated plan for today only.");
-        }
-
-        isNutriEditMode = false;
-        selectDate(selectedDate);
-    }
-
-    function saveSuppsEdit(isTemplate) {
-        const rows = document.querySelectorAll('#supps-edit-list .log-item');
-        const newList = [];
-        rows.forEach(row => {
-            const time = row.querySelector('[data-field="time"]').value;
-            const name = row.querySelector('[data-field="name"]').value;
-            const details = row.querySelector('[data-field="details"]').value;
-            newList.push({ time, name, details });
-        });
-
-        const currentPlan = getPlanForDate(selectedDate);
-        const newPlan = { ...currentPlan, supplements: newList };
-
-        if (isTemplate) {
-            const dayOfWeek = selectedDate.getDay();
-            let userTemplates = {};
-            try {
-                const saved = localStorage.getItem('regimen_user_template');
-                if(saved) userTemplates = JSON.parse(saved);
-            } catch(e) {}
-            userTemplates[dayOfWeek] = newPlan;
-            localStorage.setItem('regimen_user_template', JSON.stringify(userTemplates));
-            alert(`Updated schedule for all ${DAYS[dayOfWeek]}s.`);
-        } else {
-            if (!dailyLog.plan_overrides) dailyLog.plan_overrides = {};
-            dailyLog.plan_overrides = newPlan;
-            save(); 
-            alert("Updated plan for today only.");
-        }
-
-        isSuppsEditMode = false;
-        selectDate(selectedDate);
-    }
-
     function logMobility(sec, idx) { 
         if(!dailyLog.mobility) dailyLog.mobility = {}; 
         if(!dailyLog.mobility[sec]) dailyLog.mobility[sec] = {}; 
         if(!dailyLog.mobility[sec][idx]) dailyLog.mobility[sec][idx] = {}; 
         dailyLog.mobility[sec][idx].logged = !dailyLog.mobility[sec][idx].logged; 
-        console.log(`[Mobility] Toggled ${sec}[${idx}]:`, dailyLog.mobility[sec][idx].logged);
         save(); 
         renderMobility(); 
     }
@@ -1557,7 +1405,6 @@
         if(!dailyLog.mobility[sec]) dailyLog.mobility[sec] = {}; 
         if(!dailyLog.mobility[sec][idx]) dailyLog.mobility[sec][idx] = {}; 
         dailyLog.mobility[sec][idx].note = val; 
-        console.log(`[Mobility] Note ${sec}[${idx}]:`, val);
         save(); 
     }
 
@@ -1607,7 +1454,6 @@
     }
 
     function toggleGeneric(key, idx) { 
-        console.log("Toggle Generic:", key, idx);
         if(!dailyLog[key]) dailyLog[key] = {}; 
         if(!dailyLog[key][idx]) dailyLog[key][idx] = {}; 
         dailyLog[key][idx].logged = !dailyLog[key][idx].logged; 
@@ -1616,7 +1462,6 @@
     }
 
     function toggleCheck(key, idx, val) { 
-        console.log("Toggle Check:", key, idx, val);
         if(!dailyLog[key]) dailyLog[key] = {}; 
         if(!dailyLog[key][idx]) dailyLog[key][idx] = {}; 
         const item = dailyLog[key][idx]; 
@@ -1649,6 +1494,186 @@
         a.href = URL.createObjectURL(blob); 
         a.download = `regimen_logs_export_${new Date().toISOString().split('T')[0]}.json`; 
         a.click(); 
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const msg = document.getElementById('auth-msg');
+        if(!email || !pass) { msg.innerText = "Email and Password required."; return; }
+        msg.innerText = "Logging in...";
+        msg.style.color = "var(--accent-color)";
+        const { error } = await sbClient.auth.signInWithPassword({ email, password: pass });
+        if(error) { msg.innerText = error.message; msg.style.color = "var(--danger-color)"; } else msg.innerText = "";
+    }
+
+    async function handleSignUp() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const msg = document.getElementById('auth-msg');
+        if(!email || !pass) { msg.innerText = "Email and Password required."; return; }
+        msg.innerText = "Signing up...";
+        msg.style.color = "var(--accent-color)";
+        const { error } = await sbClient.auth.signUp({ email, password: pass });
+        if(error) { msg.innerText = error.message; msg.style.color = "var(--danger-color)"; } else {
+            msg.style.color = "var(--success-color)";
+            msg.innerText = "Check your email for confirmation!";
+        }
+    }
+
+    async function handleLogout() {
+        if(confirm("Logout? Cloud ID will revert to local guest ID.")) {
+            await sbClient.auth.signOut();
+            const guestId = generateUUID();
+            saveUserId(guestId);
+            const inp = document.getElementById('user-id-input');
+            if(inp) inp.value = guestId;
+        }
+    }
+
+    function updateAuthUI(session) {
+        const loggedIn = !!session;
+        const outDiv = document.getElementById('auth-logged-out');
+        const inDiv = document.getElementById('auth-logged-in');
+        const inp = document.getElementById('user-id-input');
+        
+        if (outDiv) outDiv.classList.toggle('hidden', loggedIn);
+        if (inDiv) inDiv.classList.toggle('hidden', !loggedIn);
+        
+        if(loggedIn) {
+            document.getElementById('user-email-display').innerText = session.user.email;
+            userId = session.user.id;
+            localStorage.setItem('regimen_user_id', userId);
+            if(inp) {
+                inp.value = userId;
+                inp.disabled = true;
+                inp.style.color = "var(--accent-color)";
+            }
+        } else {
+            if(inp) {
+                inp.disabled = false;
+                inp.style.color = "#888";
+            }
+        }
+    }
+
+    function saveUserId(val) {
+        userId = val;
+        try { localStorage.setItem('regimen_user_id', val); } catch(e) {}
+    }
+
+    async function fetchFromCloud() {
+        const statusEl = document.getElementById('sync-status');
+        if (!sbClient) { alert("Database connection failed."); return; }
+        if (!userId) { alert("User ID required."); return; }
+        
+        statusEl.innerText = "Fetching...";
+        statusEl.style.color = "var(--accent-color)";
+
+        try {
+            const { data, error } = await sbClient
+                .from('REGI_daily_logs')
+                .select('date, data')
+                .eq('user_id', userId)
+                .order('date', { ascending: true }); 
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                statusEl.innerText = "No cloud data found.";
+                return;
+            }
+
+            let count = 0;
+            let latestTemplate = null;
+
+            data.forEach(row => {
+                if (row.data && row.data.user_performance) {
+                    const perf = row.data.user_performance;
+                    masterLogs[row.date] = perf;
+                    if (row.data.user_template_snapshot) {
+                        latestTemplate = row.data.user_template_snapshot;
+                    }
+                    count++;
+                }
+            });
+
+            try {
+                localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+            } catch (e) {}
+
+            if (latestTemplate) {
+                try {
+                    localStorage.setItem('regimen_user_template', JSON.stringify(latestTemplate));
+                } catch (e) {}
+            }
+
+            selectDate(selectedDate); 
+            statusEl.innerText = `Fetched ${count} days + Schedule.`;
+            statusEl.style.color = "var(--success-color)";
+            setTimeout(() => statusEl.innerText = "", 3000);
+
+        } catch (err) {
+            statusEl.innerText = "Fetch Failed.";
+            statusEl.style.color = "var(--danger-color)";
+        }
+    }
+
+    async function syncToCloud() {
+        const statusEl = document.getElementById('sync-status');
+        if (!sbClient) { alert("Database connection failed."); return; }
+        if (!userId) { alert("User ID required."); return; }
+        
+        statusEl.innerText = "Syncing...";
+        statusEl.style.color = "var(--accent-color)";
+
+        try {
+            let currentTemplate = null;
+            try {
+                const savedTmpl = localStorage.getItem('regimen_user_template');
+                if (savedTmpl) currentTemplate = JSON.parse(savedTmpl);
+            } catch(e) {}
+
+            const updates = [];
+            for (const dateKey of Object.keys(masterLogs)) {
+                const dateObj = new Date(dateKey);
+                const plan = getPlanForDate(dateObj); 
+                const perf = masterLogs[dateKey];
+                
+                const snapshot = {
+                    day_info: { date: dateKey, day: DAYS[dateObj.getDay()], focus: plan.focus, workout_type: plan.type },
+                    plan_definitions: plan, 
+                    user_performance: perf,  
+                    user_template_snapshot: currentTemplate 
+                };
+
+                updates.push({
+                    user_id: userId,
+                    date: dateKey,
+                    data: snapshot,
+                    updated_at: new Date().toISOString()
+                });
+            }
+
+            if (updates.length === 0) {
+                statusEl.innerText = "Nothing to sync.";
+                return;
+            }
+
+            const { error } = await sbClient
+                .from('REGI_daily_logs')
+                .upsert(updates, { onConflict: 'user_id, date' });
+
+            if (error) throw error;
+
+            statusEl.innerText = "Sync Complete!";
+            statusEl.style.color = "var(--success-color)";
+            setTimeout(() => statusEl.innerText = "", 3000);
+
+        } catch (err) {
+            statusEl.innerText = "Sync Failed.";
+            statusEl.style.color = "var(--danger-color)";
+        }
     }
 
     // Explicitly attach to window
@@ -1730,11 +1755,113 @@
             console.error("Load Error (Logs):", e); 
         }
 
+        // --- AI PLAN (Layer 1 Hydration Source) ---
+        const PLAN_JAN_18 = {
+            0: { // SUN
+                focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24 kg", rpe: 8, tempo: "1-0-X-0", hint: "Match Jan 4th load. Focus on high tempo before fasting." },
+                    { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: 10, tempo: "1-0-X-0", hint: "Strict mechanical failure." },
+                    { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5 kg", rpe: 9, tempo: "1-0-1-0", hint: "Squeeze at top. Matched to Jan 15th strength." },
+                    { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5 kg", rpe: 9, tempo: "X-0-X-0", hint: "Use aggressive leg drive." },
+                    { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24 kg", rpe: 9, tempo: "X-0-X-0", hint: "Explosive hip snap. Returning to 24kg." },
+                    { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55 kg", rpe: 10, tempo: "2-0-1-1", hint: "Spinal flexion focus. No arm pulling." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Skimmed Curd - 250g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "20:00", name: "FAST START", details: "Begin 42h Fast" }
+                ]
+            },
+            1: { // MON
+                focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Fat oxidation focus. Maintain electrolytes." }],
+                supplements: [S_ELEC, S_BED],
+                nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
+            },
+            2: { // TUE
+                focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "2-0-1-2", hint: "Recommended starting load. Focus on 2s hard squeeze." },
+                    { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26 kg", rpe: 9, tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th performance." },
+                    { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30 kg", rpe: 10, tempo: "2-0-1-2", hint: "Maximum TUT. Peak contraction hold." },
+                    { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5 kg", rpe: 10, tempo: "2-0-1-0", hint: "Strict mind-muscle connection." },
+                    { name: "DB RDL", sets: 3, reps: "12-15", kg: "34 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Focus on stretch." },
+                    { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10 kg", rpe: 10, tempo: "2-1-1-2", hint: "Added load to hit rep range failure." },
+                    { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "Static", hint: "Clench glutes hard to protect lower back." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
+                nutrition: [
+                    { time: "14:00", name: "Post-Workout (Refeed)", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                    { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
+                    { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
+                ]
+            },
+            3: { // WED
+                focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Strict tempo verified. Corrected load from Jan 7th." },
+                    { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "30-45 degree incline focus." },
+                    { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15 kg", rpe: 9, tempo: "3-1-1-0", hint: "Neutral spine, overhead emphasis." },
+                    { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "No swinging. Lead with elbows." },
+                    { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Spread rope at bottom." },
+                    { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Focus on long head stretch." },
+                    { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: 9, tempo: "4-0-1-0", hint: "Slow and controlled movement." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g" },
+                    { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Zucchini - 200g, Olive Oil - 25g (2 tbsp)" }
+                ]
+            },
+            4: { // THU
+                focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+                training: [
+                    { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50 kg", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain strict performance from Jan 15th." },
+                    { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th." },
+                    { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th." },
+                    { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5 kg", rpe: 8, tempo: "3-1-1-0", hint: "Focus on external rotation." },
+                    { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6 kg", rpe: 10, tempo: "3-1-1-0", hint: "Deep stretch behind body." },
+                    { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8 kg", rpe: 10, tempo: "3-1-1-0", hint: "Strict brachialis isolation." },
+                    { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "3-1-1-0", hint: "Strict abdominal control." }
+                ],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                    { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
+                    { time: "19:30", name: "Meal 2 (Cod Liver Day)", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
+                ]
+            },
+            5: { // FRI
+                focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Moderate Swim", target: "30-45m", hint: "Aerobic conditioning. Focus on breathing rhythm." }],
+                supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
+                    { time: "16:00", name: "Meal 1", details: "Sardines - 400g, Lettuce - 200g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Skyr - 250g" }
+                ]
+            },
+            6: { // SAT
+                focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+                training: [{ name: "Interval Swim", target: "15-20m", hint: "1 Lap Sprint / 2 Laps Slow. High metabolic demand." }],
+                supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+                nutrition: [
+                    { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                    { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g, Olive Oil - 13g (1 tbsp)" },
+                    { time: "19:30", name: "Meal 2", details: "Skyr - 250g, Olive Oil - 13g (1 tbsp)" }
+                ]
+            }
+        };
+
         // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
         try {
-            const MIGRATION_KEY = 'regimen_migration_task_22_v10';
+            const MIGRATION_KEY = 'regimen_migration_task_22_v30';
             if (!localStorage.getItem(MIGRATION_KEY)) {
-                console.log("Running Migration v10: Hydrating Layer 1 for Jan 18 week...");
+                console.log("Running Migration v30: Hydrating Layer 1 for Jan 18 week...");
                 
                 const targetDates = {
                     '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
@@ -1796,6 +1923,13 @@
      *    - dailyLog: A pointer to masterLogs[selectedDate] for convenient access.
      *    - regimen_user_template: The persistent configuration for recurring weekly schedules.
      */
+
+    // Run Init
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
 
 </script>
 </body>

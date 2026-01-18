@@ -1,37 +1,49 @@
 {
-  "hash": "6f1a0091",
+  "hash": "30ccc216",
   "configHash": "958ab5aa",
-  "lockfileHash": "86f23e2a",
-  "browserHash": "a395e4d1",
+  "lockfileHash": "66f78132",
+  "browserHash": "e29bd535",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "02c362a0",
+      "fileHash": "b0898742",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "95345859",
+      "fileHash": "478532b1",
       "needsInterop": true
     },
     "lucide-react": {
       "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
       "file": "lucide-react.js",
-      "fileHash": "740918a0",
+      "fileHash": "4069d844",
       "needsInterop": false
     },
     "@supabase/supabase-js": {
       "src": "../../node_modules/@supabase/supabase-js/dist/index.mjs",
       "file": "@supabase_supabase-js.js",
-      "fileHash": "49635a01",
+      "fileHash": "41da5a2b",
       "needsInterop": false
     },
     "react-calendar": {
       "src": "../../node_modules/react-calendar/dist/index.js",
       "file": "react-calendar.js",
-      "fileHash": "08508810",
+      "fileHash": "076c0b7c",
+      "needsInterop": false
+    },
+    "zustand": {
+      "src": "../../node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "6ff637b5",
+      "needsInterop": false
+    },
+    "zustand/middleware": {
+      "src": "../../node_modules/zustand/esm/middleware.mjs",
+      "file": "zustand_middleware.js",
+      "fileHash": "d6184baa",
       "needsInterop": false
     }
   },

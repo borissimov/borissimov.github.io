@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HubApp } from './apps/hub/HubApp';
 import LegacyApp from './apps/legacy-tracker/App';
+import RegimenProApp from './apps/regimen-pro/RegimenProApp';
 import { usePlan } from './context/PlanContext';
 
 // Simple Router Component
@@ -28,13 +29,7 @@ const App = () => {
                 </div>
             );
         case 'regimen':
-            return (
-                <div className="flex flex-col h-screen bg-black text-white items-center justify-center">
-                    <h2 className="text-xl font-bold mb-4">Regimen Pro</h2>
-                    <p className="text-gray-500 mb-8">Porting from HTML logic in progress...</p>
-                    <button onClick={exitToHub} className="px-6 py-2 bg-[#333] rounded-lg">Back to Hub</button>
-                </div>
-            );
+            return <RegimenProApp />;
         case 'editor':
             return (
                 <div className="flex flex-col h-screen bg-black text-white items-center justify-center">

@@ -1,7 +1,7 @@
-# Database Schema Design (v2.0 - Normalized)
+# Database Schema Design (v2.0 - Block Architecture)
 
 ## Overview
-The V2 schema shifts from **Monolithic JSON Blobs** to a **Relational Delta Model**. This design minimizes Supabase egress by only transmitting changed rows (Deltas) rather than entire day structures.
+The V2 schema utilizes a **Block-Based Relational Model**. This allows for complex workout structures (multiple circuits, supersets, and standard sets) while maintaining the **Relational Delta Model** to minimize Supabase egress.
 
 ## Mermaid ER Diagram
 
@@ -13,10 +13,11 @@ erDiagram
     PROFILES ||--o{ NUTRITION_LOGS : eats
     PROFILES ||--o{ SUPPLEMENT_LOGS : takes
     
-    PLAN_TEMPLATES ||--o{ TEMPLATE_EXERCISES : defines
+    PLAN_TEMPLATES ||--o{ TEMPLATE_BLOCKS : "organized into"
+    TEMPLATE_BLOCKS ||--o{ TEMPLATE_EXERCISES : "contains"
     
     DAILY_SESSIONS ||--o{ TRAINING_LOGS : contains
-    TEMPLATE_EXERCISES ||--o{ TRAINING_LOGS : instantiated_by
+    TEMPLATE_EXERCISES ||--o{ TRAINING_LOGS : logs
 
     FOOD_LIBRARY ||--o{ NUTRITION_LOGS : "logged as"
     SUPPLEMENT_LIBRARY ||--o{ SUPPLEMENT_LOGS : "logged as"
@@ -33,18 +34,24 @@ erDiagram
         uuid user_id FK
         int day_of_week
         string focus_label
-        string workout_type
+    }
+
+    TEMPLATE_BLOCKS {
+        uuid id PK
+        uuid plan_id FK
+        int order_index
+        string block_type "STANDARD, CIRCUIT, SUPERSET"
+        string label "e.g., 'Main Circuit', 'Finisher'"
     }
 
     TEMPLATE_EXERCISES {
         uuid id PK
-        uuid plan_id FK
+        uuid block_id FK
         string name
         int order_index
         string target_sets
         string target_reps
         string target_weight
-        string group_id "For Circuits/Supersets"
         string metadata_json "Tempo, Hints"
     }
 
@@ -61,10 +68,10 @@ erDiagram
         uuid id PK
         uuid session_id FK
         uuid exercise_id FK
-        int set_number
         int round_number "For Circuit Support"
-        float actual_weight
-        int actual_reps
+        int set_number "1, 2, 3..."
+        float weight
+        int reps
         int rpe
         timestamp created_at
     }
@@ -85,7 +92,6 @@ erDiagram
         float carbs_per_100g
         float fats_per_100g
         float calories_per_100g
-        string category "Meat, Veg, Dairy, etc."
     }
 
     NUTRITION_LOGS {
@@ -101,7 +107,6 @@ erDiagram
         uuid id PK
         string name
         string unit "cap, scoop, tab"
-        string default_time "08:00, Pre-Workout"
     }
 
     SUPPLEMENT_LOGS {
@@ -114,28 +119,25 @@ erDiagram
     }
 ```
 
-## Table Descriptions
+## Core Design Logic
 
-### 1. Training Architecture (`DAILY_SESSIONS`, `TRAINING_LOGS`)
-- **Circuit Support:** `group_id` in templates and `round_number` in logs allow the UI to render "Round 1 -> All Exercises" flows.
-- **Delta Logging:** Only the finished set is sent to the server.
+### 1. Training "Blocks"
+This is the most critical feature for the **Routine Editor** and **Circuit Training**.
+- Exercises are no longer flat lists. They belong to **Blocks**.
+- A single Day can have multiple Blocks (e.g., Standard Warmup -> Circuit 1 -> Standard Heavy Lift -> Circuit 2).
+- **UI Progress:** The logger uses the `order_index` of `TEMPLATE_BLOCKS` to show "Circuit 1 of 3" headers.
 
-### 2. Nutrition Suite (`FOOD_LIBRARY`, `NUTRITION_LOGS`)
-Instead of a text list of foods, we now have a relational library.
-- **Precision:** Tracking grams of specific foods allows the app to calculate total daily protein/calories automatically.
-- **Meal Grouping:** `meal_name` allows the app to group logs into the "Meal 1", "Meal 2" structure you prefer.
+### 2. High-Efficiency Circuits
+- When `block_type = CIRCUIT`, the React UI renders the vertical "Round-Based" logging flow.
+- The `TRAINING_LOGS` table explicitly stores the `round_number`, ensuring your history knows exactly how you cycled through the circuit.
 
-### 3. Supplement Suite (`SUPPLEMENT_LIBRARY`, `SUPPLEMENT_LOGS`)
-- **Stacks:** You can define a "Lunch Stack" in the library and log individual items or the whole group.
-- **History:** Enables checking exactly when you took specific items (e.g., "Did I take my Vitamin D today?").
-
-### 4. Health Metrics (`HEALTH_METRICS`)
-- Used for the **Blood Pressure Tracker**.
-- Optimized for time-series charts.
+### 3. Nutrition & Supplements
+- **Relational Libraries:** Moving away from text blobs to a `FOOD_LIBRARY` ensures macro-calculation accuracy.
+- **Compliance Tracking:** `SUPPLEMENT_LOGS` allows for per-item "Taken" tracking rather than just a daily "Done" flag.
 
 ## Impact on Egress
-| Operation | Legacy (Blob) | New (Relational) | Improvement |
-| :--- | :--- | :--- | :--- |
-| Load Today | 50 KB | 2 KB (Metadata only) | 25x Better |
-| Log 1 Set/Meal | 50 KB | 0.2 KB | 250x Better |
-| View History | 1.5 MB (Month) | 15 KB (Logs only) | 100x Better |
+| Operation | Legacy (Blob) | New (Relational) |
+| :--- | :--- | :--- |
+| **Log 1 Set** | 50 KB (Whole Day) | **0.2 KB** (1 Row) |
+| **Switch Days** | 50 KB (Whole Day) | **0.5 KB** (Session Meta) |
+| **Check Supplement** | 50 KB (Whole Day) | **0.1 KB** (Boolean Flag) |

@@ -355,12 +355,12 @@
         0: { // SUN
             focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "Match Jan 4th load. High tempo for glycogen depletion." },
-                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict form. Focus on mechanical failure." },
-                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "9", tempo: "1-0-1-0", hint: "Squeeze at top. Weight matched to Jan 15th performance." },
-                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Aggressive leg drive focus." },
-                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Returning to 24kg for explosive hip snap." },
-                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Spinal flexion focus. Do not use arms." }
+                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24 kg", rpe: 8, tempo: "1-0-X-0", hint: "Match Jan 4th load. Focus on high tempo before fasting." },
+                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: 10, tempo: "1-0-X-0", hint: "Strict mechanical failure." },
+                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5 kg", rpe: 9, tempo: "1-0-1-0", hint: "Squeeze at top. Matched to Jan 15th strength." },
+                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5 kg", rpe: 9, tempo: "X-0-X-0", hint: "Use aggressive leg drive." },
+                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24 kg", rpe: 9, tempo: "X-0-X-0", hint: "Explosive hip snap. Returning to 24kg." },
+                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55 kg", rpe: 10, tempo: "2-0-1-1", hint: "Spinal flexion focus. No arm pulling." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
@@ -372,24 +372,24 @@
         },
         1: { // MON
             focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Active recovery during the fast. Prioritize electrolytes." }],
+            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Fat oxidation focus. Maintain electrolytes." }],
             supplements: [S_ELEC, S_BED],
             nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
         },
         2: { // TUE
             focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40", rpe: "9", tempo: "2-0-1-2", hint: "Recommended starting weight. Focus on the 2s hard squeeze at the top." },
-                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th. Elbows down, deep range." },
-                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Peak contraction hold for maximum TUT." },
-                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Mind-muscle connection. Slow eccentric." },
-                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Max stretch, soft knees." },
-                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10", rpe: "10", tempo: "2-1-1-2", hint: "Recommended weight to reach failure in high rep range." },
-                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Glutes clenched hard to stabilize lumbar spine." }
+                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "2-0-1-2", hint: "Recommended starting load. Focus on 2s hard squeeze." },
+                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26 kg", rpe: 9, tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th performance." },
+                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30 kg", rpe: 10, tempo: "2-0-1-2", hint: "Maximum TUT. Peak contraction hold." },
+                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5 kg", rpe: 10, tempo: "2-0-1-0", hint: "Strict mind-muscle connection." },
+                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Focus on stretch." },
+                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10 kg", rpe: 10, tempo: "2-1-1-2", hint: "Added load to hit rep range failure." },
+                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "Static", hint: "Clench glutes hard to protect lower back." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
             nutrition: [
-                { time: "14:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                { time: "14:00", name: "Post-Workout (Refeed)", details: "Collagen (12.5g), Skimmed Curd - 250g" },
                 { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
                 { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
             ]
@@ -397,13 +397,13 @@
         3: { // WED
             focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Strict control. Corrected weight verified from Jan 7th log." },
-                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "30-45 degree incline. Focus on chest stretch." },
-                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "75 degree incline. Neutral spine." },
-                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "10", tempo: "3-1-1-0", hint: "Lead with elbows. Strict isolation." },
-                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5", rpe: "9", tempo: "3-1-1-0", hint: "Match Jan 7th performance intensity. Spread rope at bottom." },
-                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5", rpe: "10", tempo: "3-1-1-0", hint: "Match Jan 7th performance. Focus on the deep long-head stretch." },
-                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Slow and controlled. Do not allow lower back to arch." }
+                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Strict tempo verified. Corrected load from Jan 7th." },
+                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "30-45 degree incline focus." },
+                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15 kg", rpe: 9, tempo: "3-1-1-0", hint: "Neutral spine, overhead emphasis." },
+                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "No swinging. Lead with elbows." },
+                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5 kg", rpe: 9, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Spread rope at bottom." },
+                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5 kg", rpe: 10, tempo: "3-1-1-0", hint: "Corrected load from Jan 7th. Focus on long head stretch." },
+                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: 9, tempo: "4-0-1-0", hint: "Slow and controlled movement." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
             nutrition: [
@@ -415,24 +415,24 @@
         4: { // THU
             focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain Jan 15th load and strict form." },
-                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th. Keep chest high." },
-                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th. Arc DB towards hip." },
-                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "External rotation focus. Clean, technical reps." },
-                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "10", tempo: "3-1-1-0", hint: "Full stretch behind body. Do not swing." },
-                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Brachialis focus. Strict vertical pull." },
-                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Hanging leg raises with full abdominal control." }
+                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50 kg", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain strict performance from Jan 15th." },
+                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th." },
+                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20 kg", rpe: 9, tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th." },
+                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5 kg", rpe: 8, tempo: "3-1-1-0", hint: "Focus on external rotation." },
+                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6 kg", rpe: 10, tempo: "3-1-1-0", hint: "Deep stretch behind body." },
+                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8 kg", rpe: 10, tempo: "3-1-1-0", hint: "Strict brachialis isolation." },
+                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: 10, tempo: "3-1-1-0", hint: "Strict abdominal control." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
                 { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
                 { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
-                { time: "19:30", name: "Meal 2", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
+                { time: "19:30", name: "Meal 2 (Cod Liver Day)", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
             ]
         },
         5: { // FRI
             focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Consistency and breathing focus. Steady pace." }],
+            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Aerobic conditioning. Focus on breathing rhythm." }],
             supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
             nutrition: [
                 { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
@@ -463,10 +463,10 @@
             focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
                 { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "2-0-1-2", hint: "Focus on peak contraction." },
-                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Maintain upright torso." },
-                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Mind-muscle connection." },
-                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Control the eccentric." },
-                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Max stretch in hamstrings." },
+                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "-", rpe: "9", tempo: "3-0-1-0", hint: "Maintain upright torso." },
+                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "-", rpe: "10", tempo: "2-0-1-2", hint: "Mind-muscle connection." },
+                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "-", rpe: "10", tempo: "2-0-1-0", hint: "Control the eccentric." },
+                { name: "DB RDL", sets: 3, reps: "12-15", kg: "-", rpe: "9", tempo: "3-1-1-0", hint: "Max stretch in hamstrings." },
                 { name: "Calf Raises", sets: 4, reps: "20-25", kg: "DB", rpe: "10", tempo: "2-1-1-2", hint: "Full range of motion." },
                 { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Strong core engagement." }
             ],
@@ -480,12 +480,12 @@
         3: { // WED
             focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "8-9", tempo: "3-1-1-0", hint: "Strict form, no bouncing." },
-                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "Focus on upper chest." },
-                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "Shoulder stability focus." },
-                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "9-10", tempo: "3-1-1-0", hint: "Lead with elbows." },
+                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "-", rpe: "8-9", tempo: "3-1-1-0", hint: "Strict form, no bouncing." },
+                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "3-1-1-0", hint: "Focus on upper chest." },
+                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "3-1-1-0", hint: "Shoulder stability focus." },
+                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "-", rpe: "9-10", tempo: "3-1-1-0", hint: "Lead with elbows." },
                 { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "RPE", rpe: "9", tempo: "3-1-1-0", hint: "Full extension." },
-                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Deep triceps stretch." },
+                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "-", rpe: "10", tempo: "3-1-1-0", hint: "Deep triceps stretch." },
                 { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Protect lower back." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
@@ -498,12 +498,12 @@
         0: { // SUN
             focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "High intensity focus." },
+                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "-", rpe: "8", tempo: "1-0-X-0", hint: "High intensity focus." },
                 { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict mechanical failure." },
-                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "8-9", tempo: "1-0-1-0", hint: "Upper back engagement." },
-                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Explosive movement." },
-                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Powerful hip snap." },
-                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Isolation of abdominals." }
+                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "-", rpe: "8-9", tempo: "1-0-1-0", hint: "Upper back engagement." },
+                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "-", rpe: "9", tempo: "X-0-X-0", hint: "Explosive movement." },
+                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "-", rpe: "9", tempo: "X-0-X-0", hint: "Powerful hip snap." },
+                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "-", rpe: "10", tempo: "2-0-1-1", hint: "Isolation of abdominals." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
@@ -516,12 +516,12 @@
         4: { // THU
             focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Controlled movement." },
-                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Retract scapula fully." },
-                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Drive elbow back." },
-                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "Rear delt isolation." },
-                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "9-10", tempo: "3-1-1-0", hint: "Maximum bicep stretch." },
-                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "9-10", tempo: "3-1-1-0", hint: "Forearm and brachialis focus." },
+                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "-", rpe: "8-9", tempo: "3-1-1-0", hint: "Controlled movement." },
+                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "-", rpe: "9", tempo: "3-1-1-0", hint: "Retract scapula fully." },
+                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "-", rpe: "9", tempo: "3-1-1-0", hint: "Drive elbow back." },
+                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "-", rpe: "8", tempo: "3-1-1-0", hint: "Rear delt isolation." },
+                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "-", rpe: "9-10", tempo: "3-1-1-0", hint: "Maximum bicep stretch." },
+                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "-", rpe: "9-10", tempo: "3-1-1-0", hint: "Forearm and brachialis focus." },
                 { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Control the swing." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
@@ -612,7 +612,7 @@
 
         // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
         try {
-            const MIGRATION_KEY = 'regimen_migration_task_22_v6';
+            const MIGRATION_KEY = 'regimen_migration_task_22_v75';
             if (!localStorage.getItem(MIGRATION_KEY)) {
                 console.log("Running Migration v6: Hydrating Layer 1 for Jan 18 week...");
                 
@@ -1732,7 +1732,7 @@
 
         // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
         try {
-            const MIGRATION_KEY = 'regimen_migration_task_22_v10';
+            const MIGRATION_KEY = 'regimen_migration_task_22_v75';
             if (!localStorage.getItem(MIGRATION_KEY)) {
                 console.log("Running Migration v10: Hydrating Layer 1 for Jan 18 week...");
                 

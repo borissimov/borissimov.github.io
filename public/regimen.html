@@ -1009,7 +1009,8 @@
                         <div class="target-col"><div>KG</div><div>${ex.kg || '-'}</div></div>
                         <div class="target-col"><div>RPE</div><div>${ex.rpe}</div></div>
                         <div class="target-col"><div>TEMPO</div><div>${ex.tempo}</div></div>
-                    </div>`;
+                    </div>
+                    ${ex.hint ? `<div style="color:#f39c12; font-size:11px; margin-top:4px; font-weight:bold; letter-spacing:0.3px;">${ex.hint}</div>` : ''}`;
                 for(let i=0; i<ex.sets; i++) {
                     const s = sets[i] || {};
                     html += `<div class="set-row">

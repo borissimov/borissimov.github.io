@@ -1,17 +1,22 @@
 import React from 'react';
 import { useTrainingStore } from './stores/useTrainingStore';
 import { TrainingBlock } from './components/TrainingBlock';
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 
-const RegimenProApp = () => {
+const RegimenProApp = ({ onExit }) => {
     const { activeSession, startSession, resetStore } = useTrainingStore();
 
     return (
         <div className="min-h-screen bg-[#121212] text-[#ececec] p-4 font-sans max-w-md mx-auto">
             <header className="flex justify-between items-start mb-8">
-                <div>
-                    <h1 className="text-2xl font-black text-[#f29b11] uppercase tracking-widest">Regimen Pro</h1>
-                    <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em]">V2.0 Relational Engine</p>
+                <div className="flex items-start gap-3">
+                    <button onClick={onExit} className="p-2 -ml-2 text-gray-400 hover:text-white">
+                        <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                        <h1 className="text-2xl font-black text-[#f29b11] uppercase tracking-widest">Regimen Pro</h1>
+                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em]">V2.0 Relational Engine</p>
+                    </div>
                 </div>
                 {activeSession && (
                     <button onClick={resetStore} className="p-2 bg-[#1e1e1e] rounded-lg text-gray-500 border border-[#333]">

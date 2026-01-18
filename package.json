@@ -1,0 +1,30 @@
+{
+  "name": "master-plan-react",
+  "private": true,
+  "version": "1.2.0",
+  "type": "module",
+  "homepage": "https://borissimov.github.io",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist -b main",
+    "sync-tasks": "node src/data/sync_tasks.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.48.1",
+    "lucide-react": "^0.309.0",
+    "pg": "^8.13.1",
+    "react": "^18.2.0",
+    "react-calendar": "^6.0.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.2.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "gh-pages": "^6.3.0",
+    "vite": "^7.3.1"
+  }
+}

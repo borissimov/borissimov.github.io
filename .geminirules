@@ -1,0 +1,74 @@
+# Regimen Pro Development Manifesto
+
+You are an expert full-stack developer. You MUST adhere to the following Professional Workflow for every task.
+
+## 1. The Professional Workflow
+Every request must follow these phases strictly:
+
+### Phase 1: Initiation (The Anchor)
+1. **Sync Workspace:** Run `npm run sync-tasks` to ensure local `/features` match GitHub.
+2. **Identify Task:** Use an existing GitHub Issue ID (e.g., #4) or create a new one (`gh issue create`).
+3. **Move to In Progress:** Update the project item status to "In Progress".
+4. **Branch Out:** Create a task-specific branch: `git checkout -b task-[ID]-short-description`.
+
+### Phase 2: Implementation (The Build)
+1. **Code:** Implement changes following project patterns.
+2. **Update Docs:** Update the local `features/GHI-[ID]_...md` file with technical implementation details.
+3. **Lint:** Ensure code matches project style.
+
+### Phase 3: UAT (User Acceptance Testing)
+1. **Local Test:** Run the app locally and verify the specific logic/UI changes.
+2. **User Review:** Present the changes to the user.
+3. **Status Update:** Move the project item status to "UAT".
+4. **Visual Sign-off:** Wait for the user to provide "Visual Sign-off".
+
+### Phase 4: Delivery (The Pull Request)
+1. **Compile:** Run `npm run build` to verify no syntax/import errors.
+2. **Commit:** Use Conventional Commits: `feat: ...`, `fix: ...`, `refactor: ...`, `ui: ...`.
+3. **PR:** Create a Pull Request (`gh pr create`) linked to the issue ("Closes #[ID]").
+4. **Merge:** Merge the PR into `source` and delete the task branch.
+5. **Status Update:** Move the project item status to "Testing".
+
+### Phase 5: Cleanup & Batching
+1. **Clean Sync:** Run `npm run sync-tasks` to remove the local task file.
+2. **Close Issue:** Close the GitHub Issue with a summary.
+3. **Batching:** Verified features accumulate in `source`. Release/Deployment is now a separate, explicit action.
+
+---
+
+## 2. Release Lifecycle (Decoupled)
+Deployment to production is NOT automatic.
+1. **Release Task:** When a batch of features is ready, a specific "Release" task is initiated.
+2. **Deploy:** Run `npm run deploy` to push the accumulated verified state of `source` to production.
+
+---
+
+## 3. Core Architecture: The 3-Layers of Truth
+All plan-related logic (Training, Nutrition, Supplements) must follow:
+- **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`.
+- **Layer 2 (User Templates):** `localStorage.regimen_user_template`.
+- **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object.
+- **CRITICAL:** Never modify `DEFAULT_PLAN`.
+
+## 4. GitHub & Project Standards
+- **Branching:** `task-[ID]-description`.
+- **Conventional Commits:** `type: description (fixes #[ID])`.
+- **Project Board:** Every issue must have:
+    - **Tier:** 1 (Initiative), 2 (Epic), 3 (Task).
+    - **Work Type:** Feature, Bug, Enhancement, Refactor, Chore, Compatibility, Documentation, Security, Performance.
+    - **Status Sequence:** Todo → In Progress → UAT → Testing → Done.
+
+## 5. Technology Stack Constraints
+- **Standalone PWA:** `public/regimen.html` is a single-file app.
+- **Supabase:** Use `sbClient` global variable.
+- **Interactivity:** Attach event handlers to `window`.
+
+## 6. Two-Way Task Mirroring
+- Always run `npm run sync-tasks` before starting and after finishing a task.
+- Active tickets live in `/features`.
+- Documentation and architectural guides live in `/docs`.
+
+---
+
+## 7. Interaction Guidelines
+- **Brief Descriptions:** Always provide a brief, one-sentence description of what you are about to do BEFORE calling any tools. This ensures the user is informed of the intended action.

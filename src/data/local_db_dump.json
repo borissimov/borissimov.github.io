@@ -1,0 +1,2190 @@
+{
+  "workout_logs": [
+    {
+      "id": 25,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Wide Grip Lat Pulldown",
+      "weight": "45",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:32:57.353000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 26,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Wide Grip Lat Pulldown",
+      "weight": "45",
+      "reps": 12,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:36:24.908000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 27,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Wide Grip Lat Pulldown",
+      "weight": "45",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:39:11.848000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 28,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Wide Grip Lat Pulldown",
+      "weight": "45",
+      "reps": 12,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:42:06.074000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 29,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Seated Cable Row (V-Grip)",
+      "weight": "30",
+      "reps": 12,
+      "rpe": 7.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:44:36.400000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 30,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Seated Cable Row (V-Grip)",
+      "weight": "35",
+      "reps": 12,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:47:46.626000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 31,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Seated Cable Row (V-Grip)",
+      "weight": "35",
+      "reps": 12,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:51:18.104000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 32,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Seated Cable Row (V-Grip)",
+      "weight": "35",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T12:54:14.193000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 33,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "One Arm Dumbbell Row",
+      "weight": "17.5",
+      "reps": 10,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:00:10.571000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 34,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "One Arm Dumbbell Row",
+      "weight": "17.5",
+      "reps": 10,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:06:28.522000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 35,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "One Arm Dumbbell Row",
+      "weight": "17.5",
+      "reps": 10,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:13:09.267000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 36,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Face Pulls",
+      "weight": "7.5",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:21:57.265000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 37,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Face Pulls",
+      "weight": "6",
+      "reps": 20,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:25:41.122000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 38,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Face Pulls",
+      "weight": "6",
+      "reps": 20,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:31:07.023000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 46,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Ab Wheel Rollout",
+      "weight": "BW",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T20:24:17.197000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 69,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Standing DB Shoulder Press - Circuit",
+      "weight": "12.5",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:03:50.645000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 70,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Kettlebell/DB Swings - Circuit",
+      "weight": "20",
+      "reps": 25,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:04:04.482000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 71,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Cable Crunches - Core Finisher",
+      "weight": "22",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:16:23.781000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 72,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Cable Crunches - Core Finisher",
+      "weight": "55",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:16:40.913000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 73,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Cable Crunches - Core Finisher",
+      "weight": "55",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:16:47.896000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 74,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Active Recovery",
+      "weight": "-",
+      "reps": 1,
+      "rpe": 6.0,
+      "tempo": "",
+      "logged_at": "2026-01-11T21:29:05.125000+00:00",
+      "day_key": "mon",
+      "scheduled_for": "2026-01-05",
+      "duration_minutes": 90.0,
+      "intensity": null
+    },
+    {
+      "id": 77,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Active Recovery",
+      "weight": "-",
+      "reps": 1,
+      "rpe": null,
+      "tempo": "",
+      "logged_at": "2026-01-11T22:15:03.148000+00:00",
+      "day_key": "mon",
+      "scheduled_for": "2026-01-05",
+      "duration_minutes": 90.0,
+      "intensity": 60.0
+    },
+    {
+      "id": 76,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Goblet Squats",
+      "weight": "25",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": "3110",
+      "logged_at": "2026-01-11T21:43:46.137000+00:00",
+      "day_key": "tue",
+      "scheduled_for": "2026-01-06",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 45,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Flat Dumbbell Press",
+      "weight": "25",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T17:35:27.083000+00:00",
+      "day_key": "wed",
+      "scheduled_for": "2026-01-07",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 39,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Incline Dumbbell Curl",
+      "weight": "6",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:33:56.610000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 40,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Incline Dumbbell Curl",
+      "weight": "6",
+      "reps": 13,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:36:08.617000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 41,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Incline Dumbbell Curl",
+      "weight": "6",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:39:06.002000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 42,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Dumbbell Hammer Curls",
+      "weight": "8",
+      "reps": 12,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:41:59.283000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 43,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Dumbbell Hammer Curls",
+      "weight": "8",
+      "reps": 10,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T13:45:18.026000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 44,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Dumbbell Hammer Curls",
+      "weight": "8",
+      "reps": 10,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T14:06:26.851000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 47,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Ab Wheel Rollout",
+      "weight": "BW",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T20:24:27.124000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 48,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Ab Wheel Rollout",
+      "weight": "BW",
+      "reps": 12,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-08T20:24:32.403000+00:00",
+      "day_key": "thu",
+      "scheduled_for": "2026-01-08",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 75,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Intensive Swimming (Intervals)",
+      "weight": "-",
+      "reps": 1,
+      "rpe": null,
+      "tempo": "",
+      "logged_at": "2026-01-11T21:40:22.572000+00:00",
+      "day_key": "sat",
+      "scheduled_for": "2026-01-10",
+      "duration_minutes": 60.0,
+      "intensity": 80.0
+    },
+    {
+      "id": 50,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Goblet Squats - Circuit",
+      "weight": "20",
+      "reps": 12,
+      "rpe": 6.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:39:54.746000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 51,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Push-ups - Circuit",
+      "weight": "50",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:40:11.083000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 52,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Bent-Over DB Rows - Circuit",
+      "weight": "15",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:40:24.946000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 53,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Standing DB Shoulder Press - Circuit",
+      "weight": "12.5",
+      "reps": 12,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:40:33.519000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 54,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Kettlebell/DB Swings - Circuit",
+      "weight": "20",
+      "reps": 25,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:40:42.699000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 55,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Goblet Squats - Circuit",
+      "weight": "30",
+      "reps": 15,
+      "rpe": 7.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:46:42.914000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 56,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Push-ups - Circuit",
+      "weight": "50",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:47:31.715000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 57,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Bent-Over DB Rows - Circuit",
+      "weight": "15",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:47:43.927000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 58,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Standing DB Shoulder Press - Circuit",
+      "weight": "12.5",
+      "reps": 10,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:48:01.265000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 59,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Kettlebell/DB Swings - Circuit",
+      "weight": "20",
+      "reps": 15,
+      "rpe": 9.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:48:12.566000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 60,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Goblet Squats - Circuit",
+      "weight": "30",
+      "reps": 15,
+      "rpe": 7.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:55:21.984000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 61,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Push-ups - Circuit",
+      "weight": "50",
+      "reps": 10,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:55:32.781000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 62,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Bent-Over DB Rows - Circuit",
+      "weight": "15",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:55:42.263000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 63,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Standing DB Shoulder Press - Circuit",
+      "weight": "12.5",
+      "reps": 15,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:55:51.740000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 64,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Kettlebell/DB Swings - Circuit",
+      "weight": "20",
+      "reps": 25,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T12:56:09.801000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 66,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Goblet Squats - Circuit",
+      "weight": "30",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:03:16.429000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 67,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Push-ups - Circuit",
+      "weight": "20",
+      "reps": 17,
+      "rpe": 10.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:03:30.920000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    },
+    {
+      "id": 68,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "exercise_name": "Bent-Over DB Rows - Circuit",
+      "weight": "15",
+      "reps": 15,
+      "rpe": 8.0,
+      "tempo": null,
+      "logged_at": "2026-01-11T13:03:41.508000+00:00",
+      "day_key": "sun",
+      "scheduled_for": "2026-01-11",
+      "duration_minutes": null,
+      "intensity": null
+    }
+  ],
+  "daily_checklist_logs": [
+    {
+      "id": 1,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "tue",
+      "item_id": "tue-nutr-0-0",
+      "completed": false,
+      "scheduled_for": "2026-01-06",
+      "updated_at": "2026-01-08T17:18:39.490000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 5,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "wed",
+      "item_id": "wed-nutr-0-0",
+      "completed": false,
+      "scheduled_for": "2026-01-07",
+      "updated_at": "2026-01-08T17:18:51.182000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 12,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "wed",
+      "item_id": "wed-supp-0-0",
+      "completed": false,
+      "scheduled_for": "2026-01-07",
+      "updated_at": "2026-01-08T17:25:50.425000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 9,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T17:20:05.360000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 14,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-1-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:03:45.470000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 15,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-1-1",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:03:47.158000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 16,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-2-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:03:48.963000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 17,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-3-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:03:51.313000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 18,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-4-3",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:04:04.471000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 7,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-nutr-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-08T20:25:27.899000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 23,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-5-0",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T02:07:12.288000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 24,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-6-1",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T02:07:14.266000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 25,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-6-2",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T02:07:14.708000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 26,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-4-5",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T02:07:19.688000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 27,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-supp-4-4",
+      "completed": true,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T02:07:20.411000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 20,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-nutr-1-0",
+      "completed": false,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T23:47:17.717000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 21,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-nutr-1-1",
+      "completed": false,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T23:47:18.237000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 22,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "thu",
+      "item_id": "thu-nutr-1-2",
+      "completed": false,
+      "scheduled_for": "2026-01-08",
+      "updated_at": "2026-01-09T23:47:18.767000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 28,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:38:54.990000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 29,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-1-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:38:56.578000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 30,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-2-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:39:24.464000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 31,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-3-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:49:31.892000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 32,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-3-2",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:49:35.859000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 33,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-3-1",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:49:38.448000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 34,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-3-3",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:49:40.284000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 35,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-3-4",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-09T15:49:41.526000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 39,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-4-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-10T09:53:15.678000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 40,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-5-0",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-10T09:53:17.401000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 41,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-5-1",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-10T09:53:17.733000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 42,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-5-2",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-10T09:53:18.533000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 76,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "fri",
+      "item_id": "fri-supp-5-3",
+      "completed": true,
+      "scheduled_for": "2026-01-09",
+      "updated_at": "2026-01-11T23:02:53.641000+00:00",
+      "meta_data": {
+        "name": "Vitamin B6 P-5-P",
+        "dosage": "1 cap"
+      }
+    },
+    {
+      "id": 43,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:47:52.710000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 44,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-3-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:47:59.268000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 45,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-4-1",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:48:03.378000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 46,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-4-2",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:48:05.082000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 47,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-4-3",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:48:11.824000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 48,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-4-4",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:48:13.473000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 49,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-4-5",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-10T15:48:15.659000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 51,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-nutr-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T14:49:57.395000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 52,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-nutr-1-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T14:49:59.364000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 53,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-nutr-1-1",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T14:50:00.068000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 54,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-nutr-1-2",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T14:50:00.882000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 77,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-5-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T23:03:03.364000+00:00",
+      "meta_data": {
+        "name": "Magnesium Citrate",
+        "dosage": "3 scoops (2.7 g)"
+      }
+    },
+    {
+      "id": 78,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-6-0",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T23:03:04.350000+00:00",
+      "meta_data": {
+        "name": "KSM-66 Ashwagandha",
+        "dosage": "4 caps"
+      }
+    },
+    {
+      "id": 79,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-6-1",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T23:03:04.874000+00:00",
+      "meta_data": {
+        "name": "OptiZinc",
+        "dosage": "1 cap"
+      }
+    },
+    {
+      "id": 80,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-6-2",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T23:03:05.462000+00:00",
+      "meta_data": {
+        "name": "Boron",
+        "dosage": "1 cap"
+      }
+    },
+    {
+      "id": 81,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sat",
+      "item_id": "sat-supp-6-3",
+      "completed": true,
+      "scheduled_for": "2026-01-10",
+      "updated_at": "2026-01-11T23:03:06.272000+00:00",
+      "meta_data": {
+        "name": "Vitamin B6 P-5-P",
+        "dosage": "1 cap"
+      }
+    },
+    {
+      "id": 50,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T11:04:55.472000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 55,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-1-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:10:16.700000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 56,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-1-1",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:10:18.525000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 57,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-2-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:10:20.144000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 58,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-3-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:10:24.232000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 59,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-2",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:15:31.033000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 60,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-4",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:15:34.588000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 61,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-5",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:15:59.309000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 62,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-1",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T15:16:15.369000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 63,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T16:25:04.161000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 64,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-4-3",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T16:25:06.590000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 65,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-1-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T16:26:56.114000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 66,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-1-1",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T16:26:56.941000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 67,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-1-2",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T16:26:57.657000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 68,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-5-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:03:54.138000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 69,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-6-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:03:55.389000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 70,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-6-1",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:03:56.184000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 71,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-6-2",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:03:57.399000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 72,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-supp-6-3",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:03:59.288000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 73,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-2-1",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:04:11.846000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 74,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-2-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:04:12.504000+00:00",
+      "meta_data": {}
+    },
+    {
+      "id": 75,
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "day_key": "sun",
+      "item_id": "sun-nutr-0-0",
+      "completed": true,
+      "scheduled_for": "2026-01-11",
+      "updated_at": "2026-01-11T21:04:14.264000+00:00",
+      "meta_data": {}
+    }
+  ],
+  "daily_exercise_status": [
+    {
+      "id": "01ceca07-dc32-4ab7-9d4d-4d018c0c3a6f",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-12",
+      "day_key": "mon",
+      "exercise_index": 0,
+      "is_completed": false,
+      "updated_at": "2026-01-11T22:14:57.611000+00:00"
+    },
+    {
+      "id": "78f4f3b6-1d16-478e-b641-eabb97142cf6",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-05",
+      "day_key": "mon",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "53b5f72d-c13b-42e3-baa3-194d4d65f308",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-06",
+      "day_key": "tue",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "5eb8bcf5-142e-4a14-b2df-10cd4efc9156",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-07",
+      "day_key": "wed",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "92ff44e5-ff81-4d3b-bcd9-362960ef3441",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "f2873a2a-92fb-419b-b378-6a038d646fed",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 1,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "24c48105-f38c-47b6-bd91-9e0755ca881f",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 2,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "f801b958-2518-4dd9-b32c-1e62375fd2e8",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 3,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "7f7853d3-1ae8-411d-be6d-7b04caaadeef",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 4,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "d1d67c01-b3bd-494d-864f-a7c17c245fcc",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-08",
+      "day_key": "thu",
+      "exercise_index": 5,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "461758fa-a744-46a1-ba88-59642eeef247",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-09",
+      "day_key": "fri",
+      "exercise_index": 0,
+      "is_completed": false,
+      "updated_at": "2026-01-11T22:44:33.662000+00:00"
+    },
+    {
+      "id": "b800d9dd-8911-4653-bf16-ab7595391966",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-10",
+      "day_key": "sat",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "29eccf67-7328-4408-97c7-ab91c824c4af",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 0,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "28b37e28-c725-4f45-869a-83a4441f2c90",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 1,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "ab55ec53-08a8-4fd6-874e-99acd7af477a",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 2,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "25ba1fc3-67f0-4f09-a49d-44538dcab7d7",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 3,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "c47385cc-f4a9-4dfe-9855-01fae58fb6e5",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 4,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    },
+    {
+      "id": "3ecd6358-001e-4f73-b840-41a11abdca72",
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "date": "2026-01-11",
+      "day_key": "sun",
+      "exercise_index": 5,
+      "is_completed": true,
+      "updated_at": "2026-01-11T22:24:26.006242+00:00"
+    }
+  ],
+  "user_routine_status": [
+    {
+      "user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "active_routine_id": 1,
+      "cycle_start_date": "2025-12-29",
+      "updated_at": "2026-01-09T00:23:52.323000+00:00",
+      "cycle_end_date": "2026-02-01",
+      "id": 68
+    }
+  ],
+  "daily_plan_modifications": [],
+  "routines": [
+    {
+      "id": 1,
+      "created_at": "2026-01-07T16:43:08.429220+00:00",
+      "name": "Master Plan Default",
+      "description": "The standard 7-day hypertrophy and recovery split.",
+      "cycle_length": 7,
+      "is_system_default": true,
+      "owner_user_id": null
+    },
+    {
+      "id": 11,
+      "created_at": "2026-01-08T19:36:20.895429+00:00",
+      "name": "Push pull legs",
+      "description": "",
+      "cycle_length": 4,
+      "is_system_default": false,
+      "owner_user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb"
+    },
+    {
+      "id": 12,
+      "created_at": "2026-01-08T20:24:06.643580+00:00",
+      "name": "Master Plan Default (Custom)",
+      "description": "The standard 7-day hypertrophy and recovery split.",
+      "cycle_length": 7,
+      "is_system_default": false,
+      "owner_user_id": "2edced93-d05e-4e83-8a83-5df5140ebffb"
+    },
+    {
+      "id": 13,
+      "created_at": "2026-01-09T00:28:00.298194+00:00",
+      "name": "Test Routine",
+      "description": "",
+      "cycle_length": 7,
+      "is_system_default": false,
+      "owner_user_id": "097be585-9c71-459a-a2ca-06750b7455d4"
+    }
+  ],
+  "routine_days": [
+    {
+      "id": 1,
+      "routine_id": 1,
+      "day_number": 1,
+      "day_type": "Walk",
+      "title": "Active Recovery",
+      "instructions": "<ul><li>Goal: Recovery, improved circulation, and fat burning during the 42-hour fast.</li><li>Intensity: Low, you should be able to hold a conversation without gasping.</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Walk at a light to moderate pace.</li></ul>",
+          "config": "30-60 min",
+          "exercise": "Active Recovery"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "routine_id": 1,
+      "day_number": 2,
+      "day_type": "Resistance",
+      "title": "Heavy Leg Workout",
+      "instructions": "<ul><li>Goal: Maximal muscle glycogen depletion through high volume.</li><li>Rest between sets: 45-60 seconds.</li><li>Target RPE 9-10 (close to or at muscle failure).</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep dumbbell tight to chest, elbows pointing down.</li><li>Descend deep and controlled.</li><li>This is your main volume mover.</li></ul>",
+          "config": "4 x 15-20 @ 9 RPE",
+          "exercise": "Goblet Squats"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Place feet shoulder-width apart.</li><li>Lower slowly and drive up explosively, do not lock knees at the top.</li></ul>",
+          "config": "4 x 15-20 @ 10 RPE",
+          "exercise": "Leg Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Isolate the quadriceps.</li><li>Squeeze the muscle for a second at the top before starting the slow descent.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Leg Extensions"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Focus on the mind-muscle connection with the hamstrings.</li><li>Movement should be smooth, without using momentum from the hips.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Lying Leg Curls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>With slight knee bend, push hips back until you feel max stretch in hamstrings.</li><li>Keep back straight.</li></ul>",
+          "config": "3 x 12-15 @ 9 RPE",
+          "exercise": "Dumbbell RDL"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Perform full stretch at bottom position and hold for a second at the very top.</li></ul>",
+          "config": "4 x 20-25 @ 10 RPE",
+          "exercise": "Calf Raises"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep body in a perfectly straight line from shoulders to heels.</li><li>Tighten core and glutes.</li><li>Do not let hips sag.</li></ul>",
+          "config": "3 x To Failure @ 10 RPE",
+          "exercise": "PLANK - Core Finisher"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "routine_id": 1,
+      "day_number": 7,
+      "day_type": "Resistance",
+      "title": "Metabolic Workout",
+      "instructions": "<ul><li>Goal: Final glycogen depletion before fast.</li><li>Circuit training.</li><li>Perform exercises back-to-back with 15-20 sec rest.</li><li>After circuit ends, rest 90-120 sec.</li><li>Perform 3-4 total circuits.</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep tempo high but with good form.</li><li>Legs and core focus.</li></ul>",
+          "config": "3-4 x 12-15 @ 8 RPE",
+          "exercise": "Goblet Squats - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Elevate feet if too easy.</li><li>Use knees if too hard.</li></ul>",
+          "config": "3-4 x To Failure @ 10 RPE",
+          "exercise": "Push-ups - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep back straight.</li><li>Pull dumbbells to hip, squeezing shoulder blades.</li></ul>",
+          "config": "3-4 x 12-15 @ 8-9 RPE",
+          "exercise": "Bent-Over DB Rows - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Use legs for slight initial push (Push Press) to maintain intensity.</li></ul>",
+          "config": "3-4 x 10-12 @ 9 RPE",
+          "exercise": "Standing DB Shoulder Press - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Metabolic finisher.</li><li>Movement comes from hips, not arms.</li><li>Squeeze core and glutes.</li></ul>",
+          "config": "3-4 x 20-25 @ 9 RPE",
+          "exercise": "Kettlebell/DB Swings - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Perform AFTER all circuits.</li><li>Use rope.</li><li>Focus on curling torso, bringing ribs to hips.</li><li>Do not pull with arms.</li></ul>",
+          "config": "3 x 12-15 @ 9-10 RPE",
+          "exercise": "Cable Crunches - Core Finisher"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "routine_id": 1,
+      "day_number": 5,
+      "day_type": "Swim",
+      "title": "Light to Moderate Swimming",
+      "instructions": "<ul><li>Goal: Active recovery, improve cardiovascular system, fat burning with low joint stress.</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Goal: Active recovery, improve cardiovascular system, fat burning with low joint stress.</li><li>Low to moderate intensity, steady state (LISS).</li><li>Focus on breathing technique and smooth movement.</li></ul>",
+          "config": "30-45 min",
+          "exercise": "Light to Moderate Swimming"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "routine_id": 1,
+      "day_number": 6,
+      "day_type": "Swim",
+      "title": "Intensive Swimming (HIIT)",
+      "instructions": "<ul><li>Goal: Max calorie burn, improve anaerobic capacity and metabolic stress.</li><li>Interval Training (HIIT).</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Goal: Max calorie burn, improve anaerobic capacity and metabolic stress.</li><li>Interval Training (HIIT).</li><li>Warm up 5-10 min, then alternate 1 length sprint (~90% effort) with 2 lengths very slow recovery swimming.</li><li>Cool down 5 min.</li></ul>",
+          "config": "15-20 min",
+          "exercise": "Intensive Swimming (Intervals)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "routine_id": 1,
+      "day_number": 3,
+      "day_type": "Resistance",
+      "title": "Push (Chest/Shoulders/Triceps)",
+      "instructions": "<ul><li>Goal: Stimulate chest, shoulders, and triceps.</li><li>Focus on Time Under Tension (TUT).</li><li>Tempo: 3-1-1-0.</li><li>Rest between sets: 60-75 seconds.</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Control the descent for 3 seconds.</li><li>Feel the stretch in chest at bottom before pushing explosively.</li></ul>",
+          "config": "4 x 8-12 @ 8-9 RPE",
+          "exercise": "Flat Dumbbell Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Bench angle 30-45 degrees.</li><li>Focus on upper chest. Elbows slightly tucked.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Incline Dumbbell Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Keep back straight.</li><li>Lower dumbbells to ear level and drive up without clanking them.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Seated DB Shoulder Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Lead the movement with elbows, not wrists.</li><li>Imagine pouring two pitchers of water.</li><li>Target side delts.</li></ul>",
+          "config": "3 x 12-15 @ 9-10 RPE",
+          "exercise": "Dumbbell Lateral Raises"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep elbows tight to body.</li><li>Spread rope at bottom to max activate triceps.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Cable Tricep Pushdowns (Rope)"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Targets long head of triceps.</li><li>Full stretch and focus on full contraction.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Overhead Cable Tricep Extension"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Control movement slowly forward from knees as far as possible without arching back.</li><li>Use abs to pull back.</li></ul>",
+          "config": "3 x 8-12 @ 9 RPE",
+          "exercise": "Ab Wheel Rollout"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "routine_id": 1,
+      "day_number": 4,
+      "day_type": "Resistance",
+      "title": "Pull (Back/Biceps)",
+      "instructions": "<ul><li>Goal: Stimulate back and biceps.</li><li>Focus on Time Under Tension (TUT).</li><li>Tempo: 3-1-1-0.</li><li>Rest between sets: 60-75 seconds.</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Think about pulling with elbows, not hands.</li><li>Squeeze shoulder blades hard at bottom.</li><li>Control weight all the way up.</li></ul>",
+          "config": "4 x 10-12 @ 8-9 RPE",
+          "exercise": "Wide Grip Lat Pulldown"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Keep chest out and back straight.</li><li>Pull handle towards lower abdomen.</li></ul>",
+          "config": "4 x 10-12 @ 9 RPE",
+          "exercise": "Seated Cable Row (V-Grip)"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Max stretch at bottom, pull dumbbell in an arc towards hip, not straight up.</li><li>This maximizes lat activation.</li></ul>",
+          "config": "3 x 8-10 @ 9 RPE",
+          "exercise": "One Arm Dumbbell Row"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Critical for shoulder and upper back health.</li><li>Pull towards face, ending in a 'double bicep' pose.</li></ul>",
+          "config": "3 x 15-20 @ 8 RPE",
+          "exercise": "Face Pulls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Bench incline 60-75 degrees.</li><li>Puts biceps under constant tension and stretch.</li><li>Elbows point to floor, curl only with biceps.</li></ul>",
+          "config": "3 x 10-12 @ 9-10 RPE",
+          "exercise": "Incline Dumbbell Curl"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Targets brachialis/forearm, adding arm thickness.</li><li>Strict movement, no swinging.</li></ul>",
+          "config": "3 x 10-12 @ 9-10 RPE",
+          "exercise": "Dumbbell Hammer Curls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>If full range is hard, do Knees to Chest.</li><li>Avoid swinging.</li></ul>",
+          "config": "3 x To Failure @ 10 RPE",
+          "exercise": "Toes to Bar"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "routine_id": 11,
+      "day_number": 1,
+      "day_type": "Resistance",
+      "title": "Day 1",
+      "instructions": "",
+      "exercises": []
+    },
+    {
+      "id": 37,
+      "routine_id": 11,
+      "day_number": 2,
+      "day_type": "Resistance",
+      "title": "Day 2",
+      "instructions": "",
+      "exercises": []
+    },
+    {
+      "id": 38,
+      "routine_id": 11,
+      "day_number": 3,
+      "day_type": "Resistance",
+      "title": "Day 3",
+      "instructions": "",
+      "exercises": []
+    },
+    {
+      "id": 39,
+      "routine_id": 11,
+      "day_number": 4,
+      "day_type": "Resistance",
+      "title": "Day 4",
+      "instructions": "",
+      "exercises": []
+    },
+    {
+      "id": 40,
+      "routine_id": 12,
+      "day_number": 1,
+      "day_type": "Walk",
+      "title": "Active Recovery",
+      "instructions": "<ul><li>Goal: Recovery, improved circulation, and fat burning during the 42-hour fast.</li><li>Intensity: Low, you should be able to hold a conversation without gasping.</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Walk at a light to moderate pace.</li></ul>",
+          "config": "30-60 min",
+          "exercise": "Active Recovery"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "routine_id": 12,
+      "day_number": 2,
+      "day_type": "Resistance",
+      "title": "Heavy Leg Workout",
+      "instructions": "<ul><li>Goal: Maximal muscle glycogen depletion through high volume.</li><li>Rest between sets: 45-60 seconds.</li><li>Target RPE 9-10 (close to or at muscle failure).</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep dumbbell tight to chest, elbows pointing down.</li><li>Descend deep and controlled.</li><li>This is your main volume mover.</li></ul>",
+          "config": "4 x 15-20 @ 9 RPE",
+          "exercise": "Goblet Squats"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Place feet shoulder-width apart.</li><li>Lower slowly and drive up explosively, do not lock knees at the top.</li></ul>",
+          "config": "4 x 15-20 @ 10 RPE",
+          "exercise": "Leg Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Isolate the quadriceps.</li><li>Squeeze the muscle for a second at the top before starting the slow descent.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Leg Extensions"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Focus on the mind-muscle connection with the hamstrings.</li><li>Movement should be smooth, without using momentum from the hips.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Lying Leg Curls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>With slight knee bend, push hips back until you feel max stretch in hamstrings.</li><li>Keep back straight.</li></ul>",
+          "config": "3 x 12-15 @ 9 RPE",
+          "exercise": "Dumbbell RDL"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Perform full stretch at bottom position and hold for a second at the very top.</li></ul>",
+          "config": "4 x 20-25 @ 10 RPE",
+          "exercise": "Calf Raises"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep body in a perfectly straight line from shoulders to heels.</li><li>Tighten core and glutes.</li><li>Do not let hips sag.</li></ul>",
+          "config": "3 x To Failure @ 10 RPE",
+          "exercise": "PLANK - Core Finisher"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "routine_id": 12,
+      "day_number": 3,
+      "day_type": "Resistance",
+      "title": "Push (Chest/Shoulders/Triceps)",
+      "instructions": "<ul><li>Goal: Stimulate chest, shoulders, and triceps.</li><li>Focus on Time Under Tension (TUT).</li><li>Tempo: 3-1-1-0.</li><li>Rest between sets: 60-75 seconds.</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Control the descent for 3 seconds.</li><li>Feel the stretch in chest at bottom before pushing explosively.</li></ul>",
+          "config": "4 x 8-12 @ 8-9 RPE",
+          "exercise": "Flat Dumbbell Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Bench angle 30-45 degrees.</li><li>Focus on upper chest. Elbows slightly tucked.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Incline Dumbbell Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Tempo: 3-1-1-0.</li><li>Keep back straight.</li><li>Lower dumbbells to ear level and drive up without clanking them.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Seated DB Shoulder Press"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Lead the movement with elbows, not wrists.</li><li>Imagine pouring two pitchers of water.</li><li>Target side delts.</li></ul>",
+          "config": "3 x 12-15 @ 9-10 RPE",
+          "exercise": "Dumbbell Lateral Raises"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep elbows tight to body.</li><li>Spread rope at bottom to max activate triceps.</li></ul>",
+          "config": "3 x 10-12 @ 9 RPE",
+          "exercise": "Cable Tricep Pushdowns (Rope)"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Targets long head of triceps.</li><li>Full stretch and focus on full contraction.</li></ul>",
+          "config": "3 x 12-15 @ 10 RPE",
+          "exercise": "Overhead Cable Tricep Extension"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Control movement slowly forward from knees as far as possible without arching back.</li><li>Use abs to pull back.</li></ul>",
+          "config": "3 x 8-12 @ 9 RPE",
+          "exercise": "Ab Wheel Rollout"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "routine_id": 12,
+      "day_number": 5,
+      "day_type": "Swim",
+      "title": "Light to Moderate Swimming",
+      "instructions": "<ul><li>Goal: Active recovery, improve cardiovascular system, fat burning with low joint stress.</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Low to moderate intensity (LISS).</li></ul>",
+          "config": "30-45 minutes",
+          "exercise": "Light to Moderate Swimming"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "routine_id": 12,
+      "day_number": 6,
+      "day_type": "Swim",
+      "title": "Intensive Swimming (HIIT)",
+      "instructions": "<ul><li>Goal: Max calorie burn, improve anaerobic capacity and metabolic stress.</li><li>Interval Training (HIIT).</li></ul>",
+      "exercises": [
+        {
+          "type": "Cardio",
+          "focus": "<ul><li>Interval Training (HIIT).</li></ul>",
+          "config": "15-20 minutes",
+          "exercise": "Intensive Swimming (Intervals)"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "routine_id": 12,
+      "day_number": 7,
+      "day_type": "Resistance",
+      "title": "Metabolic Workout",
+      "instructions": "<ul><li>Goal: Final glycogen depletion before fast.</li><li>Circuit training.</li><li>Perform exercises back-to-back with 15-20 sec rest.</li><li>After circuit ends, rest 90-120 sec.</li><li>Perform 3-4 total circuits.</li></ul>",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep tempo high but with good form.</li><li>Legs and core focus.</li></ul>",
+          "config": "3-4 x 12-15 @ 8 RPE",
+          "exercise": "Goblet Squats - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Elevate feet if too easy.</li><li>Use knees if too hard.</li></ul>",
+          "config": "3-4 x To Failure @ 10 RPE",
+          "exercise": "Push-ups - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Keep back straight.</li><li>Pull dumbbells to hip, squeezing shoulder blades.</li></ul>",
+          "config": "3-4 x 12-15 @ 8-9 RPE",
+          "exercise": "Bent-Over DB Rows - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Use legs for slight initial push (Push Press) to maintain intensity.</li></ul>",
+          "config": "3-4 x 10-12 @ 9 RPE",
+          "exercise": "Standing DB Shoulder Press - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Metabolic finisher.</li><li>Movement comes from hips, not arms.</li><li>Squeeze core and glutes.</li></ul>",
+          "config": "3-4 x 20-25 @ 9 RPE",
+          "exercise": "Kettlebell/DB Swings - Circuit"
+        },
+        {
+          "type": "Resistance",
+          "focus": "<ul><li>Perform AFTER all circuits.</li><li>Use rope.</li><li>Focus on curling torso, bringing ribs to hips.</li><li>Do not pull with arms.</li></ul>",
+          "config": "3 x 12-15 @ 9-10 RPE",
+          "exercise": "Cable Crunches - Core Finisher"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "routine_id": 12,
+      "day_number": 4,
+      "day_type": "Resistance",
+      "title": "Pull (Back/Biceps)",
+      "instructions": "Goal: Stimulate back and biceps.\nFocus on Time Under Tension (TUT).\nTempo: 3-1-1-0.\nRest between sets: 60-75 seconds.",
+      "exercises": [
+        {
+          "type": "Resistance",
+          "focus": "Tempo: 3-1-1-0.\nThink about pulling with elbows, not hands.\nSqueeze shoulder blades hard at bottom.\nControl weight all the way up.",
+          "config": "4 x 10-12 @ 8-9 RPE",
+          "exercise": "Wide Grip Lat Pulldown"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Tempo: 3-1-1-0.\nKeep chest out and back straight.\nPull handle towards lower abdomen.",
+          "config": "4 x 10-12 @ 9 RPE",
+          "exercise": "Seated Cable Row (V-Grip)"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Max stretch at bottom, pull dumbbell in an arc towards hip, not straight up.\nThis maximizes lat activation.",
+          "config": "3 x 8-10 @ 9 RPE",
+          "exercise": "One Arm Dumbbell Row"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Critical for shoulder and upper back health.\nPull towards face, ending in a 'double bicep' pose.",
+          "config": "3 x 15-20 @ 8 RPE",
+          "exercise": "Face Pulls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Bench incline 60-75 degrees.\nPuts biceps under constant tension and stretch.\nElbows point to floor, curl only with biceps.",
+          "config": "3 x 10-12 @ 9-10 RPE",
+          "exercise": "Incline Dumbbell Curl"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Targets brachialis/forearm, adding arm thickness.\nStrict movement, no swinging.",
+          "config": "3 x 10-12 @ 9-10 RPE",
+          "exercise": "Dumbbell Hammer Curls"
+        },
+        {
+          "type": "Resistance",
+          "focus": "Control movement slowly forward from knees as far as possible without arching back.\nUse abs to pull back.\n",
+          "config": "3 x 8-12 @ 9 RPE",
+          "exercise": "Ab Wheel Rollout"
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "id": "2edced93-d05e-4e83-8a83-5df5140ebffb",
+      "full_name": "Boris",
+      "age": 42,
+      "weight": 89.0,
+      "updated_at": "2026-01-12T10:40:29.448000+00:00",
+      "theme_preference": "material-dark",
+      "navigation_mode": "week"
+    }
+  ]
+}

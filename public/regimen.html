@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Regimen Tracker Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <style>
         :root {
             --bg-color: #121212;
@@ -922,39 +923,42 @@
 
         list.forEach((ex, idx) => {
             const isLift = currentType === 'LIFT';
-            html += `<div class="log-item" style="display:block; background:#252525; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #444;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span style="font-size:12px; color:var(--accent-color); font-weight:bold;">${isLift ? 'EXERCISE' : 'ACTIVITY'} #${idx+1}</span>
+            html += `<div class="log-item exercise-row" style="display:block; background:#252525; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #444;" data-idx="${idx}">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="drag-handle" style="cursor:grab; font-size:20px; color:#666;">⋮⋮</span>
+                        <span style="font-size:12px; color:var(--accent-color); font-weight:bold;">${isLift ? 'EXERCISE' : 'ACTIVITY'} #${idx+1}</span>
+                    </div>
                     <button class="clear-btn" style="font-size:14px;" onclick="removeExerciseRow(${idx})">REMOVE ×</button>
                 </div>
-                <input type="text" class="auth-input" placeholder="Name (e.g. ${isLift ? 'Squats' : 'Running'})" value="${ex.name}" data-idx="${idx}" data-field="name" style="text-align:left; margin-bottom:10px;">`;
+                <input type="text" class="auth-input" placeholder="Name (e.g. ${isLift ? 'Squats' : 'Running'})" value="${ex.name}" data-field="name" style="text-align:left; margin-bottom:10px;">`;
             
             if (isLift) {
                 html += `
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                    <div><label style="font-size:10px; color:#888;">Sets</label><input type="text" placeholder="Sets" value="${ex.sets||''}" data-idx="${idx}" data-field="sets"></div>
-                    <div><label style="font-size:10px; color:#888;">Reps</label><input type="text" placeholder="Reps" value="${ex.reps||''}" data-idx="${idx}" data-field="reps"></div>
-                    <div><label style="font-size:10px; color:#888;">Target Kg</label><input type="text" placeholder="Kg" value="${ex.kg||''}" data-idx="${idx}" data-field="kg"></div>
+                    <div><label style="font-size:10px; color:#888;">Sets</label><input type="text" placeholder="Sets" value="${ex.sets||''}" data-field="sets"></div>
+                    <div><label style="font-size:10px; color:#888;">Reps</label><input type="text" placeholder="Reps" value="${ex.reps||''}" data-field="reps"></div>
+                    <div><label style="font-size:10px; color:#888;">Target Kg</label><input type="text" placeholder="Kg" value="${ex.kg||''}" data-field="kg"></div>
                 </div>
                 
                 <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:8px; margin-top:10px;">
-                    <div><label style="font-size:10px; color:#888;">RPE</label><input type="text" placeholder="RPE" value="${ex.rpe||''}" data-idx="${idx}" data-field="rpe"></div>
-                    <div><label style="font-size:10px; color:#888;">Tempo</label><input type="text" placeholder="Tempo" value="${ex.tempo||''}" data-idx="${idx}" data-field="tempo"></div>
+                    <div><label style="font-size:10px; color:#888;">RPE</label><input type="text" placeholder="RPE" value="${ex.rpe||''}" data-field="rpe"></div>
+                    <div><label style="font-size:10px; color:#888;">Tempo</label><input type="text" placeholder="Tempo" value="${ex.tempo||''}" data-field="tempo"></div>
                 </div>
 
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Target Hint</label>
-                    <input type="text" placeholder="e.g. Max Stretch" value="${ex.hint || ''}" data-idx="${idx}" data-field="hint" style="text-align:left;">
+                    <input type="text" placeholder="e.g. Max Stretch" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
                 </div>`;
             } else {
                 html += `
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Target (Duration / Dist / Pace)</label>
-                    <input type="text" placeholder="e.g. 30-40 mins" value="${ex.target || ''}" data-idx="${idx}" data-field="target" style="text-align:left;">
+                    <input type="text" placeholder="e.g. 30-40 mins" value="${ex.target || ''}" data-field="target" style="text-align:left;">
                 </div>
                 <div style="margin-top:10px;">
                     <label style="font-size:10px; color:#888;">Hint / Notes</label>
-                    <input type="text" placeholder="e.g. Easy Pace" value="${ex.hint || ''}" data-idx="${idx}" data-field="hint" style="text-align:left;">
+                    <input type="text" placeholder="e.g. Easy Pace" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
                 </div>`;
             }
             html += `</div>`;
@@ -970,6 +974,35 @@
             <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="toggleTrainingEdit()">Cancel</button>
         </div>`;
         container.innerHTML = html;
+
+        // Initialize Sortable
+        const el = document.getElementById('training-edit-list');
+        Sortable.create(el, {
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: function() {
+                // Rebuild the temp list based on new DOM order
+                const rows = document.querySelectorAll('#training-edit-list .exercise-row');
+                const newList = [];
+                rows.forEach(row => {
+                    const ex = {
+                        name: row.querySelector('[data-field="name"]').value,
+                        sets: row.querySelector('[data-field="sets"]')?.value || "",
+                        reps: row.querySelector('[data-field="reps"]')?.value || "",
+                        kg: row.querySelector('[data-field="kg"]')?.value || "",
+                        rpe: row.querySelector('[data-field="rpe"]')?.value || "",
+                        tempo: row.querySelector('[data-field="tempo"]')?.value || "",
+                        hint: row.querySelector('[data-field="hint"]')?.value || "",
+                        target: row.querySelector('[data-field="target"]')?.value || ""
+                    };
+                    newList.push(ex);
+                });
+                window._tempTrainingList = newList;
+                window._tempTrainingType = document.getElementById('edit-workout-type').value;
+                renderTrainingEdit(); // Re-render to update # numbering
+            }
+        });
+
         window._tempTrainingList = null;
         window._tempTrainingType = null;
     }

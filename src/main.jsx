@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import ErrorBoundary from './components/ErrorBoundary';
+import App from './apps/legacy-tracker/App';
+import ErrorBoundary from './apps/legacy-tracker/components/ErrorBoundary';
 import { PlanProvider } from './context/PlanContext';
-import './App.css';
+import './apps/legacy-tracker/App.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

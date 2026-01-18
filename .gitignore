@@ -80,3 +80,12 @@ dist
 # Dynamically generated files
 *.sql
 backups/
+
+# Build and Cache
+dist/
+.vite/
+node_modules/
+
+# Logs and Temp
+*.log
+/home/dev/.gemini/tmp/*

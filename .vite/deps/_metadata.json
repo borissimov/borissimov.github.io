@@ -2,7 +2,45 @@
   "hash": "6f1a0091",
   "configHash": "958ab5aa",
   "lockfileHash": "86f23e2a",
-  "browserHash": "f7045fcd",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "a395e4d1",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "02c362a0",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "95345859",
+      "needsInterop": true
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "740918a0",
+      "needsInterop": false
+    },
+    "@supabase/supabase-js": {
+      "src": "../../node_modules/@supabase/supabase-js/dist/index.mjs",
+      "file": "@supabase_supabase-js.js",
+      "fileHash": "49635a01",
+      "needsInterop": false
+    },
+    "react-calendar": {
+      "src": "../../node_modules/react-calendar/dist/index.js",
+      "file": "react-calendar.js",
+      "fileHash": "08508810",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-BHGA32AN": {
+      "file": "chunk-BHGA32AN.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
 }

@@ -10,11 +10,16 @@ erDiagram
     PROFILES ||--o{ PLAN_TEMPLATES : owns
     PROFILES ||--o{ DAILY_SESSIONS : records
     PROFILES ||--o{ HEALTH_METRICS : tracks
+    PROFILES ||--o{ NUTRITION_LOGS : eats
+    PROFILES ||--o{ SUPPLEMENT_LOGS : takes
     
     PLAN_TEMPLATES ||--o{ TEMPLATE_EXERCISES : defines
     
     DAILY_SESSIONS ||--o{ TRAINING_LOGS : contains
     TEMPLATE_EXERCISES ||--o{ TRAINING_LOGS : instantiated_by
+
+    FOOD_LIBRARY ||--o{ NUTRITION_LOGS : "logged as"
+    SUPPLEMENT_LIBRARY ||--o{ SUPPLEMENT_LOGS : "logged as"
 
     PROFILES {
         uuid id PK
@@ -72,33 +77,65 @@ erDiagram
         float value
         text tags
     }
+
+    FOOD_LIBRARY {
+        uuid id PK
+        string name
+        float protein_per_100g
+        float carbs_per_100g
+        float fats_per_100g
+        float calories_per_100g
+        string category "Meat, Veg, Dairy, etc."
+    }
+
+    NUTRITION_LOGS {
+        uuid id PK
+        uuid user_id FK
+        date consumed_at
+        uuid food_id FK
+        float amount_grams
+        string meal_name "Meal 1, Refeed, etc."
+    }
+
+    SUPPLEMENT_LIBRARY {
+        uuid id PK
+        string name
+        string unit "cap, scoop, tab"
+        string default_time "08:00, Pre-Workout"
+    }
+
+    SUPPLEMENT_LOGS {
+        uuid id PK
+        uuid user_id FK
+        date consumed_at
+        uuid supplement_id FK
+        float dosage
+        boolean is_taken
+    }
 ```
 
 ## Table Descriptions
 
-### 1. `PLAN_TEMPLATES` & `TEMPLATE_EXERCISES`
-Replaces the `DEFAULT_PLAN` constant. These tables store your recurring weekly schedule.
-- **Egress Savings:** Only fetched once per week/session and cached locally.
-- **Circuit Support:** `group_id` allows the UI to group multiple exercises into a single "Round Flow."
+### 1. Training Architecture (`DAILY_SESSIONS`, `TRAINING_LOGS`)
+- **Circuit Support:** `group_id` in templates and `round_number` in logs allow the UI to render "Round 1 -> All Exercises" flows.
+- **Delta Logging:** Only the finished set is sent to the server.
 
-### 2. `DAILY_SESSIONS`
-A light wrapper for a specific day's workout.
-- Stores metadata like "Start/End" times and general workout notes.
+### 2. Nutrition Suite (`FOOD_LIBRARY`, `NUTRITION_LOGS`)
+Instead of a text list of foods, we now have a relational library.
+- **Precision:** Tracking grams of specific foods allows the app to calculate total daily protein/calories automatically.
+- **Meal Grouping:** `meal_name` allows the app to group logs into the "Meal 1", "Meal 2" structure you prefer.
 
-### 3. `TRAINING_LOGS`
-The primary "Delta" table. Every time you finish a set, **one row** is sent to Supabase.
-- **Egress Savings:** Sending 1 row (~200 bytes) vs 1 Blob (~50KB) reduces traffic by **99.6%**.
-- **Round Number:** Crucial for the Circuit redesign. Allows the UI to render: 
-  *Round 1 -> Ex A, Ex B*
-  *Round 2 -> Ex A, Ex B*
+### 3. Supplement Suite (`SUPPLEMENT_LIBRARY`, `SUPPLEMENT_LOGS`)
+- **Stacks:** You can define a "Lunch Stack" in the library and log individual items or the whole group.
+- **History:** Enables checking exactly when you took specific items (e.g., "Did I take my Vitamin D today?").
 
-### 4. `HEALTH_METRICS`
-A dedicated table for the new **Blood Pressure Tracker**.
-- `metric_type` allows for extensible health tracking (Blood Pressure, Weight, Blood Glucose, etc.) without adding new tables.
+### 4. Health Metrics (`HEALTH_METRICS`)
+- Used for the **Blood Pressure Tracker**.
+- Optimized for time-series charts.
 
 ## Impact on Egress
 | Operation | Legacy (Blob) | New (Relational) | Improvement |
 | :--- | :--- | :--- | :--- |
 | Load Today | 50 KB | 2 KB (Metadata only) | 25x Better |
-| Log 1 Set | 50 KB | 0.2 KB | 250x Better |
+| Log 1 Set/Meal | 50 KB | 0.2 KB | 250x Better |
 | View History | 1.5 MB (Month) | 15 KB (Logs only) | 100x Better |

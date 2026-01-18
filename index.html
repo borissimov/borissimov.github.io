@@ -11,7 +11,68 @@
     <style>
         :root {
             --bg-color: #121212;
---snip--
+            --card-bg: #1e1e1e;
+            --accent-color: #f29b11;
+            --primary-text: #ececec;
+            --secondary-text: #b0b0b0;
+            --border-color: #333;
+            --input-bg: #2a2a2a;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--primary-text); 
+            font-family: -apple-system, system-ui, sans-serif;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .portal-container { max-width: 500px; width: 100%; text-align: center; }
+        h1 { color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; font-size: 24px; }
+        
+        .app-grid { display: grid; gap: 20px; width: 100%; }
+        .app-card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            text-decoration: none; 
+            color: inherit; 
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .app-card:hover { border-color: var(--accent-color); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .app-card h3 { margin: 0 0 10px 0; font-size: 18px; color: var(--primary-text); }
+        .app-card p { margin: 0; font-size: 13px; color: var(--secondary-text); line-height: 1.4; }
+        
+        .default-toggle {
+            margin-top: 15px;
+            font-size: 11px;
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .default-toggle input { cursor: pointer; accent-color: var(--accent-color); }
+
+        /* Auth UI (Shared styles) */
+        .auth-container { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; }
+        .auth-input { width: 100%; margin-bottom: 15px; box-sizing: border-box; background: var(--input-bg); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 6px; font-size:14px; }
+        .auth-btn { background: var(--accent-color); color: #000; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
+        .auth-btn.secondary { background: #333; color: #fff; }
+        .hidden { display: none !important; }
+        #auth-msg { font-size: 12px; color: #f44336; margin-top: 10px; min-height: 15px; }
+
+        .user-badge { margin-bottom: 20px; font-size: 12px; color: var(--secondary-text); background: #252525; padding: 8px 15px; border-radius: 20px; display: inline-block; }
+    </style>
     <script>
         // Check for stored preference only
         const defaultApp = localStorage.getItem('regimen_default_app');

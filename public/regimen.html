@@ -455,20 +455,20 @@
     const DEFAULT_PLAN = {
         1: { // MON
             focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Conversational pace" }],
+            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Active recovery focus." }],
             supplements: [S_ELEC, S_BED],
             nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
         },
         2: { // TUE
             focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "2-0-1-2", hint: "2s HARD squeeze at peak contraction." },
-                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th." },
-                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Peak contraction hold for TUT focus." },
-                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Mind-muscle connection. Slow eccentric." },
-                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Max stretch." },
-                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "DB", rpe: "10", tempo: "2-1-1-2", hint: "Add weight to progress from BW sets." },
-                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Glutes clenched, straight spine." }
+                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "2-0-1-2", hint: "Focus on peak contraction." },
+                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Maintain upright torso." },
+                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Mind-muscle connection." },
+                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Control the eccentric." },
+                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Max stretch in hamstrings." },
+                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "DB", rpe: "10", tempo: "2-1-1-2", hint: "Full range of motion." },
+                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Strong core engagement." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
             nutrition: [
@@ -480,13 +480,13 @@
         3: { // WED
             focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "8-9", tempo: "3-1-1-0", hint: "Corrected weight from Jan 7th. Strict eccentric." },
-                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "30-45 degree incline focus." },
-                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "Neutral spine, overhead power focus." },
-                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "9-10", tempo: "3-1-1-0", hint: "Lead with elbows. No swinging." },
-                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "RPE", rpe: "9", tempo: "3-1-1-0", hint: "Spread rope at bottom for triceps peak." },
-                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Full stretch of long head." },
-                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Slow eccentric. No lumbar arching." }
+                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "8-9", tempo: "3-1-1-0", hint: "Strict form, no bouncing." },
+                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "Focus on upper chest." },
+                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "Shoulder stability focus." },
+                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "9-10", tempo: "3-1-1-0", hint: "Lead with elbows." },
+                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "RPE", rpe: "9", tempo: "3-1-1-0", hint: "Full extension." },
+                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Deep triceps stretch." },
+                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Protect lower back." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
             nutrition: [
@@ -498,12 +498,12 @@
         0: { // SUN
             focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "Maintain 24kg load from Jan 4th. High tempo." },
-                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Mechanical failure focus. Keep elbows tucked." },
-                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "8-9", tempo: "1-0-1-0", hint: "Focus on the squeeze. Matched to Jan 15th." },
-                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Aggressive leg drive to move the load." },
-                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Returning to 24kg. Explosive hip snap." },
-                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Abs-only contraction. Do not pull with arms." }
+                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "High intensity focus." },
+                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict mechanical failure." },
+                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "8-9", tempo: "1-0-1-0", hint: "Upper back engagement." },
+                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Explosive movement." },
+                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Powerful hip snap." },
+                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Isolation of abdominals." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
@@ -516,13 +516,13 @@
         4: { // THU
             focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
             training: [
-                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Solid execution on Jan 15th. Maintain load." },
-                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th." },
-                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2.5kg. Pull arc to hip." },
-                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "External rotation focus. Clean reps only." },
-                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "9-10", tempo: "3-1-1-0", hint: "Stretch emphasis. Protect elbow joint." },
-                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "9-10", tempo: "3-1-1-0", hint: "Strict form. Brachialis focus." },
-                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "No swinging. Full abdominal control." }
+                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Controlled movement." },
+                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Retract scapula fully." },
+                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Drive elbow back." },
+                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "Rear delt isolation." },
+                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "9-10", tempo: "3-1-1-0", hint: "Maximum bicep stretch." },
+                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "9-10", tempo: "3-1-1-0", hint: "Forearm and brachialis focus." },
+                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Control the swing." }
             ],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
@@ -533,7 +533,7 @@
         },
         5: { // FRI
             focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Steady pace" }],
+            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Steady breathing." }],
             supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
             nutrition: [
                 { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
@@ -543,7 +543,7 @@
         },
         6: { // SAT
             focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
-            training: [{ name: "Interval Swim", target: "15-20m", hint: "1 Sprint / 2 Recovery" }],
+            training: [{ name: "Interval Swim", target: "15-20m", hint: "High intensity intervals." }],
             supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
             nutrition: [
                 { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
@@ -612,23 +612,22 @@
 
         // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
         try {
-            const MIGRATION_KEY = 'regimen_migration_task_22_v2';
+            const MIGRATION_KEY = 'regimen_migration_task_22_v6';
             if (!localStorage.getItem(MIGRATION_KEY)) {
-                console.log("Running Migration: Clearing stale templates for Jan 18 week...");
-                // 1. Clear any user template that might override defaults
-                localStorage.removeItem('regimen_user_template');
+                console.log("Running Migration v6: Hydrating Layer 1 for Jan 18 week...");
                 
-                // 2. Clear overrides for specific dates if they exist but haven't been logged
-                const targetDates = ['2026-01-18', '2026-01-19', '2026-01-20', '2026-01-21', '2026-01-22', '2026-01-23', '2026-01-24'];
-                targetDates.forEach(d => {
-                    if (masterLogs[d] && masterLogs[d].plan_overrides) {
-                        // Check if user has actually logged anything meaningful
-                        const hasLogs = JSON.stringify(masterLogs[d]).includes('"logged":true');
-                        if (!hasLogs) {
-                            console.log(`Clearing stale override for ${d}`);
-                            delete masterLogs[d].plan_overrides;
-                        }
-                    }
+                const targetDates = {
+                    '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
+                    '2026-01-22': 4, '2026-01-23': 5, '2026-01-24': 6
+                };
+
+                Object.keys(targetDates).forEach(d => {
+                    const dayOfWeek = targetDates[d];
+                    if (!masterLogs[d]) masterLogs[d] = {};
+                    
+                    // Inject AI Plan into Layer 1 (Daily Overrides)
+                    console.log(`Hydrating Layer 1 for ${d}`);
+                    masterLogs[d].plan_overrides = JSON.parse(JSON.stringify(PLAN_JAN_18[dayOfWeek]));
                 });
                 
                 localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
@@ -1688,6 +1687,85 @@
     window.handleLogin = handleLogin;
     window.handleSignUp = handleSignUp;
     window.handleLogout = handleLogout;
+
+    // --- INITIALIZATION ---
+    function initApp() {
+        console.log("Regimen App Starting...");
+        
+        try {
+            if (typeof createClient !== 'undefined') {
+                sbClient = createClient(SB_URL, SB_KEY);
+            } else if (window.supabase && window.supabase.createClient) {
+                sbClient = window.supabase.createClient(SB_URL, SB_KEY);
+            }
+        } catch (e) {
+            console.warn("Supabase client failed to init:", e);
+        }
+
+        if (sbClient) {
+            sbClient.auth.onAuthStateChange((event, session) => {
+                console.log("Auth Event:", event);
+                updateAuthUI(session);
+            });
+        }
+
+        try {
+            userId = localStorage.getItem('regimen_user_id') || '';
+            if (!userId) {
+                userId = generateUUID();
+                localStorage.setItem('regimen_user_id', userId);
+            }
+        } catch (e) {
+            console.error("Storage Error (User ID):", e);
+            userId = 'guest_session';
+        }
+
+        const inp = document.getElementById('user-id-input');
+        if(inp) inp.value = userId;
+
+        try {
+            const saved = localStorage.getItem('regimen_master_log_v2');
+            if(saved) masterLogs = JSON.parse(saved);
+        } catch(e) { 
+            console.error("Load Error (Logs):", e); 
+        }
+
+        // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
+        try {
+            const MIGRATION_KEY = 'regimen_migration_task_22_v10';
+            if (!localStorage.getItem(MIGRATION_KEY)) {
+                console.log("Running Migration v10: Hydrating Layer 1 for Jan 18 week...");
+                
+                const targetDates = {
+                    '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
+                    '2026-01-22': 4, '2026-01-23': 5, '2026-01-24': 6
+                };
+
+                Object.keys(targetDates).forEach(d => {
+                    const dayOfWeek = targetDates[d];
+                    if (!masterLogs[d]) masterLogs[d] = {};
+                    
+                    // Inject AI Plan into Layer 1 (Daily Overrides)
+                    console.log(`Hydrating Layer 1 for ${d}`);
+                    masterLogs[d].plan_overrides = JSON.parse(JSON.stringify(PLAN_JAN_18[dayOfWeek]));
+                });
+                
+                localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+                localStorage.setItem(MIGRATION_KEY, 'true');
+                // Force reload to apply changes
+                window.location.reload();
+            }
+        } catch (e) {
+            console.error("Migration Error:", e);
+        }
+        
+        try {
+            renderDateScroller();
+            selectDate(new Date());
+        } catch (e) {
+            console.error("Render Error:", e);
+        }
+    }
 
     /*
      * --- TECHNICAL ARCHITECTURE & SYNC STRATEGY ---

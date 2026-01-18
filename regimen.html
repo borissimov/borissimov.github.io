@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Regimen Tracker Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --primary-text: #ececec;
+            --secondary-text: #b0b0b0;
+            --accent-color: #f29b11;
+            --card-bg: #1e1e1e;
+            --input-bg: #2a2a2a;
+            --border-color: #333;
+            --btn-bg: #f29b11;
+            --btn-text: #000;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+            --disabled-color: #333;
+            --disabled-text: #777;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            margin: 0;
+            padding: 0;
+            overscroll-behavior: none;
+        }
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Date Scroller (Compact) --- */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .date-scroller {
+            display: flex;
+            overflow-x: auto;
+            padding: 8px 10px;
+            gap: 6px;
+            background: #000;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .date-scroller::-webkit-scrollbar { display: none; }
+        .date-card {
+            background-color: var(--card-bg);
+            min-width: 52px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            padding: 1px 0;
+        }
+        .date-card.active {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+        .date-card.active .day-name, .date-card.active .day-num, .date-card.active .day-focus { 
+            color: #000; font-weight: 800; 
+        }
+        .day-name { font-size: 10px; text-transform: uppercase; color: var(--secondary-text); margin-bottom: 1px; line-height: 1; }
+        .day-num { font-size: 16px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+        .day-focus { font-size: 9px; text-transform: uppercase; color: var(--accent-color); line-height: 1; white-space: nowrap; max-width: 48px; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- Tabs --- */
+        .tab-nav {
+            display: flex;
+            background-color: var(--card-bg);
+        }
+        .tab-button {
+            flex: 1;
+            padding: 12px 2px;
+            border: none;
+            background: none;
+            color: var(--secondary-text);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .tab-button.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+        .tab-content {
+            display: none;
+            padding: 15px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* --- Cards & General --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .exercise-header h3 { margin: 0; font-size: 17px; }
+        
+        .target-info {
+            font-size: 11px; color: var(--secondary-text); margin-bottom: 12px;
+            background: #252525; padding: 6px 10px; border-radius: 6px;
+            display: flex; gap: 12px; align-items: center; justify-content: space-between;
+        }
+        .target-col { text-align: center; }
+        .target-col div:first-child { font-size: 8px; text-transform: uppercase; color: var(--accent-color); letter-spacing: 0.5px; margin-bottom: 2px; }
+        .target-col div:last-child { font-size: 12px; font-weight: 600; color: #fff; }
+
+        .set-row {
+            display: grid;
+            grid-template-columns: 20px 1fr 1fr 1fr 50px 30px;
+            gap: 6px; align-items: center; margin-bottom: 10px;
+        }
+        .set-row label { font-size: 12px; color: var(--secondary-text); font-weight: bold; }
+        input {
+            background-color: var(--input-bg); border: 1px solid var(--border-color); color: #fff;
+            padding: 8px 2px; border-radius: 6px; text-align: center; font-size: 15px; width: 100%; box-sizing: border-box;
+        }
+        input:focus { outline: none; border-color: var(--accent-color); }
+        
+        .log-btn-unified {
+            padding: 0;
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .log-btn-unified.active-state {
+            background-color: var(--disabled-color);
+            color: var(--disabled-text);
+            border-color: var(--disabled-color);
+        }
+
+        .clear-btn { background: none; border: none; color: var(--danger-color); font-size: 20px; cursor: pointer; padding: 0; }
+        
+        .log-item {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 12px 0; border-bottom: 1px solid #2a2a2a;
+        }
+        .log-item:last-child { border-bottom: none; }
+        .item-info { flex: 1; padding-right: 10px; }
+        .item-info p { margin: 0 0 8px 0; font-weight: 600; font-size: 14px; }
+        .item-info span { font-size: 12px; color: var(--secondary-text); display: block; margin-top: 4px; }
+        
+        .check-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .check-item { display: flex; align-items: center; font-size: 13px; color: var(--secondary-text); cursor: pointer; margin-bottom: 4px; }
+        .check-item.checked { color: var(--primary-text); }
+        .check-icon {
+            width: 16px; height: 16px; border: 1px solid #555; border-radius: 3px;
+            margin-right: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .check-item.checked .check-icon { background-color: var(--accent-color); border-color: var(--accent-color); }
+        .check-item.checked .check-icon::after { content: '✓'; font-size: 12px; color: #000; font-weight: bold; }
+
+        .mobility-input { width: 100px; margin-right: 8px; font-size: 12px; padding: 8px; text-align: left; }
+
+        .note-area {
+            width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color);
+            color: #fff; padding: 12px; border-radius: 6px; font-family: inherit; font-size: 14px;
+            resize: vertical; min-height: 80px; box-sizing: border-box; margin-top: 5px;
+        }
+
+        .workout-controls { margin-bottom: 15px; }
+        .workout-btn {
+            width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold;
+            font-size: 16px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.2s;
+        }
+        .start-btn { background-color: var(--success-color); color: #fff; }
+        .end-btn { background-color: var(--danger-color); color: #fff; margin-top: 20px; }
+        .workout-btn.active-state { background-color: var(--disabled-color); color: var(--disabled-text); border: 1px solid #444; box-shadow: none; }
+        
+        .export-section { width: 100%; background: var(--bg-color); padding: 30px 0; border-top: 1px solid var(--border-color); }
+        .export-btn {
+            background-color: var(--accent-color); color: #000; width: calc(100% - 30px); margin: 0 15px;
+            padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; border: none; cursor: pointer;
+        }
+        .auth-container { background: #1e1e1e; padding: 15px; border-radius: 8px; margin: 0 15px 15px 15px; border: 1px solid #333; }
+        .auth-input { width: 100%; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 4px; font-size:14px; }
+        .auth-btn { background: #333; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer; width: 48%; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .auth-btn.primary { background: var(--accent-color); color: #000; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="sticky-header">
+        <div id="date-scroller" class="date-scroller">
+            <!-- Dates generated by JS -->
+        </div>
+        <nav class="tab-nav">
+            <button class="tab-button" onclick="location.href='index.html?select=true'" style="flex:0.3; color:var(--accent-color); font-size:18px;">⌂</button>
+            <button class="tab-button active" onclick="switchTab('mobility', this)">Mobility</button>
+            <button class="tab-button" onclick="switchTab('training', this)">Training</button>
+            <button class="tab-button" onclick="switchTab('supps', this)">Supps</button>
+            <button class="tab-button" onclick="switchTab('nutri', this)">Nutrition</button>
+        </nav>
+    </div>
+
+    <!-- Mobility -->
+    <div id="mobility" class="tab-content active"></div>
+
+    <!-- Training -->
+    <div id="training" class="tab-content"></div>
+
+    <!-- Supplements -->
+    <div id="supps" class="tab-content"></div>
+
+    <!-- Nutrition -->
+    <div id="nutri" class="tab-content"></div>
+
+    <div class="export-section">
+        <!-- Auth UI -->
+        <div id="auth-section" class="auth-container">
+            <div id="auth-logged-out">
+                <h3 style="margin:0 0 10px 0; font-size:14px; color:#fff; text-transform:uppercase; letter-spacing:1px;">Cloud Account</h3>
+                <input type="email" id="auth-email" class="auth-input" placeholder="Email">
+                <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
+                <div style="display:flex; justify-content:space-between;">
+                    <button class="auth-btn primary" onclick="handleLogin()">Login</button>
+                    <button class="auth-btn" onclick="handleSignUp()">Sign Up</button>
+                </div>
+                <p id="auth-msg" style="font-size:11px; color:#f44336; margin-top:8px; min-height:14px;"></p>
+            </div>
+            
+            <div id="auth-logged-in" class="hidden">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+                    <div>
+                        <span style="font-size:10px; color:#888; text-transform:uppercase;">Account</span><br>
+                        <span id="user-email-display" style="font-size:13px; font-weight:bold; color:var(--primary-text);"></span>
+                        <div style="margin-top:8px;">
+                            <span style="font-size:10px; color:#888; text-transform:uppercase;">User ID</span><br>
+                            <input type="text" id="user-id-input" placeholder="UUID" style="text-align:left; font-family:monospace; font-size:11px; background:transparent; border:none; color:var(--accent-color); padding:0; width:100%;" onchange="saveUserId(this.value)">
+                        </div>
+                    </div>
+                    <button class="auth-btn" style="width:auto; padding:8px 15px;" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; padding: 0 15px;">
+            <button class="export-btn" style="flex:1; margin:0; font-size:13px;" onclick="exportData()">EXPORT</button>
+            <button class="export-btn" style="flex:1; margin:0; font-size:13px; background-color:#2196F3; color:#fff;" onclick="syncToCloud()">SYNC ⬆</button>
+            <button class="export-btn" style="flex:1; margin:0; font-size:13px; background-color:#4CAF50; color:#fff;" onclick="fetchFromCloud()">FETCH ⬇</button>
+        </div>
+        <p id="sync-status" style="text-align:center; font-size:12px; color:var(--secondary-text); margin-top:10px; min-height:15px;"></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script>
+    // --- DATA & LOGIC ---
+    const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    let selectedDate = new Date();
+    let masterLogs = {};
+    let dailyLog = {};
+    let userId = '';
+    let isNutriEditMode = false;
+    let isSuppsEditMode = false;
+    let isTrainingEditMode = false;
+
+    const DEFAULT_MOBILITY = {
+        morning: [
+            { name: "Diaphragmatic Breathing", target: "10 deep breaths (Supine)", desc: "Expand belly 360 degrees. Save Vacuums for training." },
+            { name: "Chin Tucks + Rotations", target: "10 reps (Supine)", desc: "Lie on floor. Retract head (double chin), then rotate left/right." },
+            { name: "Cat-Cow", target: "10 slow reps", desc: "Articulate every vertebrae." },
+            { name: "Quadruped T-Spine Rotations", target: "5 reps/side", desc: "Hand behind head, elbow to opposite wrist, then open to ceiling." },
+            { name: "QL Walk (Hip Walk)", target: "1 minute (Reset Hips)", desc: "Walk forward/backward on hips. Swaying side-to-side is required." },
+            { name: "Elbow 'Oil Check'", target: "20 reps (Supinate/Pronate)", desc: "Arms straight forward. Rotate palms UP and DOWN from the elbow." },
+            { name: "Short Foot Drills", target: "10 reps/foot", desc: "Start Seated. Pull big toe to heel to create an arch. Do not curl toes." }
+        ],
+        pre_workout: [
+            { name: "Dead Hang (Decompression)", target: "2 x 30s", desc: "Hang from bar. Relax spine. Breathe deep." },
+            { name: "T-Spine Extensions (Roller)", target: "10 reps", desc: "Foam Roller. Pivot on mid-back." },
+            { name: "Band Face Pulls", target: "2 sets x 15 reps", desc: "Focus on external rotation." },
+            { name: "Wrist Flexor Stretch", target: "30 seconds", desc: "Gentle kneel, palms on floor, fingers facing knees." }
+        ],
+        afternoon: [
+            { name: "Bruegger's Relief", target: "30s hold", desc: "Sit edge of chair. Palms out. Squeeze shoulder blades down. Chin tuck." },
+            { name: "Right Side Opener", target: "45s (Reach Left)", desc: "Reach RIGHT arm overhead, lean LEFT. Open compressed ribs." },
+            { name: "SCM Stretch", target: "20s/side (Look Away)", desc: "Hand on collarbone, look up and AWAY." },
+            { name: "Seated Piriformis Stretch", target: "30s/side", desc: "Ankle on knee. Lean forward." }
+        ],
+        evening: [
+            { name: "Lower Trap Wake-Up (Circuit)", target: "Circuit 2 Rounds", desc: "1. Prone Y Lift (2x12) | 2. Anti-Shrug (3x10s holds)" },
+            { name: "Floor Angel w/ Tactile Feedback", target: "15 slow reps", desc: "Towel under LEFT scapula. Keep pressure while sliding arms." },
+            { name: "Dead Hang", target: "3 x 30s", desc: "Crucial daily reset for Lordosis and Scoliosis." },
+            { name: "Bent-Knee Wall Calf", target: "1 min/side", desc: "Lean in with bent knee to target Soleus." },
+            { name: "The Couch Stretch (MANDATORY)", target: "2.5 mins/side (Squeeze Glute)", desc: "Knee on wall. SQUEEZE GLUTE. Keep torso upright." },
+            { name: "Passive Doorway Hamstring", target: "2 mins/side", desc: "Leg up frame. Relax. Let gravity work." },
+            { name: "Unilateral QL Stretch", target: "Right: 90s, Left: 45s", desc: "Cross Right leg behind, lean Left. Feel deep stretch in right lower back." },
+            { name: "Child's Pose w/ Lateral Reach", target: "1 min (Reach LEFT)", desc: "Knees wide. Walk hands to the LEFT to stretch Right Lat/QL." }
+        ]
+    };
+
+    const S_ELEC = { time: "08:00", name: "Morning", details: "Electrolytes (1 dose), Water" };
+    const S_PRE = { time: "13:30", name: "Pre-Workout", details: "Creatine (1 scoop / 5g), Citrulline (2 scoops / 6g), Coffee" };
+    const S_INTRA = { time: "13:50", name: "Intra-Workout", details: "EAA (3 scoops / 20g)" };
+    const S_POST = { time: "15:00", name: "Post-Workout", details: "Marine Collagen (5 scoops / 12.5g)" };
+    const S_BED = { time: "22:00", name: "Bedtime", details: "Ashwa+Mag+B6 (4 caps), OptiZinc (1 cap), Boron (1 cap), B6 (1 cap)" };
+    const STACK_M1 = { time: "With Meal 1", name: "Lunch Stack", details: "Creatine (1 scoop / 5g), Vit&Min Forte (2 tabs), Calcium Citrate (3g), Kelp (1 cap), Vit C (1g)" };
+    const STACK_M1_FISH = { time: "With Meal 1", name: "Lunch Stack", details: "D3+K2 (1 tab), Vit&Min Forte (2 tabs), Calcium Citrate (3g), Kelp (1 cap), Vit C (1g)" };
+    const STACK_M1_MEAT = { time: "With Meal 1", name: "Lunch Stack", details: "Omega 3 Ultra (4 caps), D3+K2 (1 tab), Vit&Min Forte (2 tabs), Calcium Citrate (3g), Kelp (1 cap), Vit C (1g)" };
+    const STACK_M1_WED = { time: "With Meal 1", name: "Lunch Stack", details: "Calcium Citrate (3g), Vit C (1g)" };
+    const STACK_M2 = { time: "With Meal 2", name: "Dinner Stack", details: "Magnesium Citrate (2.7g)" };
+    const HYDRA = { time: "All Day", name: "Hydration", details: "Water (4-5L), Lo Salt" };
+
+    // --- AI PLAN (Layer 1 Hydration Source) ---
+    const PLAN_JAN_18 = {
+        0: { // SUN
+            focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "Match Jan 4th load. High tempo for glycogen depletion." },
+                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict form. Focus on mechanical failure." },
+                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "9", tempo: "1-0-1-0", hint: "Squeeze at top. Weight matched to Jan 15th performance." },
+                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Aggressive leg drive focus." },
+                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Returning to 24kg for explosive hip snap." },
+                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Spinal flexion focus. Do not use arms." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Skimmed Curd - 250g, Olive Oil - 13g (1 tbsp)" },
+                { time: "20:00", name: "FAST START", details: "Begin 42h Fast" }
+            ]
+        },
+        1: { // MON
+            focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Active recovery during the fast. Prioritize electrolytes." }],
+            supplements: [S_ELEC, S_BED],
+            nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
+        },
+        2: { // TUE
+            focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "40", rpe: "9", tempo: "2-0-1-2", hint: "Recommended starting weight. Focus on the 2s hard squeeze at the top." },
+                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Progression: +2kg from Jan 6th. Elbows down, deep range." },
+                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Peak contraction hold for maximum TUT." },
+                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Mind-muscle connection. Slow eccentric." },
+                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2kg from Jan 6th. Max stretch, soft knees." },
+                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "10", rpe: "10", tempo: "2-1-1-2", hint: "Recommended weight to reach failure in high rep range." },
+                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Glutes clenched hard to stabilize lumbar spine." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
+            nutrition: [
+                { time: "14:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
+                { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
+            ]
+        },
+        3: { // WED
+            focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Strict control. Corrected weight verified from Jan 7th log." },
+                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "30-45 degree incline. Focus on chest stretch." },
+                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "75 degree incline. Neutral spine." },
+                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "10", tempo: "3-1-1-0", hint: "Lead with elbows. Strict isolation." },
+                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "15-17.5", rpe: "9", tempo: "3-1-1-0", hint: "Match Jan 7th performance intensity. Spread rope at bottom." },
+                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "10-12.5", rpe: "10", tempo: "3-1-1-0", hint: "Match Jan 7th performance. Focus on the deep long-head stretch." },
+                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Slow and controlled. Do not allow lower back to arch." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g" },
+                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Zucchini - 200g, Olive Oil - 25g (2 tbsp)" }
+            ]
+        },
+        4: { // THU
+            focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Maintain Jan 15th load and strict form." },
+                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +5kg from Jan 15th. Keep chest high." },
+                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Progression: +2.5kg from Jan 15th. Arc DB towards hip." },
+                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "External rotation focus. Clean, technical reps." },
+                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "10", tempo: "3-1-1-0", hint: "Full stretch behind body. Do not swing." },
+                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Brachialis focus. Strict vertical pull." },
+                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Hanging leg raises with full abdominal control." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
+                { time: "19:30", name: "Meal 2", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
+            ]
+        },
+        5: { // FRI
+            focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Consistency and breathing focus. Steady pace." }],
+            supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
+                { time: "16:00", name: "Meal 1", details: "Sardines - 400g, Lettuce - 200g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Skyr - 250g" }
+            ]
+        },
+        6: { // SAT
+            focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Interval Swim", target: "15-20m", hint: "1 Lap Sprint (90% effort) / 2 Laps Recovery pace." }],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Skyr - 250g, Olive Oil - 13g (1 tbsp)" }
+            ]
+        }
+    };
+
+    const DEFAULT_PLAN = {
+        1: { // MON
+            focus: "ACTIVE RECOVERY", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Walking (LISS)", target: "30-60m", hint: "Active recovery focus." }],
+            supplements: [S_ELEC, S_BED],
+            nutrition: [{ time: "All Day", name: "FASTING", details: "Zero Calories" }, HYDRA]
+        },
+        2: { // TUE
+            focus: "LEGS (VOLUME)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Machine Hip Thrusts", sets: 3, reps: "10-12", kg: "-", rpe: "9", tempo: "2-0-1-2", hint: "Focus on peak contraction." },
+                { name: "Goblet Squats", sets: 4, reps: "15-20", kg: "26", rpe: "9", tempo: "3-0-1-0", hint: "Maintain upright torso." },
+                { name: "Leg Extensions", sets: 3, reps: "12-15", kg: "30", rpe: "10", tempo: "2-0-1-2", hint: "Mind-muscle connection." },
+                { name: "Lying Leg Curls", sets: 3, reps: "12-15", kg: "12.5", rpe: "10", tempo: "2-0-1-0", hint: "Control the eccentric." },
+                { name: "DB RDL", sets: 3, reps: "12-15", kg: "34", rpe: "9", tempo: "3-1-1-0", hint: "Max stretch in hamstrings." },
+                { name: "Calf Raises", sets: 4, reps: "20-25", kg: "DB", rpe: "10", tempo: "2-1-1-2", hint: "Full range of motion." },
+                { name: "Plank", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "Static", hint: "Strong core engagement." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1, STACK_M2],
+            nutrition: [
+                { time: "14:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                { time: "16:00", name: "Meal 1", details: "Hake - 300g (Raw), Rice - 150g (Dry), Cucumber - 150g" },
+                { time: "19:30", name: "Meal 2", details: "Hake - 260g (Raw), Rice - 100g (Dry), Lettuce" }
+            ]
+        },
+        3: { // WED
+            focus: "PUSH (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "DB Flat Bench", sets: 4, reps: "8-12", kg: "20", rpe: "8-9", tempo: "3-1-1-0", hint: "Strict form, no bouncing." },
+                { name: "DB Incline Bench", sets: 3, reps: "10-12", kg: "17.5", rpe: "9", tempo: "3-1-1-0", hint: "Focus on upper chest." },
+                { name: "High Incline DB Press", sets: 3, reps: "10-12", kg: "15", rpe: "9", tempo: "3-1-1-0", hint: "Shoulder stability focus." },
+                { name: "DB Lateral Raise", sets: 3, reps: "12-15", kg: "7.5", rpe: "9-10", tempo: "3-1-1-0", hint: "Lead with elbows." },
+                { name: "Cable Rope Pushdown", sets: 3, reps: "10-12", kg: "RPE", rpe: "9", tempo: "3-1-1-0", hint: "Full extension." },
+                { name: "Overhead Rope Ext", sets: 3, reps: "12-15", kg: "8", rpe: "10", tempo: "3-1-1-0", hint: "Deep triceps stretch." },
+                { name: "Ab Wheel Rollout", sets: 3, reps: "8-12", kg: "BW", rpe: "9", tempo: "4-0-1-0", hint: "Protect lower back." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_WED, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g" },
+                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Zucchini - 200g, Olive Oil - 25g (2 tbsp)" }
+            ]
+        },
+        0: { // SUN
+            focus: "METABOLIC", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Goblet Squats", sets: 4, reps: "12-15", kg: "24", rpe: "8", tempo: "1-0-X-0", hint: "High intensity focus." },
+                { name: "Push-ups", sets: 4, reps: "Failure", kg: "BW", rpe: "10", tempo: "1-0-X-0", hint: "Strict mechanical failure." },
+                { name: "DB Bent-Over Rows", sets: 4, reps: "12-15", kg: "17.5", rpe: "8-9", tempo: "1-0-1-0", hint: "Upper back engagement." },
+                { name: "DB Push Press", sets: 4, reps: "10-12", kg: "12.5", rpe: "9", tempo: "X-0-X-0", hint: "Explosive movement." },
+                { name: "DB/KB Swings", sets: 4, reps: "20-25", kg: "24", rpe: "9", tempo: "X-0-X-0", hint: "Powerful hip snap." },
+                { name: "Finisher: Cable Crunch", sets: 3, reps: "12-15", kg: "55", rpe: "10", tempo: "2-0-1-1", hint: "Isolation of abdominals." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Skimmed Curd - 250g, Olive Oil - 13g (1 tbsp)" },
+                { time: "20:00", name: "FAST START", details: "Begin 42h Fast" }
+            ]
+        },
+        4: { // THU
+            focus: "PULL (TUT)", type: "LIFT", mobility: DEFAULT_MOBILITY,
+            training: [
+                { name: "Wide Lat Pulldown", sets: 4, reps: "10-12", kg: "50", rpe: "8-9", tempo: "3-1-1-0", hint: "Controlled movement." },
+                { name: "V-Handle Cable Row", sets: 4, reps: "10-12", kg: "40", rpe: "9", tempo: "3-1-1-0", hint: "Retract scapula fully." },
+                { name: "1-Arm DB Row", sets: 3, reps: "8-10", kg: "20", rpe: "9", tempo: "3-1-1-0", hint: "Drive elbow back." },
+                { name: "Face Pulls", sets: 3, reps: "15-20", kg: "7.5", rpe: "8", tempo: "3-1-1-0", hint: "Rear delt isolation." },
+                { name: "Incline DB Curl", sets: 3, reps: "10-12", kg: "6", rpe: "9-10", tempo: "3-1-1-0", hint: "Maximum bicep stretch." },
+                { name: "Hammer Curls", sets: 3, reps: "10-12", kg: "8", rpe: "9-10", tempo: "3-1-1-0", hint: "Forearm and brachialis focus." },
+                { name: "Toes to Bar/Knees", sets: 3, reps: "Failure", kg: "BW", rpe: "10", tempo: "3-1-1-0", hint: "Control the swing." }
+            ],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Workout", details: "Collagen (12.5g), Skimmed Curd - 300g" },
+                { time: "16:00", name: "Meal 1", details: "Chicken Breast - 500g (Raw), Broccoli - 250g, Olive Oil - 10g (2 tsp)" },
+                { time: "19:30", name: "Meal 2", details: "Cod Liver - 120g (Canned), Cucumber - 150g" }
+            ]
+        },
+        5: { // FRI
+            focus: "SWIM (LISS)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Moderate Swim", target: "30-45m", hint: "Steady breathing." }],
+            supplements: [S_ELEC, { time: "13:50", name: "Pre-Swim", details: "EAA (3 scoops / 20g)" }, S_BED, STACK_M1_FISH, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 350g" },
+                { time: "16:00", name: "Meal 1", details: "Sardines - 400g, Lettuce - 200g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Tuna - 112g (Drained), Skyr - 250g" }
+            ]
+        },
+        6: { // SAT
+            focus: "SWIM (HIIT)", type: "CARDIO", mobility: DEFAULT_MOBILITY,
+            training: [{ name: "Interval Swim", target: "15-20m", hint: "High intensity intervals." }],
+            supplements: [S_ELEC, S_PRE, S_INTRA, S_BED, STACK_M1_MEAT, STACK_M2],
+            nutrition: [
+                { time: "15:00", name: "Post-Swim", details: "Collagen (12.5g), Skimmed Curd - 250g" },
+                { time: "16:00", name: "Meal 1", details: "Pork Loin - 450g (Raw), Cabbage - 200g, Olive Oil - 13g (1 tbsp)" },
+                { time: "19:30", name: "Meal 2", details: "Skyr - 250g, Olive Oil - 13g (1 tbsp)" }
+            ]
+        }
+    };
+
+    function save() {
+        const key = formatDateKey(selectedDate);
+        masterLogs[key] = dailyLog;
+        try {
+            localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+        } catch (e) {
+            console.error("Save Error:", e);
+        }
+    }
+
+    // --- SUPABASE CONFIG ---
+    const SB_URL = 'https://vhqgufwgzspwmztpswdn.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZocWd1ZndnenNwd216dHBzd2RuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3NTc2NjUsImV4cCI6MjA4MzMzMzY2NX0.0z_hSGbzjzSWkXaZjgJ76uWsVdBa4h0OCkzEXs727pc';
+    let sbClient = null;
+
+    // --- INITIALIZATION ---
+    function initApp() {
+        console.log("Regimen App Starting...");
+        
+        try {
+            if (typeof createClient !== 'undefined') {
+                sbClient = createClient(SB_URL, SB_KEY);
+            } else if (window.supabase && window.supabase.createClient) {
+                sbClient = window.supabase.createClient(SB_URL, SB_KEY);
+            }
+        } catch (e) {
+            console.warn("Supabase client failed to init:", e);
+        }
+
+        if (sbClient) {
+            sbClient.auth.onAuthStateChange((event, session) => {
+                console.log("Auth Event:", event);
+                updateAuthUI(session);
+            });
+        }
+
+        try {
+            userId = localStorage.getItem('regimen_user_id') || '';
+            if (!userId) {
+                userId = generateUUID();
+                localStorage.setItem('regimen_user_id', userId);
+            }
+        } catch (e) {
+            console.error("Storage Error (User ID):", e);
+            userId = 'guest_session';
+        }
+
+        const inp = document.getElementById('user-id-input');
+        if(inp) inp.value = userId;
+
+        try {
+            const saved = localStorage.getItem('regimen_master_log_v2');
+            if(saved) masterLogs = JSON.parse(saved);
+        } catch(e) { 
+            console.error("Load Error (Logs):", e); 
+        }
+
+        // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
+        try {
+            const MIGRATION_KEY = 'regimen_migration_task_22_v6';
+            if (!localStorage.getItem(MIGRATION_KEY)) {
+                console.log("Running Migration v6: Hydrating Layer 1 for Jan 18 week...");
+                
+                const targetDates = {
+                    '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
+                    '2026-01-22': 4, '2026-01-23': 5, '2026-01-24': 6
+                };
+
+                Object.keys(targetDates).forEach(d => {
+                    const dayOfWeek = targetDates[d];
+                    if (!masterLogs[d]) masterLogs[d] = {};
+                    
+                    // Inject AI Plan into Layer 1 (Daily Overrides)
+                    console.log(`Hydrating Layer 1 for ${d}`);
+                    masterLogs[d].plan_overrides = JSON.parse(JSON.stringify(PLAN_JAN_18[dayOfWeek]));
+                });
+                
+                localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+                localStorage.setItem(MIGRATION_KEY, 'true');
+                // Force reload to apply changes
+                window.location.reload();
+            }
+        } catch (e) {
+            console.error("Migration Error:", e);
+        }
+        
+        try {
+            renderDateScroller();
+            selectDate(new Date());
+        } catch (e) {
+            console.error("Render Error:", e);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+
+    // --- HELPER FUNCTIONS ---
+
+    function isValidUUID(uuid) {
+        const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return regex.test(uuid);
+    }
+
+    function generateUUID() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const msg = document.getElementById('auth-msg');
+        if(!email || !pass) { msg.innerText = "Email and Password required."; return; }
+        msg.innerText = "Logging in...";
+        msg.style.color = "var(--accent-color)";
+        const { error } = await sbClient.auth.signInWithPassword({ email, password: pass });
+        if(error) { msg.innerText = error.message; msg.style.color = "var(--danger-color)"; } else msg.innerText = "";
+    }
+
+    async function handleSignUp() {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const msg = document.getElementById('auth-msg');
+        if(!email || !pass) { msg.innerText = "Email and Password required."; return; }
+        msg.innerText = "Signing up...";
+        msg.style.color = "var(--accent-color)";
+        const { error } = await sbClient.auth.signUp({ email, password: pass });
+        if(error) { msg.innerText = error.message; msg.style.color = "var(--danger-color)"; } else {
+            msg.style.color = "var(--success-color)";
+            msg.innerText = "Check your email for confirmation!";
+        }
+    }
+
+    async function handleLogout() {
+        if(confirm("Logout? Cloud ID will revert to local guest ID.")) {
+            await sbClient.auth.signOut();
+            const guestId = generateUUID();
+            saveUserId(guestId);
+            const inp = document.getElementById('user-id-input');
+            if(inp) inp.value = guestId;
+        }
+    }
+
+    function updateAuthUI(session) {
+        const loggedIn = !!session;
+        const outDiv = document.getElementById('auth-logged-out');
+        const inDiv = document.getElementById('auth-logged-in');
+        const inp = document.getElementById('user-id-input');
+        
+        if (outDiv) outDiv.classList.toggle('hidden', loggedIn);
+        if (inDiv) inDiv.classList.toggle('hidden', !loggedIn);
+        
+        if(loggedIn) {
+            document.getElementById('user-email-display').innerText = session.user.email;
+            userId = session.user.id;
+            localStorage.setItem('regimen_user_id', userId);
+            if(inp) {
+                inp.value = userId;
+                inp.disabled = true;
+                inp.style.color = "var(--accent-color)";
+            }
+        } else {
+            if(inp) {
+                inp.disabled = false;
+                inp.style.color = "#888";
+            }
+        }
+    }
+
+    function saveUserId(val) {
+        userId = val;
+        try { localStorage.setItem('regimen_user_id', val); } catch(e) {}
+    }
+
+    async function fetchFromCloud() {
+        const statusEl = document.getElementById('sync-status');
+        if (!sbClient) { alert("Database connection failed."); return; }
+        if (!userId) { alert("User ID required."); return; }
+        
+        statusEl.innerText = "Fetching...";
+        statusEl.style.color = "var(--accent-color)";
+
+        try {
+            const { data, error } = await sbClient
+                .from('REGI_daily_logs')
+                .select('date, data')
+                .eq('user_id', userId)
+                .order('date', { ascending: true }); 
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                statusEl.innerText = "No cloud data found.";
+                return;
+            }
+
+            let count = 0;
+            let latestTemplate = null;
+
+            data.forEach(row => {
+                if (row.data && row.data.user_performance) {
+                    const perf = row.data.user_performance;
+                    const mobilityCount = perf.mobility ? Object.keys(perf.mobility).length : 0;
+                    console.log(`[Fetch] Merging ${row.date} (Mobility sections: ${mobilityCount})`);
+                    masterLogs[row.date] = perf;
+                    
+                    if (row.data.user_template_snapshot) {
+                        latestTemplate = row.data.user_template_snapshot;
+                    }
+                    count++;
+                }
+            });
+
+            try {
+                localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+            } catch (e) {
+                console.error("Storage Error (History):", e);
+            }
+
+            if (latestTemplate) {
+                console.log("[Fetch] Restoring User Template from Cloud backup.");
+                try {
+                    localStorage.setItem('regimen_user_template', JSON.stringify(latestTemplate));
+                } catch (e) {
+                    console.error("Storage Error (Template):", e);
+                }
+            }
+
+            selectDate(selectedDate); 
+            
+            statusEl.innerText = `Fetched ${count} days + Schedule.`;
+            statusEl.style.color = "var(--success-color)";
+            setTimeout(() => statusEl.innerText = "", 3000);
+
+        } catch (err) {
+            console.error("Fetch Error", err);
+            statusEl.innerText = "Fetch Failed.";
+            statusEl.style.color = "var(--danger-color)";
+        }
+    }
+
+    async function syncToCloud() {
+        const statusEl = document.getElementById('sync-status');
+        if (!sbClient) { alert("Database connection failed."); return; }
+        if (!userId) { alert("User ID required."); return; }
+        
+        statusEl.innerText = "Syncing...";
+        statusEl.style.color = "var(--accent-color)";
+
+        try {
+            let currentTemplate = null;
+            try {
+                const savedTmpl = localStorage.getItem('regimen_user_template');
+                if (savedTmpl) currentTemplate = JSON.parse(savedTmpl);
+            } catch(e) {}
+
+            const updates = [];
+            for (const dateKey of Object.keys(masterLogs)) {
+                const dateObj = new Date(dateKey);
+                const plan = getPlanForDate(dateObj); 
+                const perf = masterLogs[dateKey];
+                
+                const mobilityCount = perf.mobility ? Object.values(perf.mobility).reduce((a, s) => a + Object.keys(s).length, 0) : 0;
+                console.log(`[Sync] Preparing ${dateKey} (${mobilityCount} mobility logs)`);
+
+                const snapshot = {
+                    day_info: { date: dateKey, day: DAYS[dateObj.getDay()], focus: plan.focus, workout_type: plan.type },
+                    plan_definitions: plan, 
+                    user_performance: perf,  
+                    user_template_snapshot: currentTemplate 
+                };
+
+                updates.push({
+                    user_id: userId,
+                    date: dateKey,
+                    data: snapshot,
+                    updated_at: new Date().toISOString()
+                });
+            }
+
+            if (updates.length === 0) {
+                statusEl.innerText = "Nothing to sync.";
+                return;
+            }
+
+            const { error } = await sbClient
+                .from('REGI_daily_logs')
+                .upsert(updates, { onConflict: 'user_id, date' });
+
+            if (error) throw error;
+
+            statusEl.innerText = "Sync Complete!";
+            statusEl.style.color = "var(--success-color)";
+            setTimeout(() => statusEl.innerText = "", 3000);
+
+        } catch (err) {
+            console.error("Sync Error", err);
+            statusEl.innerText = "Sync Failed. See Console.";
+            statusEl.style.color = "var(--danger-color)";
+        }
+    }
+
+    function formatDateKey(date) { return date.toISOString().split('T')[0]; }
+
+    function getPlanForDate(dateObj) {
+        const dayOfWeek = dateObj.getDay();
+        const dateKey = formatDateKey(dateObj);
+        
+        if (masterLogs[dateKey]?.plan_overrides) {
+            return masterLogs[dateKey].plan_overrides;
+        }
+
+        let userTemplates = {};
+        try {
+            const saved = localStorage.getItem('regimen_user_template');
+            if(saved) userTemplates = JSON.parse(saved);
+        } catch(e) {}
+        
+        if (userTemplates[dayOfWeek]) {
+            return userTemplates[dayOfWeek];
+        }
+
+        return DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
+    }
+
+    function renderDateScroller() {
+        const scroller = document.getElementById('date-scroller');
+        scroller.innerHTML = '';
+        const start = new Date('2026-01-02');
+        const end = new Date('2026-02-02');
+        
+        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+            const dateObj = new Date(d);
+            const isToday = dateObj.toDateString() === new Date().toDateString();
+            const plan = getPlanForDate(dateObj);
+            const card = document.createElement('div');
+            card.className = 'date-card';
+            card.dataset.date = formatDateKey(dateObj);
+            if (isToday) card.classList.add('active');
+            
+            let focusLabel = plan.focus.split('(')[0].trim();
+            // Abbreviate only for the date selector cards
+            if (focusLabel.toUpperCase() === "ACTIVE RECOVERY") focusLabel = "AR";
+            if (focusLabel.toUpperCase() === "METABOLIC") focusLabel = "META";
+
+            card.innerHTML = `
+                <span class="day-name">${DAYS[dateObj.getDay()]}</span>
+                <span class="day-num">${dateObj.getDate()}</span>
+                <span class="day-focus">${focusLabel}</span>
+            `;
+            card.onclick = () => selectDate(dateObj);
+            scroller.appendChild(card);
+        }
+    }
+
+    function selectDate(dateObj) {
+        selectedDate = dateObj;
+        const key = formatDateKey(dateObj);
+        if (!masterLogs[key]) masterLogs[key] = {};
+        dailyLog = masterLogs[key];
+        document.querySelectorAll('.date-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.date === key);
+            if(c.dataset.date === key) c.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+        isNutriEditMode = false;
+        isSuppsEditMode = false;
+        isTrainingEditMode = false;
+        renderMobility(); renderTraining(); renderSupps(); renderNutri();
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function renderMobility() {
+        const plan = getPlanForDate(selectedDate);
+        const container = document.getElementById('mobility');
+        let html = '';
+        if (plan.mobility) {
+            Object.keys(plan.mobility).forEach(section => {
+                html += `<div class="card"><h2>${section.replace('_', ' ').toUpperCase()}</h2>`;
+                plan.mobility[section].forEach((item, idx) => {
+                    const logData = dailyLog.mobility?.[section]?.[idx] || {};
+                    html += `
+                        <div class="log-item">
+                            <div class="item-info">
+                                <p>${item.name}</p>
+                                <span>${item.target}</span>
+                                <span style="color:#888; font-style:italic;">${item.desc}</span>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <input type="text" class="mobility-input" placeholder="Notes" value="${logData.note || ''}" onchange="logMobilityNote('${section}', ${idx}, this.value)">
+                                <div style="width:60px; margin-left:8px;">
+                                    <button class="log-btn-unified ${logData.logged ? 'active-state' : ''}" onclick="logMobility('${section}', ${idx})">${logData.logged ? 'DONE' : 'LOG'}</button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            });
+        }
+        html += `<div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('mobility', this.value)">${dailyLog.notes?.mobility || ''}</textarea></div>`;
+        container.innerHTML = html;
+    }
+
+    function renderTraining() {
+        if (isTrainingEditMode) {
+            renderTrainingEdit();
+            return;
+        }
+        const plan = getPlanForDate(selectedDate);
+        const container = document.getElementById('training');
+        let html = `<div class="workout-controls">
+            <button class="workout-btn start-btn ${dailyLog.session?.start ? 'active-state' : ''}" onclick="toggleSession('start')">${dailyLog.session?.start ? 'STARTED' : 'START WORKOUT'}</button>
+        </div>
+        <div class="card" style="position:relative;">
+            <button class="auth-btn primary" style="position:absolute; right:10px; top:10px; width:auto; padding:5px 10px;" onclick="toggleTrainingEdit()">EDIT</button>
+            <h2>${plan.focus}</h2>`;
+        
+        if (plan.type === 'CARDIO') {
+            const ex = plan.training[0];
+            const logData = dailyLog.training?.[0] || {};
+            html += `<div class="log-item" style="display:block;">
+                <div class="exercise-header"><h3>${ex.name}</h3></div>
+                <div style="margin-bottom:10px; color:var(--secondary-text); font-size:13px;">Target: ${ex.target} | ${ex.hint}</div>
+                <div style="display:grid; grid-template-columns: 1fr 60px; gap:10px;">
+                     <input type="text" placeholder="Duration / Dist / Notes" value="${logData.note||''}" onchange="logCardio(0, this.value)" style="text-align:left;">
+                     <button class="log-btn-unified ${logData.logged ? 'active-state' : ''}" onclick="toggleCardio(0)">${logData.logged ? 'DONE' : 'LOG'}</button>
+                </div>
+            </div>`;
+        } else {
+            plan.training.forEach((ex, idx) => {
+                const sets = dailyLog.training?.[idx] || {};
+                const labelType = plan.type === 'LIFT' && !ex.name.includes("Finisher") ? "ROUND" : "SET";
+                html += `<div style="margin-bottom:20px;">
+                    <div class="exercise-header"><h3>${ex.name}</h3></div>
+                    <div class="target-info">
+                        <div class="target-col"><div>${labelType}S</div><div>${ex.sets}</div></div>
+                        <div class="target-col"><div>REPS</div><div>${ex.reps}</div></div>
+                        <div class="target-col"><div>KG</div><div>${ex.kg || '-'}</div></div>
+                        <div class="target-col"><div>RPE</div><div>${ex.rpe}</div></div>
+                        <div class="target-col"><div>TEMPO</div><div>${ex.tempo}</div></div>
+                    </div>
+                    ${ex.hint ? `<div style="color:#f39c12; font-size:11px; margin-top:4px; font-weight:bold; letter-spacing:0.3px;">${ex.hint}</div>` : ''}`;
+                for(let i=0; i<ex.sets; i++) {
+                    const s = sets[i] || {};
+                    html += `<div class="set-row">
+                        <label>${i+1}</label>
+                        <input type="number" placeholder="R" value="${s.reps||''}" onchange="logSet(${idx}, ${i}, 'reps', this.value)">
+                        <input type="number" placeholder="Kg" value="${s.weight||''}" onchange="logSet(${idx}, ${i}, 'weight', this.value)">
+                        <input type="number" placeholder="E" value="${s.rpe||''}" onchange="logSet(${idx}, ${i}, 'rpe', this.value)">
+                        <button class="log-btn-unified ${s.logged?'active-state':''}" onclick="toggleSet(${idx}, ${i})">${s.logged?'DONE':'LOG'}</button>
+                        <button class="clear-btn" onclick="clearSet(${idx}, ${i})">×</button>
+                    </div>`;
+                }
+                html += `</div>`;
+            });
+        }
+        html += `</div><div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('training', this.value)">${dailyLog.notes?.training || ''}</textarea></div><div class="workout-controls"><button class="workout-btn end-btn ${dailyLog.session?.end ? 'active-state' : ''}" onclick="toggleSession('end')">${dailyLog.session?.end ? 'ENDED' : 'END WORKOUT'}</button></div>`;
+        container.innerHTML = html;
+    }
+    function toggleTrainingEdit() {
+        isTrainingEditMode = !isTrainingEditMode;
+        if(!isTrainingEditMode) window._tempTrainingList = null;
+        renderTraining();
+    }
+
+    function renderTrainingEdit() {
+        const plan = getPlanForDate(selectedDate);
+        const currentType = window._tempTrainingType || plan.type;
+        const list = window._tempTrainingList || plan.training || [];
+        const container = document.getElementById('training');
+        
+        let html = `<div class="card">
+            <h2>EDIT TRAINING PLAN</h2>
+            <div style="margin-bottom:15px;">
+                <label style="font-size:12px; color:var(--secondary-text);">Focus Label:</label>
+                <input type="text" id="edit-focus-label" class="auth-input" value="${plan.focus}" style="margin-top:5px; text-align:left;">
+                
+                <label style="font-size:12px; color:var(--secondary-text); margin-top:10px; display:block;">Workout Type:</label>
+                <select id="edit-workout-type" class="auth-input" style="margin-top:5px; background:var(--input-bg); color:#fff;" onchange="updateTrainingEditType()">
+                    <option value="LIFT" ${currentType==='LIFT'?'selected':''}>LIFT</option>
+                    <option value="CARDIO" ${currentType==='CARDIO'?'selected':''}>CARDIO</option>
+                </select>
+            </div>
+            <div id="training-edit-list">`;
+
+        list.forEach((ex, idx) => {
+            const isLift = currentType === 'LIFT';
+            html += `<div class="log-item exercise-row" style="display:block; background:#252525; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #444;" data-idx="${idx}">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="drag-handle" style="cursor:grab; font-size:20px; color:#666;">⋮⋮</span>
+                        <span style="font-size:12px; color:var(--accent-color); font-weight:bold;">${isLift ? 'EXERCISE' : 'ACTIVITY'} #${idx+1}</span>
+                    </div>
+                    <button class="clear-btn" style="font-size:14px;" onclick="removeExerciseRow(${idx})">REMOVE ×</button>
+                </div>
+                <input type="text" class="auth-input" placeholder="Name (e.g. ${isLift ? 'Squats' : 'Running'})" value="${ex.name}" data-field="name" style="text-align:left; margin-bottom:10px;">`;
+            
+            if (isLift) {
+                html += `
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                    <div><label style="font-size:10px; color:#888;">Sets</label><input type="text" placeholder="Sets" value="${ex.sets||''}" data-field="sets"></div>
+                    <div><label style="font-size:10px; color:#888;">Reps</label><input type="text" placeholder="Reps" value="${ex.reps||''}" data-field="reps"></div>
+                    <div><label style="font-size:10px; color:#888;">Target Kg</label><input type="text" placeholder="Kg" value="${ex.kg||''}" data-field="kg"></div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:8px; margin-top:10px;">
+                    <div><label style="font-size:10px; color:#888;">RPE</label><input type="text" placeholder="RPE" value="${ex.rpe||''}" data-field="rpe"></div>
+                    <div><label style="font-size:10px; color:#888;">Tempo</label><input type="text" placeholder="Tempo" value="${ex.tempo||''}" data-field="tempo"></div>
+                </div>
+
+                <div style="margin-top:10px;">
+                    <label style="font-size:10px; color:#888;">Target Hint</label>
+                    <input type="text" placeholder="e.g. Max Stretch" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
+                </div>`;
+            } else {
+                html += `
+                <div style="margin-top:10px;">
+                    <label style="font-size:10px; color:#888;">Target (Duration / Dist / Pace)</label>
+                    <input type="text" placeholder="e.g. 30-40 mins" value="${ex.target || ''}" data-field="target" style="text-align:left;">
+                </div>
+                <div style="margin-top:10px;">
+                    <label style="font-size:10px; color:#888;">Hint / Notes</label>
+                    <input type="text" placeholder="e.g. Easy Pace" value="${ex.hint || ''}" data-field="hint" style="text-align:left;">
+                </div>`;
+            }
+            html += `</div>`;
+        });
+
+        html += `</div>
+            <button class="auth-btn primary" style="width:100%; margin-bottom:10px;" onclick="addExerciseRow()">+ Add ${currentType === 'LIFT' ? 'Exercise' : 'Activity'}</button>
+            <div style="display:flex; gap:10px;">
+                <button class="export-btn" style="flex:1; margin:0;" onclick="saveTrainingEdit(false)">SAVE TODAY ONLY</button>
+                <button class="export-btn" style="flex:1; margin:0; background:#2196F3;" onclick="saveTrainingEdit(true)">SAVE FOR ALL ${DAYS[selectedDate.getDay()]}S</button>
+            </div>
+            <button class="auth-btn" style="width:100%; margin-top:10px; background:#555; font-size:11px;" onclick="loadTrainingDefaults()">LOAD SYSTEM DEFAULTS</button>
+            <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="toggleTrainingEdit()">Cancel</button>
+        </div>`;
+        container.innerHTML = html;
+
+        // Initialize Sortable
+        const el = document.getElementById('training-edit-list');
+        Sortable.create(el, {
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: function() {
+                // Rebuild the temp list based on new DOM order
+                const rows = document.querySelectorAll('#training-edit-list .exercise-row');
+                const newList = [];
+                rows.forEach(row => {
+                    const ex = {
+                        name: row.querySelector('[data-field="name"]').value,
+                        sets: row.querySelector('[data-field="sets"]')?.value || "",
+                        reps: row.querySelector('[data-field="reps"]')?.value || "",
+                        kg: row.querySelector('[data-field="kg"]')?.value || "",
+                        rpe: row.querySelector('[data-field="rpe"]')?.value || "",
+                        tempo: row.querySelector('[data-field="tempo"]')?.value || "",
+                        hint: row.querySelector('[data-field="hint"]')?.value || "",
+                        target: row.querySelector('[data-field="target"]')?.value || ""
+                    };
+                    newList.push(ex);
+                });
+                window._tempTrainingList = newList;
+                window._tempTrainingType = document.getElementById('edit-workout-type').value;
+                renderTrainingEdit(); // Re-render to update # numbering
+            }
+        });
+
+        window._tempTrainingList = null;
+        window._tempTrainingType = null;
+    }
+
+    function updateTrainingEditType() {
+        const type = document.getElementById('edit-workout-type').value;
+        const rows = document.querySelectorAll('#training-edit-list .log-item');
+        const currentList = [];
+        rows.forEach(row => {
+            const ex = {
+                name: row.querySelector('[data-field="name"]').value,
+                sets: row.querySelector('[data-field="sets"]')?.value || "",
+                reps: row.querySelector('[data-field="reps"]')?.value || "",
+                kg: row.querySelector('[data-field="kg"]')?.value || "",
+                rpe: row.querySelector('[data-field="rpe"]')?.value || "",
+                tempo: row.querySelector('[data-field="tempo"]')?.value || "",
+                hint: row.querySelector('[data-field="hint"]')?.value || "",
+                target: row.querySelector('[data-field="target"]')?.value || ""
+            };
+            currentList.push(ex);
+        });
+        window._tempTrainingList = currentList;
+        window._tempTrainingType = type;
+        renderTrainingEdit();
+    }
+
+    function addExerciseRow() {
+        const type = document.getElementById('edit-workout-type').value;
+        const rows = document.querySelectorAll('#training-edit-list .log-item');
+        const currentList = [];
+        rows.forEach(row => {
+            currentList.push({
+                name: row.querySelector('[data-field="name"]').value,
+                sets: row.querySelector('[data-field="sets"]')?.value || "",
+                reps: row.querySelector('[data-field="reps"]')?.value || "",
+                kg: row.querySelector('[data-field="kg"]')?.value || "",
+                rpe: row.querySelector('[data-field="rpe"]')?.value || "",
+                tempo: row.querySelector('[data-field="tempo"]')?.value || "",
+                hint: row.querySelector('[data-field="hint"]')?.value || "",
+                target: row.querySelector('[data-field="target"]')?.value || ""
+            });
+        });
+        if (type === 'LIFT') {
+            currentList.push({ name: "New Exercise", sets: 3, reps: "10-12", kg: "-", rpe: "8", tempo: "3-0-1-0", hint: "" });
+        } else {
+            currentList.push({ name: "New Activity", target: "30m", hint: "" });
+        }
+        window._tempTrainingList = currentList;
+        window._tempTrainingType = type;
+        renderTrainingEdit();
+    }
+
+    function removeExerciseRow(idx) {
+        const type = document.getElementById('edit-workout-type').value;
+        const rows = document.querySelectorAll('#training-edit-list .log-item');
+        const currentList = [];
+        rows.forEach(row => {
+            currentList.push({
+                name: row.querySelector('[data-field="name"]').value,
+                sets: row.querySelector('[data-field="sets"]')?.value || "",
+                reps: row.querySelector('[data-field="reps"]')?.value || "",
+                kg: row.querySelector('[data-field="kg"]')?.value || "",
+                rpe: row.querySelector('[data-field="rpe"]')?.value || "",
+                tempo: row.querySelector('[data-field="tempo"]')?.value || "",
+                hint: row.querySelector('[data-field="hint"]')?.value || "",
+                target: row.querySelector('[data-field="target"]')?.value || ""
+            });
+        });
+        currentList.splice(idx, 1);
+        window._tempTrainingList = currentList;
+        window._tempTrainingType = type;
+        renderTrainingEdit();
+    }
+
+    function loadTrainingDefaults() {
+        if(confirm("Discard current edits and load system defaults?")) {
+            const dayOfWeek = selectedDate.getDay();
+            const def = DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
+            window._tempTrainingList = JSON.parse(JSON.stringify(def.training));
+            window._tempTrainingType = def.type;
+            renderTrainingEdit();
+        }
+    }
+
+    function saveTrainingEdit(isTemplate) {
+        const focus = document.getElementById('edit-focus-label').value;
+        const type = document.getElementById('edit-workout-type').value;
+        const rows = document.querySelectorAll('#training-edit-list .log-item');
+        const newList = [];
+        rows.forEach(row => {
+            const ex = { name: row.querySelector('[data-field="name"]').value };
+            if (type === 'LIFT') {
+                ex.sets = parseInt(row.querySelector('[data-field="sets"]').value) || 0;
+                ex.reps = row.querySelector('[data-field="reps"]').value;
+                ex.kg = row.querySelector('[data-field="kg"]').value;
+                ex.rpe = row.querySelector('[data-field="rpe"]').value;
+                ex.tempo = row.querySelector('[data-field="tempo"]').value;
+                ex.hint = row.querySelector('[data-field="hint"]').value;
+            } else {
+                ex.target = row.querySelector('[data-field="target"]').value;
+                ex.hint = row.querySelector('[data-field="hint"]').value;
+            }
+            newList.push(ex);
+        });
+
+        const currentPlan = getPlanForDate(selectedDate);
+        const newPlan = { ...currentPlan, focus, type, training: newList };
+
+        if (isTemplate) {
+            const dayOfWeek = selectedDate.getDay();
+            let userTemplates = {};
+            try {
+                const saved = localStorage.getItem('regimen_user_template');
+                if(saved) userTemplates = JSON.parse(saved);
+            } catch(e) {}
+            userTemplates[dayOfWeek] = newPlan;
+            localStorage.setItem('regimen_user_template', JSON.stringify(userTemplates));
+            alert(`Updated Training Plan for all ${DAYS[dayOfWeek]}s.`);
+        } else {
+            if (!dailyLog.plan_overrides) dailyLog.plan_overrides = {};
+            dailyLog.plan_overrides = newPlan;
+            save(); 
+            alert("Updated Training Plan for today only.");
+        }
+
+        isTrainingEditMode = false;
+        selectDate(selectedDate);
+    }
+
+    function renderSupps() { 
+        if (isSuppsEditMode) {
+            renderSuppsEdit();
+            return;
+        }
+        const plan = getPlanForDate(selectedDate);
+        const list = plan.supplements || [];
+        const container = document.getElementById('supps');
+        let html = `<div class="card" style="position:relative;">
+            <button class="auth-btn primary" style="position:absolute; right:10px; top:10px; width:auto; padding:5px 10px;" onclick="toggleSuppsEdit()">EDIT</button>
+            <h2>SUPPLEMENTS</h2>`;
+        list.forEach((item, idx) => {
+            const log = dailyLog.supplements?.[idx] || {};
+            const selections = log.selections || [];
+            const subItems = item.details.split(',').map(s => s ? s.trim() : '').filter(s => s.length > 2);
+            let checksHtml = '<div class="check-list">';
+            subItems.forEach(sub => {
+                const isChecked = selections.includes(sub);
+                const safeSub = sub.replace(/'/g, "' ").replace(/"/g, '&quot;'); 
+                checksHtml += `<div class="check-item ${isChecked?'checked':''}" onclick="toggleCheck('supplements', ${idx}, '${safeSub}')"><div class="check-icon"></div><span>${sub}</span></div>`;
+            });
+            checksHtml += '</div>';
+            html += `<div class="log-item" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="item-info"><p>${item.time?item.time+' - ':''}${item.name}</p></div>
+                    <div style="width:60px;"><button class="log-btn-unified ${log.logged?'active-state':''}" onclick="toggleGeneric('supplements', ${idx})">${log.logged?'DONE':'LOG'}</button></div>
+                </div>
+                ${checksHtml}
+            </div>`;
+        });
+        html += `</div><div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('supplements', this.value)">${dailyLog.notes?.supplements || ''}</textarea></div>`;
+        container.innerHTML = html;
+    }
+
+    function renderSuppsEdit() {
+        const plan = getPlanForDate(selectedDate);
+        const list = window._tempSuppsList || plan.supplements || [];
+        const container = document.getElementById('supps');
+        let html = `<div class="card">
+            <h2>EDIT SUPPLEMENTS</h2>
+            <div id="supps-edit-list">`;
+        list.forEach((item, idx) => {
+            html += `<div class="log-item" style="display:block; background:#252525; padding:10px; margin-bottom:10px; border-radius:8px;">
+                <input type="text" class="auth-input" placeholder="Time (e.g. 08:00)" value="${item.time || ''}" data-idx="${idx}" data-field="time">
+                <input type="text" class="auth-input" placeholder="Name (e.g. Morning Stack)" value="${item.name}" data-idx="${idx}" data-field="name">
+                <textarea class="note-area" placeholder="Details (comma separated)" data-idx="${idx}" data-field="details">${item.details}</textarea>
+                <button class="auth-btn" style="background:#f44336; width:auto;" onclick="removeSuppsRow(${idx})">Delete Row</button>
+            </div>`;
+        });
+        html += `</div>
+            <button class="auth-btn primary" style="width:100%; margin-bottom:10px;" onclick="addSuppsRow()">+ Add Stack</button>
+            <div style="display:flex; gap:10px;">
+                <button class="export-btn" style="flex:1; margin:0;" onclick="saveSuppsEdit(false)">SAVE TODAY ONLY</button>
+                <button class="export-btn" style="flex:1; margin:0; background:#2196F3;" onclick="saveSuppsEdit(true)">SAVE FOR ALL ${DAYS[selectedDate.getDay()]}S</button>
+            </div>
+            <button class="auth-btn" style="width:100%; margin-top:10px; background:#555; font-size:11px;" onclick="loadSuppsDefaults()">LOAD SYSTEM DEFAULTS</button>
+            <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="toggleSuppsEdit()">Cancel</button>
+        </div>`;
+        container.innerHTML = html;
+        window._tempSuppsList = null;
+    }
+
+    function renderNutri() {
+        if (isNutriEditMode) {
+            renderNutriEdit();
+            return;
+        }
+        const plan = getPlanForDate(selectedDate);
+        const list = plan.nutrition || [];
+        const container = document.getElementById('nutri');
+        let html = `<div class="card" style="position:relative;">
+            <button class="auth-btn primary" style="position:absolute; right:10px; top:10px; width:auto; padding:5px 10px;" onclick="toggleNutriEdit()">EDIT</button>
+            <h2>NUTRITION</h2>`;
+        list.forEach((item, idx) => {
+            const log = dailyLog.nutrition?.[idx] || {};
+            const selections = log.selections || [];
+            const subItems = item.details.split(',').map(s => s ? s.trim() : '').filter(s => s.length > 2);
+            let checksHtml = '<div class="check-list">';
+            subItems.forEach(sub => {
+                const isChecked = selections.includes(sub);
+                const safeSub = sub.replace(/'/g, "' ").replace(/"/g, '&quot;'); 
+                checksHtml += `<div class="check-item ${isChecked?'checked':''}" onclick="toggleCheck('nutrition', ${idx}, '${safeSub}')"><div class="check-icon"></div><span>${sub}</span></div>`;
+            });
+            checksHtml += '</div>';
+            html += `<div class="log-item" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="item-info"><p>${item.time?item.time+' - ':''}${item.name}</p></div>
+                    <div style="width:60px;"><button class="log-btn-unified ${log.logged?'active-state':''}" onclick="toggleGeneric('nutrition', ${idx})">${log.logged?'DONE':'LOG'}</button></div>
+                </div>
+                ${checksHtml}
+            </div>`;
+        });
+        html += `</div><div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('nutrition', this.value)">${dailyLog.notes?.nutrition || ''}</textarea></div>`;
+        container.innerHTML = html;
+    }
+
+    function renderNutriEdit() {
+        const plan = getPlanForDate(selectedDate);
+        const list = window._tempNutriList || plan.nutrition || [];
+        const container = document.getElementById('nutri');
+        let html = `<div class="card">
+            <h2>EDIT NUTRITION</h2>
+            <div id="nutri-edit-list">`;
+        list.forEach((item, idx) => {
+            html += `<div class="log-item" style="display:block; background:#252525; padding:10px; margin-bottom:10px; border-radius:8px;">
+                <input type="text" class="auth-input" placeholder="Time (e.g. 16:00)" value="${item.time}" data-idx="${idx}" data-field="time">
+                <input type="text" class="auth-input" placeholder="Name (e.g. Meal 1)" value="${item.name}" data-idx="${idx}" data-field="name">
+                <textarea class="note-area" placeholder="Ingredients (comma separated)" data-idx="${idx}" data-field="details">${item.details}</textarea>
+                <button class="auth-btn" style="background:#f44336; width:auto;" onclick="removeNutriRow(${idx})">Delete Row</button>
+            </div>`;
+        });
+        html += `</div>
+            <button class="auth-btn primary" style="width:100%; margin-bottom:10px;" onclick="addNutriRow()">+ Add Meal</button>
+            <div style="display:flex; gap:10px;">
+                <button class="export-btn" style="flex:1; margin:0;" onclick="saveNutriEdit(false)">SAVE TODAY ONLY</button>
+                <button class="export-btn" style="flex:1; margin:0; background:#2196F3;" onclick="saveNutriEdit(true)">SAVE FOR ALL ${DAYS[selectedDate.getDay()]}S</button>
+            </div>
+            <button class="auth-btn" style="width:100%; margin-top:10px; background:#555; font-size:11px;" onclick="loadNutriDefaults()">LOAD SYSTEM DEFAULTS</button>
+            <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="toggleNutriEdit()">Cancel</button>
+        </div>`;
+        container.innerHTML = html;
+        window._tempNutriList = null;
+    }
+
+    function renderGeneric(domId, dataKey) {
+        const plan = getPlanForDate(selectedDate);
+        const list = plan[dataKey] || [];
+        const container = document.getElementById(domId);
+        let html = `<div class="card"><h2>${dataKey.toUpperCase()}</h2>`;
+        list.forEach((item, idx) => {
+            const log = dailyLog[dataKey]?.[idx] || {};
+            const selections = log.selections || [];
+            const subItems = item.details.split(',').map(s => s ? s.trim() : '').filter(s => s.length > 2);
+            let checksHtml = '<div class="check-list">';
+            subItems.forEach(sub => {
+                const isChecked = selections.includes(sub);
+                const safeSub = sub.replace(/'/g, "' ").replace(/"/g, '&quot;'); 
+                checksHtml += `<div class="check-item ${isChecked?'checked':''}" onclick="toggleCheck('${dataKey}', ${idx}, '${safeSub}')"><div class="check-icon"></div><span>${sub}</span></div>`;
+            });
+            checksHtml += '</div>';
+            html += `<div class="log-item" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="item-info"><p>${item.time?item.time+' - ':''}${item.name}</p></div>
+                    <div style="width:60px;"><button class="log-btn-unified ${log.logged?'active-state':''}" onclick="toggleGeneric('${dataKey}', ${idx})">${log.logged?'DONE':'LOG'}</button></div>
+                </div>
+                ${checksHtml}
+            </div>`;
+        });
+        html += `</div><div class="card"><h2>📝 Notes</h2><textarea class="note-area" onchange="logNote('${dataKey}', this.value)">${dailyLog.notes?.[dataKey] || ''}</textarea></div>`;
+        container.innerHTML = html;
+    }
+
+    // --- GLOBAL ACTIONS ---
+
+    function toggleNutriEdit() {
+        isNutriEditMode = !isNutriEditMode;
+        if(!isNutriEditMode) window._tempNutriList = null;
+        renderNutri();
+    }
+
+    function toggleSuppsEdit() {
+        isSuppsEditMode = !isSuppsEditMode;
+        if(!isSuppsEditMode) window._tempSuppsList = null;
+        renderSupps();
+    }
+
+    function loadNutriDefaults() {
+        if(confirm("Discard current edits and load system defaults?")) {
+            const dayOfWeek = selectedDate.getDay();
+            const def = DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
+            window._tempNutriList = JSON.parse(JSON.stringify(def.nutrition));
+            renderNutriEdit();
+        }
+    }
+
+    function loadSuppsDefaults() {
+        if(confirm("Discard current edits and load system defaults?")) {
+            const dayOfWeek = selectedDate.getDay();
+            const def = DEFAULT_PLAN[dayOfWeek] || DEFAULT_PLAN[1];
+            window._tempSuppsList = JSON.parse(JSON.stringify(def.supplements));
+            renderSuppsEdit();
+        }
+    }
+
+    function addNutriRow() {
+        const plan = getPlanForDate(selectedDate);
+        if(!plan.nutrition) plan.nutrition = [];
+        plan.nutrition.push({ time: "", name: "New Meal", details: "" });
+        renderNutriEdit();
+    }
+
+    function addSuppsRow() {
+        const plan = getPlanForDate(selectedDate);
+        if(!plan.supplements) plan.supplements = [];
+        plan.supplements.push({ time: "", name: "New Stack", details: "" });
+        renderSuppsEdit();
+    }
+
+    function removeNutriRow(idx) {
+        const plan = getPlanForDate(selectedDate);
+        plan.nutrition.splice(idx, 1);
+        renderNutriEdit();
+    }
+
+    function removeSuppsRow(idx) {
+        const plan = getPlanForDate(selectedDate);
+        plan.supplements.splice(idx, 1);
+        renderSuppsEdit();
+    }
+
+    function saveNutriEdit(isTemplate) {
+        const rows = document.querySelectorAll('#nutri-edit-list .log-item');
+        const newList = [];
+        rows.forEach(row => {
+            const time = row.querySelector('[data-field="time"]').value;
+            const name = row.querySelector('[data-field="name"]').value;
+            const details = row.querySelector('[data-field="details"]').value;
+            newList.push({ time, name, details });
+        });
+
+        const currentPlan = getPlanForDate(selectedDate);
+        const newPlan = { ...currentPlan, nutrition: newList };
+
+        if (isTemplate) {
+            const dayOfWeek = selectedDate.getDay();
+            let userTemplates = {};
+            try {
+                const saved = localStorage.getItem('regimen_user_template');
+                if(saved) userTemplates = JSON.parse(saved);
+            } catch(e) {}
+            userTemplates[dayOfWeek] = newPlan;
+            localStorage.setItem('regimen_user_template', JSON.stringify(userTemplates));
+            alert(`Updated schedule for all ${DAYS[dayOfWeek]}s.`);
+        } else {
+            if (!dailyLog.plan_overrides) dailyLog.plan_overrides = {};
+            dailyLog.plan_overrides = newPlan;
+            save(); 
+            alert("Updated plan for today only.");
+        }
+
+        isNutriEditMode = false;
+        selectDate(selectedDate);
+    }
+
+    function saveSuppsEdit(isTemplate) {
+        const rows = document.querySelectorAll('#supps-edit-list .log-item');
+        const newList = [];
+        rows.forEach(row => {
+            const time = row.querySelector('[data-field="time"]').value;
+            const name = row.querySelector('[data-field="name"]').value;
+            const details = row.querySelector('[data-field="details"]').value;
+            newList.push({ time, name, details });
+        });
+
+        const currentPlan = getPlanForDate(selectedDate);
+        const newPlan = { ...currentPlan, supplements: newList };
+
+        if (isTemplate) {
+            const dayOfWeek = selectedDate.getDay();
+            let userTemplates = {};
+            try {
+                const saved = localStorage.getItem('regimen_user_template');
+                if(saved) userTemplates = JSON.parse(saved);
+            } catch(e) {}
+            userTemplates[dayOfWeek] = newPlan;
+            localStorage.setItem('regimen_user_template', JSON.stringify(userTemplates));
+            alert(`Updated schedule for all ${DAYS[dayOfWeek]}s.`);
+        } else {
+            if (!dailyLog.plan_overrides) dailyLog.plan_overrides = {};
+            dailyLog.plan_overrides = newPlan;
+            save(); 
+            alert("Updated plan for today only.");
+        }
+
+        isSuppsEditMode = false;
+        selectDate(selectedDate);
+    }
+
+    function logMobility(sec, idx) { 
+        if(!dailyLog.mobility) dailyLog.mobility = {}; 
+        if(!dailyLog.mobility[sec]) dailyLog.mobility[sec] = {}; 
+        if(!dailyLog.mobility[sec][idx]) dailyLog.mobility[sec][idx] = {}; 
+        dailyLog.mobility[sec][idx].logged = !dailyLog.mobility[sec][idx].logged; 
+        console.log(`[Mobility] Toggled ${sec}[${idx}]:`, dailyLog.mobility[sec][idx].logged);
+        save(); 
+        renderMobility(); 
+    }
+
+    function logMobilityNote(sec, idx, val) { 
+        if(!dailyLog.mobility) dailyLog.mobility = {}; 
+        if(!dailyLog.mobility[sec]) dailyLog.mobility[sec] = {}; 
+        if(!dailyLog.mobility[sec][idx]) dailyLog.mobility[sec][idx] = {}; 
+        dailyLog.mobility[sec][idx].note = val; 
+        console.log(`[Mobility] Note ${sec}[${idx}]:`, val);
+        save(); 
+    }
+
+    function logCardio(idx, val) { 
+        if(!dailyLog.training) dailyLog.training = {}; 
+        if(!dailyLog.training[idx]) dailyLog.training[idx] = {}; 
+        dailyLog.training[idx].note = val; 
+        save(); 
+    }
+
+    function toggleCardio(idx) { 
+        if(!dailyLog.training) dailyLog.training = {}; 
+        if(!dailyLog.training[idx]) dailyLog.training[idx] = {}; 
+        dailyLog.training[idx].logged = !dailyLog.training[idx].logged; 
+        save(); 
+        renderTraining(); 
+    }
+
+    function logSet(exIdx, setIdx, field, val) { 
+        if(!dailyLog.training) dailyLog.training = {}; 
+        if(!dailyLog.training[exIdx]) dailyLog.training[exIdx] = {}; 
+        if(!dailyLog.training[exIdx][setIdx]) dailyLog.training[exIdx][setIdx] = {}; 
+        dailyLog.training[exIdx][setIdx][field] = val; 
+        save(); 
+    }
+
+    function toggleSet(exIdx, setIdx) { 
+        if(!dailyLog.training) dailyLog.training = {}; 
+        if(!dailyLog.training[exIdx]) dailyLog.training[exIdx] = {}; 
+        if(!dailyLog.training[exIdx][setIdx]) dailyLog.training[exIdx][setIdx] = {}; 
+        dailyLog.training[exIdx][setIdx].logged = !dailyLog.training[exIdx][setIdx].logged; 
+        save(); 
+        renderTraining(); 
+    }
+
+    function clearSet(exIdx, setIdx) { 
+        if(dailyLog.training?.[exIdx]?.[setIdx]) dailyLog.training[exIdx][setIdx] = { logged: false, reps: '', weight: '', rpe: '' }; 
+        save(); 
+        renderTraining(); 
+    }
+
+    function toggleSession(type) { 
+        if(!dailyLog.session) dailyLog.session = {}; 
+        dailyLog.session[type] = dailyLog.session[type] ? null : new Date().toISOString(); 
+        save(); 
+        renderTraining(); 
+    }
+
+    function toggleGeneric(key, idx) { 
+        console.log("Toggle Generic:", key, idx);
+        if(!dailyLog[key]) dailyLog[key] = {}; 
+        if(!dailyLog[key][idx]) dailyLog[key][idx] = {}; 
+        dailyLog[key][idx].logged = !dailyLog[key][idx].logged; 
+        save(); 
+        selectDate(selectedDate);
+    }
+
+    function toggleCheck(key, idx, val) { 
+        console.log("Toggle Check:", key, idx, val);
+        if(!dailyLog[key]) dailyLog[key] = {}; 
+        if(!dailyLog[key][idx]) dailyLog[key][idx] = {}; 
+        const item = dailyLog[key][idx]; 
+        if(!item.selections) item.selections = []; 
+        if(item.selections.includes(val)) item.selections = item.selections.filter(s => s !== val); 
+        else item.selections.push(val); 
+        save(); 
+        selectDate(selectedDate);
+    }
+
+    function logNote(key, val) { 
+        if(!dailyLog.notes) dailyLog.notes = {}; 
+        dailyLog.notes[key] = val; 
+        save(); 
+    }
+
+    function exportData() { 
+        const hydratedExport = {};
+        Object.keys(masterLogs).forEach(dateKey => {
+            const dateObj = new Date(dateKey);
+            const plan = getPlanForDate(dateObj);
+            hydratedExport[dateKey] = {
+                day_info: { date: dateKey, day: DAYS[dateObj.getDay()], focus: plan.focus, workout_type: plan.type },
+                plan_definitions: plan,
+                user_performance: masterLogs[dateKey]
+            };
+        });
+        const blob = new Blob([JSON.stringify(hydratedExport, null, 2)], {type:'application/json'}); 
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(blob); 
+        a.download = `regimen_logs_export_${new Date().toISOString().split('T')[0]}.json`; 
+        a.click(); 
+    }
+
+    // Explicitly attach to window
+    window.logMobility = logMobility;
+    window.logMobilityNote = logMobilityNote;
+    window.logCardio = logCardio;
+    window.toggleCardio = toggleCardio;
+    window.logSet = logSet;
+    window.toggleSet = toggleSet;
+    window.clearSet = clearSet;
+    window.toggleSession = toggleSession;
+    window.toggleGeneric = toggleGeneric;
+    window.toggleCheck = toggleCheck;
+    window.logNote = logNote;
+    window.exportData = exportData;
+    window.switchTab = switchTab;
+    window.saveUserId = saveUserId;
+    window.syncToCloud = syncToCloud;
+    window.fetchFromCloud = fetchFromCloud;
+    window.toggleNutriEdit = toggleNutriEdit;
+    window.addNutriRow = addNutriRow;
+    window.removeNutriRow = removeNutriRow;
+    window.saveNutriEdit = saveNutriEdit;
+    window.toggleSuppsEdit = toggleSuppsEdit;
+    window.addSuppsRow = addSuppsRow;
+    window.removeSuppsRow = removeSuppsRow;
+    window.saveSuppsEdit = saveSuppsEdit;
+    window.toggleTrainingEdit = toggleTrainingEdit;
+    window.addExerciseRow = addExerciseRow;
+    window.removeExerciseRow = removeExerciseRow;
+    window.saveTrainingEdit = saveTrainingEdit;
+    window.updateTrainingEditType = updateTrainingEditType;
+    window.loadTrainingDefaults = loadTrainingDefaults;
+    window.loadNutriDefaults = loadNutriDefaults;
+    window.loadSuppsDefaults = loadSuppsDefaults;
+    window.handleLogin = handleLogin;
+    window.handleSignUp = handleSignUp;
+    window.handleLogout = handleLogout;
+
+    // --- INITIALIZATION ---
+    function initApp() {
+        console.log("Regimen App Starting...");
+        
+        try {
+            if (typeof createClient !== 'undefined') {
+                sbClient = createClient(SB_URL, SB_KEY);
+            } else if (window.supabase && window.supabase.createClient) {
+                sbClient = window.supabase.createClient(SB_URL, SB_KEY);
+            }
+        } catch (e) {
+            console.warn("Supabase client failed to init:", e);
+        }
+
+        if (sbClient) {
+            sbClient.auth.onAuthStateChange((event, session) => {
+                console.log("Auth Event:", event);
+                updateAuthUI(session);
+            });
+        }
+
+        try {
+            userId = localStorage.getItem('regimen_user_id') || '';
+            if (!userId) {
+                userId = generateUUID();
+                localStorage.setItem('regimen_user_id', userId);
+            }
+        } catch (e) {
+            console.error("Storage Error (User ID):", e);
+            userId = 'guest_session';
+        }
+
+        const inp = document.getElementById('user-id-input');
+        if(inp) inp.value = userId;
+
+        try {
+            const saved = localStorage.getItem('regimen_master_log_v2');
+            if(saved) masterLogs = JSON.parse(saved);
+        } catch(e) { 
+            console.error("Load Error (Logs):", e); 
+        }
+
+        // --- MIGRATION: Force update for Jan 18-24 (Task-22) ---
+        try {
+            const MIGRATION_KEY = 'regimen_migration_task_22_v10';
+            if (!localStorage.getItem(MIGRATION_KEY)) {
+                console.log("Running Migration v10: Hydrating Layer 1 for Jan 18 week...");
+                
+                const targetDates = {
+                    '2026-01-18': 0, '2026-01-19': 1, '2026-01-20': 2, '2026-01-21': 3, 
+                    '2026-01-22': 4, '2026-01-23': 5, '2026-01-24': 6
+                };
+
+                Object.keys(targetDates).forEach(d => {
+                    const dayOfWeek = targetDates[d];
+                    if (!masterLogs[d]) masterLogs[d] = {};
+                    
+                    // Inject AI Plan into Layer 1 (Daily Overrides)
+                    console.log(`Hydrating Layer 1 for ${d}`);
+                    masterLogs[d].plan_overrides = JSON.parse(JSON.stringify(PLAN_JAN_18[dayOfWeek]));
+                });
+                
+                localStorage.setItem('regimen_master_log_v2', JSON.stringify(masterLogs));
+                localStorage.setItem(MIGRATION_KEY, 'true');
+                // Force reload to apply changes
+                window.location.reload();
+            }
+        } catch (e) {
+            console.error("Migration Error:", e);
+        }
+        
+        try {
+            renderDateScroller();
+            selectDate(new Date());
+        } catch (e) {
+            console.error("Render Error:", e);
+        }
+    }
+
+    /*
+     * --- TECHNICAL ARCHITECTURE & SYNC STRATEGY ---
+     * 
+     * 1. DATA RESOLUTION (3-Layer "Truth" System)
+     *    When getPlanForDate(date) is called, it resolves the plan in this priority order:
+     *    - Layer 1 (Highest): Daily Override.
+     *      Stored in: masterLogs[dateKey].plan_overrides
+     *      Use Case: "I changed my meal just for today."
+     *    - Layer 2 (Medium): User Weekly Template.
+     *      Stored in: localStorage['regimen_user_template'][dayOfWeek]
+     *      Use Case: "I permanently changed my Tuesday schedule."
+     *    - Layer 3 (Lowest): System Default.
+     *      Stored in: const DEFAULT_PLAN
+     *      Use Case: Fallback for fresh installs or unedited days.
+     *
+     * 2. SYNCHRONIZATION STRATEGY ("System Image" Bundling)
+     *    - Push (Sync): We do not have a dedicated 'templates' table. Instead, every time
+     *      we push daily logs to the Cloud, we attach the current 'regimen_user_template'
+     *      to the snapshot payload (data.user_template_snapshot).
+     *    - Pull (Fetch): When we fetch logs, we look for 'user_template_snapshot' in the
+     *      most recent log entry. If found, we restore it to localStorage.
+     *    - Benefit: This creates a self-healing system where your preferences travel with
+     *      your history, enabling seamless device switching without complex backend schema changes.
+     * 
+     * 3. STATE MANAGEMENT
+     *    - masterLogs: The Single Source of Truth for all history and daily overrides.
+     *    - dailyLog: A pointer to masterLogs[selectedDate] for convenient access.
+     *    - regimen_user_template: The persistent configuration for recurring weekly schedules.
+     */
+
+</script>
+</body>
+</html>

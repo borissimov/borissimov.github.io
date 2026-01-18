@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Plan Portal</title>
     <!-- Favicon & PWA tags from old index -->
-    <link rel="icon" type="image/svg+xml" href="/public/icon-mp.svg" />
-    <link rel="manifest" href="/public/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/icon-mp.svg" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#f39c12" />
     <style>
         :root {
@@ -81,7 +81,7 @@
         // Register Service Worker for PWA support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/public/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then(reg => console.log('[Portal] SW registered:', reg))
                     .catch(err => console.error('[Portal] SW failed:', err));
             });
@@ -110,12 +110,12 @@
             <div class="app-grid">
                 <!-- Regimen Pro -->
                 <div class="app-card-wrapper">
-                    <a href="public/regimen.html" class="app-card">
+                    <a href="regimen.html" class="app-card">
                         <h3>Regimen Pro</h3>
                         <p>Fast, offline-first performance tracker. Optimized for gym use and daily logs.</p>
                     </a>
                     <label class="default-toggle">
-                        <input type="checkbox" onchange="setDefault('public/regimen.html', this.checked)" id="check-regimen"> Set as default
+                        <input type="checkbox" onchange="setDefault('regimen.html', this.checked)" id="check-regimen"> Set as default
                     </label>
                 </div>
 

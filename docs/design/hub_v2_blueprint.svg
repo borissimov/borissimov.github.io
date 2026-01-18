@@ -1,0 +1,25 @@
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#121212"/>
+  
+  <!-- Header Blueprint -->
+  <text fill="#f29b11" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="24" font-weight="900" letter-spacing="3" cx="300"><tspan x="180" y="60">MASTER PLAN</tspan></text>
+  <rect x="220" y="80" width="160" height="25" rx="12.5" fill="#1e1e1e" stroke="#333333"/>
+  <circle cx="235" cy="92.5" r="4" fill="#4caf50"/>
+  <text fill="#b0b0b0" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="10" font-weight="bold"><tspan x="245" y="96">SYSTEM ONLINE</tspan></text>
+
+  <!-- Hub Card Sample 1 -->
+  <rect x="50" y="130" width="500" height="80" rx="16" fill="#1e1e1e" stroke="#f29b11"/>
+  <rect x="74" y="145" width="50" height="50" rx="12" fill="#252525" stroke="#f29b11" stroke-opacity="0.2"/>
+  <text fill="#ffffff" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="18" font-weight="bold"><tspan x="140" y="165">Regimen Pro</tspan></text>
+  <text fill="#b0b0b0" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="12"><tspan x="140" y="185">Daily performance tracker. AI progressions.</tspan></text>
+  
+  <!-- Hub Card Sample 2 -->
+  <rect x="50" y="230" width="500" height="80" rx="16" fill="#1e1e1e" stroke="#333333"/>
+  <rect x="74" y="245" width="50" height="50" rx="12" fill="#252525" stroke="#333333"/>
+  <text fill="#ffffff" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="18" font-weight="bold"><tspan x="140" y="265">Health Tracker</tspan></text>
+  <text fill="#b0b0b0" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="12"><tspan x="140" y="285">Log and monitor blood pressure.</tspan></text>
+  
+  <!-- Footer -->
+  <text fill="#444444" xml:space="preserve" style="white-space: pre" font-family="sans-serif" font-size="10" font-weight="bold"><tspan x="220" y="360">ARCHITECTURE V2.0 • BUILD STABLE</tspan></text>
+</svg>

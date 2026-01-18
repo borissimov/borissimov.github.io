@@ -1,0 +1,31 @@
+# Master Plan Visual Guidelines (v2.0)
+
+This document serves as the technical specification for the Master Plan suite's aesthetic. It is intended for both internal development and external UI/UX designers.
+
+## 1. Core Palette
+| Element | Hex Code | Purpose |
+| :--- | :--- | :--- |
+| **Primary Accent** | `#f29b11` | Branding, Headers, Primary Actions (Orange) |
+| **Background** | `#121212` | Main application background |
+| **Surface (Card)** | `#1e1e1e` | Secondary surfaces, cards, containers |
+| **Sub-Surface** | `#252525` | Inner containers, icon backgrounds |
+| **Primary Text** | `#ececec` | Main readability |
+| **Secondary Text**| `#b0b0b0` | Descriptions, meta-data, captions |
+| **Border** | `#333333` | Component isolation |
+
+## 2. Typography
+- **Primary Font:** Sans-Serif Stack (`-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Roboto`).
+- **Brand Headers:** `900` weight (Black/Extra Bold), Uppercase, `3px` letter-spacing.
+- **Section Headers:** `Bold`, `18px`, Default casing.
+- **Micro-labels:** `900` weight, `9px` size, Uppercase, `1px` letter-spacing.
+
+## 3. Component Architecture: The "Hub Card"
+- **Shape:** Horizontal layout (Flexbox).
+- **Radius:** `16px` outer, `12px` inner (icons).
+- **Padding:** `24px` (Uniform).
+- **Interactions:**
+    - **Hover:** Transform `translateY(-2px)`, Border change to `#f29b11`.
+    - **Transition:** `0.2s ease-in-out`.
+
+## 4. Visual Assets
+We prefer vector-based icons (`lucide-react` or raw SVG) to maintain crispness on mobile OLED displays.

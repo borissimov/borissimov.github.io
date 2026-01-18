@@ -110,7 +110,7 @@ function App() {
                       onClick={() => setAppMode('master')}
                       className="w-full py-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[var(--training-accent)] transition-all flex flex-col items-center group"
                   >
-                      <span className="text-lg font-bold group-hover:text-[var(--training-accent)]">Current Version (React)</span>
+                      <span className="text-lg font-bold group-hover:text-[var(--training-accent)]">Legacy App</span>
                       <span className="text-xs text-gray-500 mt-1">Full Feature Set</span>
                   </button>
                   

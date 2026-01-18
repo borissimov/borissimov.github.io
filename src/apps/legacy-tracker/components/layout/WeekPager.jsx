@@ -1,6 +1,6 @@
 import React from 'react';
 import { WeekView } from './WeekView';
-import { useSwipeable } from '../../../../hooks/useSwipeable';
+import { useSwipeable } from '../../hooks/useSwipeable';
 
 export const WeekPager = ({ weekDates, weekNumber, year, currentDay, setCurrentDay, activeTab, currentDayData, onPrev, onNext }) => {
     const { handlers, deltaX, isDragging } = useSwipeable({

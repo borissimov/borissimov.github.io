@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { usePlan } from '../../../../../context/PlanContext';
+import { usePlan } from '../../../../context/PlanContext';
 import { Menu, LogOut, Layout, Calendar, Settings, User, Home } from 'lucide-react';
-import { COLORS } from '../../../../../constants/theme';
+import { COLORS } from '../../../../constants/theme';
 
 export const Header = ({ viewMode, setViewMode, activeTab, setActiveTab }) => {
     const { session, logout, profile, resetToToday } = usePlan();

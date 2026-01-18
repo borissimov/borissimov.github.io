@@ -9,11 +9,14 @@ title: "Epic: Master Plan Hub Migration"
 Transition the project from a collection of standalone files to a unified, Dashboard-First React application.
 
 ## Objectives
-- [ ] **Legacy Isolation:** Move current React code to `src/apps/legacy-tracker/` (Complete).
-- [ ] **Hub Landing Page:** Create a sleek primary entry point at `/`.
-- [ ] **Regimen Pro Port:** Convert `regimen.html` into a clean React component in `src/apps/regimen-pro/`.
-- [ ] **Circuit Redesign:** Implement the round-based logging system for efficient circuit training.
-- [ ] **Routing:** Implement a lightweight internal router to switch between apps.
+- [x] **Legacy Isolation:** Move current React code to `src/apps/legacy-tracker/`.
+- [x] **Hub Landing Page:** Create a sleek primary entry point at `/`.
+- [ ] **Data Normalization (GHI-25):** Implement the Relational Schema to solve egress. [View Design](../../docs/architecture/DATABASE_SCHEMA.md).
+- [ ] **Regimen Pro Port:** Convert `regimen.html` into a clean React component.
+- [ ] **Blood Pressure Tracker:** Implement a new dedicated app for BP logging and trends.
+- [ ] **Routine Editor:** Placeholder app card for the upcoming design suite.
+- [ ] **Circuit Redesign:** Implement round-based logging in Regimen Pro.
+- [ ] **Routing:** Implement a lightweight internal router.
 
 ## Status
 - **Status:** IN PROGRESS

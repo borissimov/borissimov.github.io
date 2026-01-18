@@ -16,7 +16,7 @@ import { DailyAIInsight } from './components/DailyAIInsight';
 import { useAppInitialization } from './hooks/useAppInitialization';
 import { DataManager } from '../../data/DataManager';
 
-function App() {
+function App({ onExit }) {
   const { 
     session, loading, currentDay, setCurrentDay, daysMap, 
     weekDates, weekNumber, year, weekOffset, nextWeek, prevWeek, setWeekOffset,
@@ -26,7 +26,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('training');
   const [viewMode, setViewMode] = useState('tracker'); 
   const [navMode, setNavMode] = useState(() => localStorage.getItem('mp_nav_mode') || 'week');
-  const [appMode, setAppMode] = useState(null); // 'master' or 'regimen'
+  const [appMode, setAppMode] = useState('master'); // Default to master to skip chooser
   
   // Independent Header State for Continuous Mode
   const [headerOffset, setHeaderOffset] = useState(weekOffset);
@@ -136,6 +136,7 @@ function App() {
                     setViewMode={setViewMode} 
                     activeTab={activeTab} 
                     setActiveTab={setActiveTab} 
+                    onExit={onExit}
                   />
               </div>
               <div className="min-h-full">

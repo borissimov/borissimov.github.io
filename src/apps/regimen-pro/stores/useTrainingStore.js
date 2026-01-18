@@ -12,7 +12,25 @@ export const useTrainingStore = create(
                     id: crypto.randomUUID(), 
                     date, 
                     startTime: new Date().toISOString(),
-                    blocks: [],
+                    blocks: [
+                        {
+                            id: 'b1',
+                            label: 'Strength Phase',
+                            block_type: 'STANDARD',
+                            exercises: [
+                                { id: 'e1', name: 'Barbell Squats', target_sets: '3', target_reps: '5', target_weight: '100kg' }
+                            ]
+                        },
+                        {
+                            id: 'b2',
+                            label: 'Core Burnout',
+                            block_type: 'CIRCUIT',
+                            exercises: [
+                                { id: 'e2', name: 'Plank', target_reps: '60s', target_weight: 'BW' },
+                                { id: 'e3', name: 'Leg Raises', target_reps: '15', target_weight: 'BW' }
+                            ]
+                        }
+                    ],
                     notes: ''
                 } 
             }),

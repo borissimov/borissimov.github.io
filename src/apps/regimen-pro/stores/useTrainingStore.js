@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 export const useTrainingStore = create(
     persist(
         (set, get) => ({
-            activeSession: null, // { id, date, startTime, blocks: [] }
+            activeSession: null,
             isSyncing: false,
 
             startSession: (date) => set({ 
@@ -18,24 +18,24 @@ export const useTrainingStore = create(
                             label: 'Strength Phase',
                             block_type: 'STANDARD',
                             exercises: [
-                                { 
-                                    id: 'e1', 
-                                    name: 'Barbell Squats', 
-                                    target_sets: '3', 
-                                    target_reps: '5', 
-                                    target_weight: '100',
-                                    target_rpe: '8',
-                                    target_tempo: '3-0-1-0'
-                                }
+                                { id: 'e1', name: 'Barbell Squats', target_sets: '3', target_reps: '5', target_weight: '100', target_rpe: '8', target_tempo: '3-0-1-0' },
+                                { id: 'e2', name: 'Bench Press', target_sets: '3', target_reps: '8', target_weight: '80', target_rpe: '9', target_tempo: '2-0-1-0' },
+                                { id: 'e3', name: 'Deadlifts', target_sets: '2', target_reps: '5', target_weight: '140', target_rpe: '8', target_tempo: '1-0-1-0' },
+                                { id: 'e4', name: 'Overhead Press', target_sets: '3', target_reps: '10', target_weight: '50', target_rpe: '9', target_tempo: '2-0-1-0' }
                             ]
                         },
                         {
                             id: 'b2',
-                            label: 'Core Burnout',
+                            label: 'Power Circuit',
                             block_type: 'CIRCUIT',
                             exercises: [
-                                { id: 'e2', name: 'Plank', target_reps: '60s', target_weight: 'BW' },
-                                { id: 'e3', name: 'Leg Raises', target_reps: '15', target_weight: 'BW' }
+                                { id: 'c1', name: 'Kettlebell Swings', target_reps: '20', target_weight: '24' },
+                                { id: 'c2', name: 'Goblet Squats', target_reps: '15', target_weight: '24' },
+                                { id: 'c3', name: 'Push-ups', target_reps: 'MAX', target_weight: 'BW' },
+                                { id: 'c4', name: 'Pull-ups', target_reps: '8', target_weight: 'BW' },
+                                { id: 'c5', name: 'Burpees', target_reps: '12', target_weight: 'BW' },
+                                { id: 'c6', name: 'Box Jumps', target_reps: '10', target_weight: 'High' },
+                                { id: 'c7', name: 'Battle Ropes', target_reps: '30s', target_weight: 'Heavy' }
                             ]
                         }
                     ],
@@ -43,27 +43,10 @@ export const useTrainingStore = create(
                 } 
             }),
 
-            endSession: () => set((state) => ({
-                activeSession: state.activeSession ? { 
-                    ...state.activeSession, 
-                    endTime: new Date().toISOString() 
-                } : null
-            })),
-
-            logSet: (blockId, exerciseId, setNumber, roundNumber, data) => set((state) => {
-                if (!state.activeSession) return state;
-                
-                // Logic to update local logs within the session
-                // In V2, we also trigger a background sync to Supabase (TanStack Query handles that better)
-                return {
-                    // update state logic here
-                };
-            }),
-
             resetStore: () => set({ activeSession: null, isSyncing: false })
         }),
         {
-            name: 'mp-training-storage', // key in IndexedDB/LocalStorage
+            name: 'mp-training-storage-v3', // Changed key to force refresh
         }
     )
 );

@@ -16,13 +16,15 @@ export const ExerciseRow = ({
     return (
         <div style={{ 
             backgroundColor: isLogged ? '#161d16' : '#1a1a1a',
-            padding: '12px 16px',
-            borderRadius: '16px',
-            border: `1px solid ${isLogged ? '#2ecc7144' : '#333'}`,
-            marginBottom: '8px',
+            padding: '12px 10px',
+            borderRadius: '0',
+            borderBottom: '1px solid #333',
+            marginBottom: '4px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '8px'
+            gap: '8px',
+            width: '100%',
+            boxSizing: 'border-box'
         }}>
             {/* Header Row: Name + Targets */}
             <div style={{ 

@@ -35,6 +35,10 @@ This document serves as the technical specification for the Master Plan suite's 
 - **Separation:** Horizontal `border-bottom` only.
 
 ### Design 2: Sequential Logger (Current Winner)
+- **Master Templates:** 
+    - [Sequential Logger Code](./templates/Design2_SequentialLogger.jsx)
+    - [Circuit Row Code](./templates/Design2_ExerciseRow.jsx)
+    - [Shared Styling](./templates/Design2_SharedStyles.css)
 - **Hierarchy:** 
     - **Line 1:** [Progress Box] + [Exercise Name (Left-aligned)]
     - **Line 2:** [Targets: KG, REPS, RPE, TEMPO (Right-aligned)]

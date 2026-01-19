@@ -14,17 +14,19 @@
     color: var(--text-primary);
     min-height: 100vh;
     font-family: -apple-system, system-ui, sans-serif;
-    padding: 20px;
+    padding: 10px 0; /* Removed side padding, kept vertical */
 }
 
-/* Professional Card - Clean & Flat */
+/* Professional Card - Full Width on Mobile */
 .premium-card {
     background-color: var(--card-dark);
     border: 1px solid var(--border-dark);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
+    padding: 16px 12px; /* Tightened padding */
+    margin-bottom: 8px;
     transition: transform 0.1s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .premium-card:active {
@@ -72,6 +74,17 @@
     width: 100%;
 }
 
+/* Hide Spinners */
+.premium-input::-webkit-outer-spin-button,
+.premium-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.premium-input[type=number] {
+    -moz-appearance: textfield;
+}
+
 .premium-input:focus {
     border-color: var(--accent-orange);
 }
@@ -92,6 +105,11 @@
     cursor: pointer;
     box-sizing: border-box;
     margin-top: 10px;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.premium-btn-primary:active {
+    transform: scale(0.98);
 }
 
 .premium-btn-secondary {

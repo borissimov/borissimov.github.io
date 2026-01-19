@@ -9,10 +9,10 @@ const RegimenProApp = ({ onExit }) => {
 
     return (
         <div className="app-container-v2" style={{ paddingTop: '10px' }}>
-            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <div style={{ width: '100%', margin: '0' }}>
                 
                 {/* Compact Header */}
-                <header style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <header style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', padding: '0 10px' }}>
                     <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '5px' }}>
                         <ArrowLeft size={24} color="#f29b11" />
                     </button>
@@ -60,9 +60,9 @@ const RegimenProApp = ({ onExit }) => {
                         </div>
 
                         {/* Blocks with minimal gap */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
                             {activeSession.blocks.map((block, idx) => (
-                                <div key={block.id} className="premium-card" style={{ padding: '8px 12px' }}>
+                                <div key={block.id} className="premium-card" style={{ padding: '12px 10px', borderRadius: '0', borderLeft: 'none', borderRight: 'none' }}>
                                     <TrainingBlock 
                                         block={block} 
                                         index={idx}

@@ -27,5 +27,20 @@ This document serves as the technical specification for the Master Plan suite's 
     - **Hover:** Transform `translateY(-2px)`, Border change to `#f29b11`.
     - **Transition:** `0.2s ease-in-out`.
 
-## 4. Visual Assets
+## 4. Training Interface Designs (Approved)
+
+### Design 1: Edge-to-Edge Mobile
+- **Context:** Optimized for small displays (e.g., Galaxy A41).
+- **Structure:** Zero horizontal margins. Cards span 100% of screen width.
+- **Separation:** Horizontal `border-bottom` only.
+
+### Design 2: Sequential Logger (Current Winner)
+- **Hierarchy:** 
+    - **Line 1:** [Progress Box] + [Exercise Name (Left-aligned)]
+    - **Line 2:** [Targets: KG, REPS, RPE, TEMPO (Right-aligned)]
+- **Colors:** Labels are `#f29b11`, Values are `#fff`.
+- **Interaction:** Sequential input. Completed sets move to an inline-editable grid below the active input.
+- **Density:** Ultra-compact vertical spacing. Border "hugs" the last log entry.
+
+## 5. Visual Assets
 We prefer vector-based icons (`lucide-react` or raw SVG) to maintain crispness on mobile OLED displays.

@@ -48,12 +48,35 @@ export const useHealthStore = create(
                         .limit(50);
                     
                     if (error) throw error;
-                    set({ logs: data || [], isSyncing: false });
+                    
+                    // Transform relational rows into entry groups
+                    // (Simplification for the V2 prototype)
+                    const grouped = data.reduce((acc, row) => {
+                        const date = row.measured_at.split('T')[0];
+                        if (!acc[date]) acc[date] = { measured_at: row.measured_at, metrics: {} };
+                        acc[date].metrics[row.metric_type.toLowerCase()] = row.value;
+                        return acc;
+                    }, {});
+
+                    set({ logs: Object.values(grouped), isSyncing: false });
                 } catch (err) {
                     console.error("Health Fetch Error:", err);
                     set({ isSyncing: false });
                 }
-            }
+            },
+
+            getAverageMetrics: () => {
+                const logs = get().logs;
+                if (logs.length === 0) return null;
+                const sum = logs.reduce((acc, log) => ({
+                    sys: acc.sys + (log.metrics?.bp_sys || 0),
+                    dia: acc.dia + (log.metrics?.bp_dia || 0)
+                }), { sys: 0, dia: 0 });
+                return {
+                    sys: Math.round(sum.sys / logs.length),
+                    dia: Math.round(sum.dia / logs.length)
+                };
+            },
         }),
         {
             name: 'mp-health-storage',

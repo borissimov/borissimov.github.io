@@ -1,120 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHealthStore } from './stores/useHealthStore';
 import { usePlan } from '../../context/PlanContext';
-import { Heart, Activity, ArrowLeft, Plus, History } from 'lucide-react';
+import { Heart, ArrowLeft, History, Plus } from 'lucide-react';
+import '../shared-premium.css';
 
 const BloodPressureApp = ({ onExit }) => {
     const { session } = usePlan();
-    const { logs, addLog, isSyncing } = useHealthStore();
+    const { logs, addLog, fetchLogs, isSyncing } = useHealthStore();
     
     const [sys, setSys] = useState(120);
     const [dia, setDia] = useState(80);
     const [hr, setHr] = useState(70);
 
+    useEffect(() => {
+        if (session?.user?.id) fetchLogs(session.user.id);
+    }, [session]);
+
     const handleSave = async () => {
         if (!session?.user?.id) return;
         await addLog(session.user.id, sys, dia, hr);
-        alert("Metrics Logged Successfully");
     };
 
     return (
-        <div className="min-h-screen bg-[#121212] text-[#ececec] font-sans max-w-md mx-auto flex flex-col">
-            {/* Header */}
-            <header className="p-6 flex justify-between items-center bg-[#1a1a1a] border-b border-[#333]">
-                <button onClick={onExit} className="p-2 -ml-2 text-gray-400 hover:text-white">
-                    <ArrowLeft size={20} />
-                </button>
-                <h1 className="text-lg font-black uppercase tracking-widest text-red-500">Health Tracker</h1>
-                <div className="w-10"></div> {/* Spacer */}
-            </header>
+        <div className="app-container-v2">
+            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+                
+                {/* Clean Header */}
+                <header style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+                    <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '10px' }}>
+                        <ArrowLeft size={24} color="#f29b11" />
+                    </button>
+                    <h1 style={{ flex: 1, textAlign: 'center', fontSize: '20px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginRight: '44px' }}>
+                        Health <span style={{ color: '#f29b11' }}>Tracker</span>
+                    </h1>
+                </header>
 
-            <main className="flex-1 p-6 space-y-8 overflow-y-auto">
-                {/* Input Card */}
-                <section className="bg-[#1e1e1e] p-6 rounded-3xl border border-[#333] shadow-xl">
-                    <div className="flex items-center gap-2 mb-6">
-                        <Heart className="text-red-500" size={18} fill="currentColor" />
-                        <h2 className="text-xs font-black uppercase tracking-widest text-gray-400">New Entry</h2>
+                {/* Entry Card */}
+                <div className="premium-card">
+                    <div className="section-header">
+                        <Heart size={14} fill="#f29b11" /> NEW RECORDING
                     </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-8">
-                        <div className="text-center space-y-2">
-                            <label className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Sys</label>
-                            <input 
-                                type="number" 
-                                value={sys} 
-                                onChange={(e) => setSys(parseInt(e.target.value))}
-                                className="w-full bg-black/40 border border-[#333] rounded-xl py-3 text-center text-xl font-bold focus:border-red-500 outline-none transition-colors"
-                            />
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginTop: '20px' }}>
+                        <div className="premium-input-group">
+                            <label className="premium-input-label">SYS</label>
+                            <input type="number" className="premium-input" value={sys} onChange={(e) => setSys(e.target.value)} />
                         </div>
-                        <div className="text-center space-y-2">
-                            <label className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Dia</label>
-                            <input 
-                                type="number" 
-                                value={dia} 
-                                onChange={(e) => setDia(parseInt(e.target.value))}
-                                className="w-full bg-black/40 border border-[#333] rounded-xl py-3 text-center text-xl font-bold focus:border-red-500 outline-none transition-colors"
-                            />
+                        <div className="premium-input-group">
+                            <label className="premium-input-label">DIA</label>
+                            <input type="number" className="premium-input" value={dia} onChange={(e) => setDia(e.target.value)} />
                         </div>
-                        <div className="text-center space-y-2">
-                            <label className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Pulse</label>
-                            <input 
-                                type="number" 
-                                value={hr} 
-                                onChange={(e) => setHr(parseInt(e.target.value))}
-                                className="w-full bg-black/40 border border-[#333] rounded-xl py-3 text-center text-xl font-bold focus:border-red-500 outline-none transition-colors"
-                            />
+                        <div className="premium-input-group">
+                            <label className="premium-input-label">PULSE</label>
+                            <input type="number" className="premium-input" value={hr} onChange={(e) => setHr(e.target.value)} />
                         </div>
                     </div>
 
                     <button 
+                        className="premium-btn-primary" 
                         onClick={handleSave}
                         disabled={isSyncing}
-                        className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black uppercase rounded-2xl shadow-lg shadow-red-900/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                        <Plus size={18} strokeWidth={3} />
-                        Save Record
+                        {isSyncing ? 'SYNCING...' : 'SAVE TO CLOUD'}
                     </button>
-                </section>
+                </div>
 
-                {/* History List */}
-                <section className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2 px-2">
-                        <History className="text-gray-500" size={16} />
-                        <h2 className="text-xs font-black uppercase tracking-widest text-gray-500">Recent Logs</h2>
+                {/* History Section */}
+                <div className="premium-card">
+                    <div className="section-header">
+                        <History size={14} /> RECENT TRENDS
                     </div>
-
-                    {logs.length === 0 ? (
-                        <div className="text-center py-10 text-gray-600 italic text-sm">
-                            No health data recorded yet.
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {logs.slice(0, 5).map((log, idx) => (
-                                <div key={idx} className="bg-[#1a1a1a] p-4 rounded-2xl border border-[#222] flex justify-between items-center">
+                    
+                    <div style={{ marginTop: '15px' }}>
+                        {logs.length === 0 ? (
+                            <p style={{ textAlign: 'center', color: '#666', fontSize: '12px' }}>No logs recorded.</p>
+                        ) : (
+                            logs.slice(0, 5).map((log, idx) => (
+                                <div key={idx} className="premium-list-row">
                                     <div>
-                                        <p className="text-xs font-bold text-gray-300">
+                                        <p style={{ fontSize: '13px', fontWeight: 'bold', margin: 0 }}>
+                                            {log.metrics?.bp_sys}/{log.metrics?.bp_dia}
+                                        </p>
+                                        <p style={{ fontSize: '9px', color: '#666', textTransform: 'uppercase', fontWeight: '800' }}>
                                             {new Date(log.measured_at).toLocaleDateString()}
                                         </p>
-                                        <p className="text-[10px] text-gray-500 uppercase font-bold">
-                                            {new Date(log.measured_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                        </p>
                                     </div>
-                                    <div className="flex gap-4">
-                                        <div className="text-right">
-                                            <p className="text-lg font-black text-white leading-none">{log.metrics?.bp_sys}/{log.metrics?.bp_dia}</p>
-                                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">mmHg</p>
-                                        </div>
-                                        <div className="text-right border-l border-[#333] pl-4">
-                                            <p className="text-lg font-black text-red-500 leading-none">{log.metrics?.hr}</p>
-                                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">BPM</p>
-                                        </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <p style={{ fontSize: '13px', fontWeight: 'black', color: '#f29b11', margin: 0 }}>
+                                            {log.metrics?.hr}
+                                        </p>
+                                        <p style={{ fontSize: '9px', color: '#666', textTransform: 'uppercase', fontWeight: '800' }}>BPM</p>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-            </main>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Return to Hub */}
+                <button className="premium-btn-secondary" onClick={onExit} style={{ marginTop: '20px' }}>
+                    Return to Hub
+                </button>
+            </div>
         </div>
     );
 };

@@ -18,7 +18,15 @@ export const useTrainingStore = create(
                             label: 'Strength Phase',
                             block_type: 'STANDARD',
                             exercises: [
-                                { id: 'e1', name: 'Barbell Squats', target_sets: '3', target_reps: '5', target_weight: '100kg' }
+                                { 
+                                    id: 'e1', 
+                                    name: 'Barbell Squats', 
+                                    target_sets: '3', 
+                                    target_reps: '5', 
+                                    target_weight: '100',
+                                    target_rpe: '8',
+                                    target_tempo: '3-0-1-0'
+                                }
                             ]
                         },
                         {

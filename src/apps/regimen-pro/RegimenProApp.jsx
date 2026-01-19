@@ -1,134 +1,81 @@
 import React, { useState } from 'react';
 import { useTrainingStore } from './stores/useTrainingStore';
 import { TrainingBlock } from './components/TrainingBlock';
-import { 
-    X, 
-    ArrowLeft, 
-    Play, 
-    Timer, 
-    CheckCircle2, 
-    LayoutDashboard,
-    Activity,
-    Utensils,
-    Beaker,
-    Heart
-} from 'lucide-react';
+import { ArrowLeft, Play, X, Activity } from 'lucide-react';
+import '../shared-premium.css';
 
 const RegimenProApp = ({ onExit }) => {
     const { activeSession, startSession, resetStore } = useTrainingStore();
-    const [activeTab, setActiveTab] = useState('training');
-
-    const progress = activeSession ? 35 : 0; // Mock progress percentage
 
     return (
-        <div className="min-h-screen bg-[#121212] text-[#ececec] font-sans selection:bg-[#f29b11]/30">
-            
-            {/* FIXED FOCUS HEADER */}
-            {activeSession && (
-                <div className="fixed top-0 left-0 right-0 z-50 bg-[#121212]/80 backdrop-blur-xl border-b border-[#333]">
-                    <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-                        <button onClick={onExit} className="p-2 -ml-2 text-gray-500 hover:text-white transition-colors">
-                            <ArrowLeft size={20} />
-                        </button>
-                        
-                        <div className="flex flex-col items-center flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Timer size={14} className="text-[#f29b11]" />
-                                <span className="text-xl font-black tabular-nums tracking-tighter">01:45</span>
-                            </div>
-                            <div className="w-32 h-1 bg-[#222] rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-[#f29b11] transition-all duration-1000" 
-                                    style={{ width: `${progress}%` }}
-                                ></div>
-                            </div>
-                        </div>
+        <div className="app-container-v2" style={{ paddingTop: '10px' }}>
+            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+                
+                {/* Compact Header */}
+                <header style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '5px' }}>
+                        <ArrowLeft size={24} color="#f29b11" />
+                    </button>
+                    <h1 style={{ flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginRight: '34px' }}>
+                        Regimen <span style={{ color: '#f29b11' }}>Pro</span>
+                    </h1>
+                </header>
 
-                        <button onClick={resetStore} className="p-2 -mr-2 text-gray-500 hover:text-red-500 transition-colors">
-                            <X size={20} />
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* MAIN SCROLL CONTENT */}
-            <main className={`max-w-md mx-auto px-4 ${activeSession ? 'pt-24 pb-32' : 'pt-12'}`}>
                 {!activeSession ? (
-                    <div className="flex flex-col">
-                        <header className="mb-12">
-                            <h1 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">
-                                Regimen <span className="text-[#f29b11]">Pro</span>
-                            </h1>
-                            <div className="flex items-center gap-3">
-                                <span className="px-2 py-0.5 rounded bg-[#1e1e1e] border border-[#333] text-[9px] font-black text-[#f29b11] tracking-widest uppercase">
-                                    V2.0 Engine
-                                </span>
-                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                                    Next: Legs (Volume)
-                                </span>
-                            </div>
-                        </header>
-
-                        <div className="bg-[#1e1e1e] border border-[#333] rounded-3xl p-8 text-center space-y-6 shadow-2xl">
-                            <div className="w-20 h-20 bg-[#f29b11]/10 border border-[#f29b11]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Play size={32} className="text-[#f29b11] ml-1" fill="currentColor" />
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-black text-white uppercase tracking-tight">Ready to train?</h2>
-                                <p className="text-sm text-gray-500 mt-1">Your Jan 18 progression is loaded.</p>
-                            </div>
-                            <button 
-                                onClick={() => startSession(new Date().toISOString().split('T')[0])}
-                                className="w-full py-5 bg-[#f29b11] text-black font-black uppercase rounded-2xl shadow-[0_10px_20px_rgba(242,155,17,0.2)] transform transition-all active:scale-[0.98] hover:bg-[#ffae2b]"
-                            >
-                                Start Session
-                            </button>
+                    <div className="premium-card" style={{ textAlign: 'center', padding: '30px 20px' }}>
+                        <div style={{ 
+                            width: '50px', height: '50px', backgroundColor: '#252525', 
+                            borderRadius: '50%', display: 'flex', alignItems: 'center', 
+                            justifyContent: 'center', margin: '0 auto 15px' 
+                        }}>
+                            <Activity size={24} color="#f29b11" />
                         </div>
+                        <h2 style={{ fontSize: '16px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '4px' }}>
+                            Ready to Train?
+                        </h2>
+                        <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
+                            Your session is ready.
+                        </p>
+                        <button 
+                            className="premium-btn-primary" 
+                            style={{ width: '80%', padding: '12px' }}
+                            onClick={() => startSession(new Date().toISOString().split('T')[0])}
+                        >
+                            Start Session
+                        </button>
                     </div>
                 ) : (
-                    <div className="space-y-12">
-                        {activeSession.blocks.map((block, idx) => (
-                            <TrainingBlock 
-                                key={block.id} 
-                                block={block} 
-                                index={idx}
-                                totalBlocks={activeSession.blocks.length}
-                            />
-                        ))}
-                        
-                        <button className="w-full py-6 border-2 border-dashed border-[#333] rounded-3xl text-gray-600 font-black uppercase tracking-widest hover:border-[#f29b11]/30 hover:text-gray-400 transition-all">
-                            + Add Custom Block
-                        </button>
+                    <div style={{ paddingBottom: '80px' }}>
+                        {/* Compact Session Meta */}
+                        <div className="premium-card" style={{ padding: '8px 15px', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <p style={{ fontSize: '9px', color: '#666', fontWeight: '800', textTransform: 'uppercase', margin: 0 }}>Active Session</p>
+                                    <p style={{ fontSize: '12px', fontWeight: 'bold', margin: 0 }}>{new Date(activeSession.startTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                                </div>
+                                <button onClick={resetStore} style={{ all: 'unset', cursor: 'pointer', color: '#ef4444' }}>
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Blocks with minimal gap */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            {activeSession.blocks.map((block, idx) => (
+                                <div key={block.id} className="premium-card" style={{ padding: '8px 12px' }}>
+                                    <TrainingBlock 
+                                        block={block} 
+                                        index={idx}
+                                        totalBlocks={activeSession.blocks.length}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
-            </main>
-
-            {/* BOTTOM NAV BAR */}
-            <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#121212]/90 backdrop-blur-2xl border-t border-[#333] px-6 pb-8 pt-3">
-                <div className="max-w-md mx-auto flex justify-between items-center">
-                    <NavBtn icon={<LayoutDashboard size={22} />} label="Hub" active={false} onClick={onExit} />
-                    <NavBtn icon={<Activity size={22} />} label="Train" active={activeTab === 'training'} onClick={() => setActiveTab('training')} />
-                    <NavBtn icon={<Utensils size={22} />} label="Eats" active={activeTab === 'nutrition'} onClick={() => setActiveTab('nutrition')} />
-                    <NavBtn icon={<Beaker size={22} />} label="Supps" active={activeTab === 'supps'} onClick={() => setActiveTab('supps')} />
-                    <NavBtn icon={<Heart size={22} />} label="Health" active={activeTab === 'health'} onClick={() => setActiveTab('health')} />
-                </div>
-            </nav>
+            </div>
         </div>
     );
 };
-
-const NavBtn = ({ icon, label, active, onClick }) => (
-    <button 
-        onClick={onClick}
-        className="flex flex-col items-center gap-1 transition-all active:scale-90"
-    >
-        <div className={`p-2 rounded-xl transition-colors ${active ? 'bg-[#f29b11] text-black shadow-[0_0_15px_rgba(242,155,17,0.3)]' : 'text-gray-500'}`}>
-            {icon}
-        </div>
-        <span className={`text-[9px] font-black uppercase tracking-tighter ${active ? 'text-[#f29b11]' : 'text-gray-600'}`}>
-            {label}
-        </span>
-    </button>
-);
 
 export default RegimenProApp;

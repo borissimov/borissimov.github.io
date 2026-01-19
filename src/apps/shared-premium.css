@@ -1,0 +1,124 @@
+/* Master Plan - Unified Premium Component Suite */
+
+:root {
+    --bg-dark: #121212;
+    --card-dark: #1e1e1e;
+    --border-dark: #333333;
+    --accent-orange: #f29b11;
+    --text-primary: #ececec;
+    --text-secondary: #b0b0b0;
+}
+
+.app-container-v2 {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-family: -apple-system, system-ui, sans-serif;
+    padding: 20px;
+}
+
+/* Professional Card - Clean & Flat */
+.premium-card {
+    background-color: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: transform 0.1s ease;
+}
+
+.premium-card:active {
+    transform: scale(0.99);
+}
+
+/* High-Impact Headers */
+.section-header {
+    color: var(--accent-orange);
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Clean Form Inputs */
+.premium-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.premium-input-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.premium-input {
+    all: unset;
+    background-color: #000;
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.premium-input:focus {
+    border-color: var(--accent-orange);
+}
+
+/* Master Action Button */
+.premium-btn-primary {
+    all: unset;
+    background-color: var(--accent-orange);
+    color: #000;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.premium-btn-secondary {
+    all: unset;
+    background-color: transparent;
+    border: 1px solid var(--border-dark);
+    color: var(--text-secondary);
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Table / List Rows */
+.premium-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #252525;
+}
+
+.premium-list-row:last-child {
+    border-bottom: none;
+}

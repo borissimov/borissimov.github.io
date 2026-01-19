@@ -59,10 +59,10 @@ const RegimenProApp = ({ onExit }) => {
                             </div>
                         </div>
 
-                        {/* Blocks with minimal gap */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+                        {/* Blocks with zero gap for seamless feed */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0', width: '100%' }}>
                             {activeSession.blocks.map((block, idx) => (
-                                <div key={block.id} className="premium-card" style={{ padding: '12px 10px', borderRadius: '0', borderLeft: 'none', borderRight: 'none' }}>
+                                <div key={block.id} className="premium-card" style={{ padding: '8px 10px', borderRadius: '0', borderLeft: 'none', borderRight: 'none', marginBottom: '0', borderTop: 'none' }}>
                                     <TrainingBlock 
                                         block={block} 
                                         index={idx}

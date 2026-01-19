@@ -140,3 +140,23 @@
 .premium-list-row:last-child {
     border-bottom: none;
 }
+
+@keyframes breathe-orange {
+    0% { background-color: #1a1a1a; }
+    50% { background-color: rgba(242, 155, 17, 0.25); }
+    100% { background-color: #1a1a1a; }
+}
+
+@keyframes breathe-red {
+    0% { background-color: #1a1a1a; }
+    50% { background-color: #2a0a0a; }
+    100% { background-color: #1a1a1a; }
+}
+
+.animate-breathe-orange {
+    animation: breathe-orange 3s ease-in-out infinite;
+}
+
+.animate-breathe-red {
+    animation: breathe-red 3s ease-in-out infinite;
+}

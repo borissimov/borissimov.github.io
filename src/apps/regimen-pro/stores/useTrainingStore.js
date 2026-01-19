@@ -6,10 +6,7 @@ export const useTrainingStore = create(
         (set, get) => ({
             activeSession: null,
             collapsedBlocks: [],
-            
-            // SYSTEM CHOICE: Always exists
             systemStep: null, 
-            // ACTIVE FOCUS: What is currently expanded (can be null!)
             activeFocusId: null,
 
             startSession: (date) => {
@@ -18,18 +15,15 @@ export const useTrainingStore = create(
                     blocks: [
                         { id: 'b1', label: 'Strength Phase', block_type: 'STANDARD', exercises: [
                             { id: 'e1', name: 'Barbell Squats', target_sets: '3', target_reps: '5', target_weight: '100', target_rpe: '8', target_tempo: '3-0-1-0' },
-                            { id: 'e2', name: 'Bench Press', target_sets: '3', target_reps: '8', target_weight: '80', target_rpe: '9', target_tempo: '2-0-1-0' },
-                            { id: 'e3', name: 'Deadlifts', target_sets: '2', target_reps: '5', target_weight: '140', target_rpe: '8', target_tempo: '1-0-1-0' },
-                            { id: 'e4', name: 'Overhead Press', target_sets: '3', target_reps: '10', target_weight: '50', target_rpe: '9', target_tempo: '2-0-1-0' }
+                            { id: 'e2', name: 'Bench Press', target_sets: '3', target_reps: '8', target_weight: '80', target_rpe: '9', target_tempo: '2-0-1-0' }
                         ]},
                         { id: 'b2', label: 'Power Circuit', block_type: 'CIRCUIT', exercises: [
                             { id: 'c1', name: 'Kettlebell Swings', target_reps: '20', target_weight: '24', target_rpe: '9', target_tempo: 'X-0-X-0' },
-                            { id: 'c2', name: 'Goblet Squats', target_reps: '15', target_weight: '24', target_rpe: '8', target_tempo: '3-0-1-0' },
-                            { id: 'c3', name: 'Push-ups', target_reps: 'MAX', target_weight: 'BW', target_rpe: '10', target_tempo: '1-0-1-0' },
-                            { id: 'c4', name: 'Pull-ups', target_reps: '8', target_weight: 'BW', target_rpe: '9', target_tempo: '2-0-1-2' },
-                            { id: 'c5', name: 'Burpees', target_reps: '12', target_weight: 'BW', target_rpe: '10', target_tempo: 'X-X-X-X' },
-                            { id: 'c6', name: 'Box Jumps', target_reps: '10', target_weight: 'High', target_rpe: '8', target_tempo: 'EXPL' },
-                            { id: 'c7', name: 'Battle Ropes', target_reps: '30s', target_weight: 'Heavy', target_rpe: '10', target_tempo: 'FAST' }
+                            { id: 'c2', name: 'Goblet Squats', target_reps: '15', target_weight: '24', target_rpe: '8', target_tempo: '3-0-1-0' }
+                        ]},
+                        { id: 'b3', label: 'Core & Recovery', block_type: 'STANDARD', exercises: [
+                            { id: 'r1', name: 'Plank', target_sets: '3', target_reps: '60s', target_weight: 'BW', target_rpe: '7', target_tempo: 'HOLD' },
+                            { id: 'r2', name: 'Stretching', target_sets: '1', target_reps: '5m', target_weight: 'Relax', target_rpe: '0', target_tempo: 'SLOW' }
                         ]}
                     ],
                     logs: {}
@@ -39,13 +33,32 @@ export const useTrainingStore = create(
                     activeSession: session,
                     collapsedBlocks: [],
                     systemStep: { blockId: 'b1', exerciseId: 'e1', round: 1 },
-                    activeFocusId: 'e1' // Initial focus
+                    activeFocusId: 'e1'
                 });
             },
 
-            toggleFocus: (exId) => set((state) => ({
-                activeFocusId: state.activeFocusId === exId ? null : exId
-            })),
+            // REFINED SHADOW: Only teleport if switching BLOCKS
+            toggleFocus: (exId, blockId) => set((state) => {
+                const isClosing = state.activeFocusId === exId;
+                const newState = { activeFocusId: isClosing ? null : exId };
+                
+                // If opening an exercise in a NEW block, move the system cursor there
+                if (!isClosing && blockId && blockId !== state.systemStep?.blockId) {
+                    const block = state.activeSession.blocks.find(b => b.id === blockId);
+                    const firstIncomplete = block.exercises.find(e => {
+                        const logs = state.activeSession.logs[e.id] || [];
+                        const tSets = parseInt(e.target_sets || 3);
+                        return logs.length < tSets;
+                    }) || block.exercises[0];
+
+                    newState.systemStep = { 
+                        blockId, 
+                        exerciseId: firstIncomplete.id, 
+                        round: state.systemStep?.round || 1 
+                    };
+                }
+                return newState;
+            }),
 
             addLogEntry: (exId, blockId, data, isCircuit) => {
                 const state = get();
@@ -56,29 +69,37 @@ export const useTrainingStore = create(
                 const updatedLogs = { ...session.logs, [exId]: [...exLogs, { ...data, id: Date.now() }] };
                 set({ activeSession: { ...session, logs: updatedLogs } });
 
-                if (exId === state.systemStep?.exerciseId) {
-                    const blockIdx = session.blocks.findIndex(b => b.id === blockId);
-                    const block = session.blocks[blockIdx];
-                    const exIdx = block.exercises.findIndex(e => e.id === exId);
-                    const totalSets = parseInt(block.exercises[exIdx].target_sets || 3);
-                    const isExerciseDone = isCircuit ? true : updatedLogs[exId].length >= totalSets;
+                const blockIdx = session.blocks.findIndex(b => b.id === blockId);
+                const block = session.blocks[blockIdx];
+                const exIdx = block.exercises.findIndex(e => e.id === exId);
+                const totalSets = parseInt(block.exercises[exIdx].target_sets || 3);
+                const isExerciseDone = isCircuit ? true : updatedLogs[exId].length >= totalSets;
 
-                    if (isExerciseDone) {
-                        let next = null;
-                        if (isCircuit) {
-                            if (exIdx < block.exercises.length - 1) next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: state.systemStep.round };
-                            else if (state.systemStep.round < 3) next = { blockId, exerciseId: block.exercises[0].id, round: state.systemStep.round + 1 };
-                        } else if (exIdx < block.exercises.length - 1) {
-                            next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: 1 };
-                        }
-
-                        if (!next && blockIdx < session.blocks.length - 1) {
-                            const nextBlock = session.blocks[blockIdx + 1];
-                            next = { blockId: nextBlock.id, exerciseId: nextBlock.exercises[0].id, round: 1 };
-                        }
-
-                        set({ systemStep: next, activeFocusId: next?.exerciseId || null });
+                if (isExerciseDone) {
+                    let next = null;
+                    if (isCircuit) {
+                        if (exIdx < block.exercises.length - 1) next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: state.systemStep.round };
+                        else if (state.systemStep.round < 3) next = { blockId, exerciseId: block.exercises[0].id, round: state.systemStep.round + 1 };
+                    } else if (exId === state.systemStep?.exerciseId && exIdx < block.exercises.length - 1) {
+                        next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: 1 };
                     }
+
+                    // Seek first incomplete overall if block finished
+                    if (!next) {
+                        for (const b of session.blocks) {
+                            const firstIncompleteEx = b.exercises.find(e => {
+                                const logs = updatedLogs[e.id] || [];
+                                const tSets = parseInt(e.target_sets || 3);
+                                return logs.length < tSets;
+                            });
+                            if (firstIncompleteEx) {
+                                next = { blockId: b.id, exerciseId: firstIncompleteEx.id, round: 1 };
+                                break;
+                            }
+                        }
+                    }
+
+                    set({ systemStep: next, activeFocusId: next?.exerciseId || null });
                 }
             },
 
@@ -99,6 +120,6 @@ export const useTrainingStore = create(
 
             resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, collapsedBlocks: [] })
         }),
-        { name: 'mp-training-storage-v12' }
+        { name: 'mp-training-storage-v15' }
     )
 );

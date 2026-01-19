@@ -1,86 +1,72 @@
-import React, { useState } from 'react';
-import { Check, ChevronDown, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { Check, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react';
 import { useTrainingStore } from '../stores/useTrainingStore';
 import '../../shared-premium.css';
 
-export const SequentialSetLogger = ({ exercise }) => {
-    const { collapsedExercises, toggleExerciseCollapse, setExerciseCollapsed } = useTrainingStore();
-    const [loggedSets, setLogs] = useState([]);
+export const SequentialSetLogger = ({ exercise, blockId }) => {
+    const { 
+        systemStep, 
+        activeFocusId, 
+        activeSession,
+        addLogEntry, 
+        updateLogEntry,
+        toggleFocus 
+    } = useTrainingStore();
+    
+    const logs = activeSession?.logs[exercise.id] || [];
     const totalSets = parseInt(exercise.target_sets || 3);
-    const currentSetNum = loggedSets.length + 1;
+    const isComplete = logs.length >= totalSets;
 
-    const isComplete = loggedSets.length >= totalSets;
-    const isCollapsed = collapsedExercises.includes(exercise.id);
+    // LOGIC FIX: Determine if this exercise is specifically what the user is looking at
+    const isExpanded = activeFocusId === exercise.id;
+    const isSystemChoice = systemStep?.exerciseId === exercise.id;
+
+    // RED LOGIC: Turn Red if (System Choice) AND (User is looking at something else later)
+    const isMissed = !isComplete && isSystemChoice && activeFocusId && activeFocusId !== exercise.id;
 
     const handleLog = () => {
-        if (loggedSets.length >= totalSets) return;
-        const newLogs = [...loggedSets, { 
-            id: Date.now(), 
-            weight: exercise.target_weight || '0', 
-            reps: exercise.target_reps || '0', 
-            rpe: exercise.target_rpe || '0' 
-        }];
-        setLogs(newLogs);
-        if (newLogs.length >= totalSets) setExerciseCollapsed(exercise.id, true);
+        addLogEntry(exercise.id, blockId, {
+            weight: exercise.target_weight, reps: exercise.target_reps, rpe: exercise.target_rpe, set: logs.length + 1
+        }, false);
     };
 
-    const updateLog = (id, field, value) => {
-        setLogs(prev => prev.map(log => log.id === id ? { ...log, [field]: value } : log));
+    const getAccentColor = () => {
+        if (isComplete) return '#2ecc71'; // GREEN
+        if (isMissed) return '#ef4444';   // RED (Bypassed)
+        if (isExpanded || isSystemChoice) return '#f29b11'; // ORANGE
+        return '#333';
     };
 
-    const gridStyle = {
-        display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr 1fr 52px',
-        gap: '6px',
-        alignItems: 'center',
-        width: '100%'
-    };
-
-    const logInputStyle = {
-        all: 'unset',
-        backgroundColor: 'transparent',
-        width: '100%',
-        textAlign: 'center',
-        fontSize: '16px',
-        fontWeight: '900',
-        color: '#fff',
-        height: '32px',
-        boxSizing: 'border-box'
-    };
+    const gridStyle = { display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 52px', gap: '6px', alignItems: 'center', width: '100%' };
+    const logInputStyle = { all: 'unset', backgroundColor: 'transparent', width: '100%', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#fff', height: '32px' };
 
     return (
         <div style={{ 
-            backgroundColor: isComplete ? '#161d16' : '#1a1a1a',
-            padding: '8px 10px', 
-            borderBottom: '1px solid #333',
-            marginBottom: '4px',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            boxSizing: 'border-box'
+            backgroundColor: isExpanded ? '#1a1a1a' : isComplete ? '#161d16' : '#0a0a0a',
+            padding: '8px 10px', borderBottom: '1px solid #333', marginBottom: '2px', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box',
+            borderLeft: `4px solid ${getAccentColor()}`,
+            transition: 'all 0.3s ease',
+            opacity: isExpanded || isComplete || isMissed || isSystemChoice ? 1 : 0.4
         }}>
-            {/* ROW 1: Name and Indicator */}
-            <div 
-                onClick={() => toggleExerciseCollapse(exercise.id)}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
-            >
+            {/* Header: ALWAYS VISIBLE */}
+            <div onClick={() => toggleFocus(exercise.id)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <span style={{ 
                     fontSize: '9px', fontWeight: '900', padding: '2px 6px', 
-                    backgroundColor: isComplete ? '#2ecc71' : '#f29b11',
-                    color: '#000', borderRadius: '4px', textTransform: 'uppercase', flexShrink: 0
+                    backgroundColor: getAccentColor(), color: '#000', borderRadius: '4px' 
                 }}>
-                    {isComplete ? 'DONE' : `${currentSetNum}/${totalSets}`}
+                    {isComplete ? 'DONE' : `${logs.length + 1}/${totalSets}`}
                 </span>
-                <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1 }}>
+                <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : isMissed ? '#ef4444' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {exercise.name}
                 </h3>
-                {isCollapsed ? <ChevronRight size={14} color="#444" /> : <ChevronDown size={14} color="#444" />}
+                {isMissed && <AlertTriangle size={12} color="#ef4444" style={{ marginRight: '8px' }} />}
+                {isExpanded ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
             </div>
 
-            {/* EXPANDABLE SECTION */}
-            {!isCollapsed && (
+            {/* EXPANDABLE CONTENT: Hidden when minimized */}
+            {isExpanded && (
                 <div style={{ marginTop: '8px' }}>
-                    {/* ROW 2: Targets Aligned Right */}
+                    {/* Row 2: Targets */}
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderBottom: '1px solid #222', paddingBottom: '4px', marginBottom: '8px' }}>
                         <TargetItem label="KG" value={exercise.target_weight} />
                         <TargetItem label="REPS" value={exercise.target_reps} />
@@ -88,35 +74,37 @@ export const SequentialSetLogger = ({ exercise }) => {
                         <TargetItem label="TEMPO" value={exercise.target_tempo} />
                     </div>
 
-                    {/* ROW 3: Active Inputs */}
+                    {/* Row 3: Inputs (Only if not done) */}
                     {!isComplete && (
-                        <div style={{...gridStyle, marginBottom: '8px'}}>
-                            <input type="number" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="Kg" />
-                            <input type="number" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="R" />
-                            <input type="number" className="premium-input" style={{ height: '38px', fontSize: '18px', borderStyle: 'dashed' }} placeholder="RPE" />
-                            <button onClick={handleLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: '#222', color: '#f29b11', width: '52px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: '1px solid #333' }}>
+                        <div style={{...gridStyle, marginBottom: '12px'}}>
+                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="Kg" />
+                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="R" />
+                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="RPE" />
+                            <button onClick={handleLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: '#222', color: getAccentColor(), width: '52px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
                                 <Check size={22} strokeWidth={4} />
                             </button>
                         </div>
                     )}
 
-                    {/* ROW 4+: History */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {loggedSets.map((log, i) => (
-                            <div key={log.id} style={gridStyle}>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px', overflow: 'hidden' }}>
-                                    <input type="number" value={log.weight} onChange={(e) => updateLog(log.id, 'weight', e.target.value)} style={logInputStyle} />
+                    {/* Row 4: History (NOW INSIDE THE EXPANDED VIEW) */}
+                    {logs.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {logs.map((log, i) => (
+                                <div key={log.id} style={gridStyle}>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="number" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                    </div>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="number" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                    </div>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="number" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                    </div>
+                                    <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{i+1}</div>
                                 </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px', overflow: 'hidden' }}>
-                                    <input type="number" value={log.reps} onChange={(e) => updateLog(log.id, 'reps', e.target.value)} style={logInputStyle} />
-                                </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px', overflow: 'hidden' }}>
-                                    <input type="number" value={log.rpe} onChange={(e) => updateLog(log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
-                                </div>
-                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{i+1}</div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

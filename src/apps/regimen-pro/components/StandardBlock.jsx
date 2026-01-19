@@ -11,7 +11,7 @@ export const StandardBlock = ({ block }) => {
 
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {block.exercises.map(ex => (
-                    <SequentialSetLogger key={ex.id} exercise={ex} />
+                    <SequentialSetLogger key={ex.id} exercise={ex} blockId={block.id} />
                 ))}
             </div>
         </div>

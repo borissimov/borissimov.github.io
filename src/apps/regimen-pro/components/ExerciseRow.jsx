@@ -3,22 +3,22 @@ import { Check, ChevronDown, ChevronRight } from 'lucide-react';
 import { useTrainingStore } from '../stores/useTrainingStore';
 import '../../shared-premium.css';
 
-export const ExerciseRow = ({ 
-    exercise, 
+export const ExerciseRow = ({
+    exercise,
     blockId,
     onLog
 }) => {
-    const { 
-        systemStep, 
-        activeFocusId, 
+    const {
+        systemStep,
+        activeFocusId,
         activeSession,
-        addLogEntry, 
+        addLogEntry,
         updateLogEntry,
-        toggleFocus 
+        toggleFocus
     } = useTrainingStore();
 
     const logs = activeSession?.logs[exercise.id] || [];
-    const totalRounds = 3; 
+    const totalRounds = 3;
     const isComplete = logs.length >= totalRounds;
     const hasStarted = logs.length > 0;
 
@@ -26,7 +26,7 @@ export const ExerciseRow = ({
     const isSystemChoice = systemStep?.exerciseId === exercise.id;
     const isFullyDone = logs.length >= totalRounds;
 
-    const isCardio = exercise.type === 'Cardio' || 
+    const isCardio = exercise.type === 'Cardio' ||
                      ['Running', 'Biking', 'Swimming', 'Walking'].some(v => exercise.name.includes(v));
 
     const handleLocalLog = () => {
@@ -38,8 +38,8 @@ export const ExerciseRow = ({
     };
 
     const getAccentColor = () => {
-        if (isComplete) return '#2ecc71'; 
-        if (isActive || isSystemChoice) return '#f29b11';   
+        if (isComplete) return '#2ecc71';
+        if (isActive || isSystemChoice) return '#f29b11';
         if (hasStarted) return '#2ecc71'; // Green for partial progress
         return '#333';
     };
@@ -54,7 +54,7 @@ export const ExerciseRow = ({
     const logInputStyle = { all: 'unset', backgroundColor: 'transparent', width: '100%', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#fff', height: '32px' };
 
     return (
-        <div className={getAnimationClass()} style={{ 
+        <div className={getAnimationClass()} style={{
             backgroundColor: isActive ? '#1a1a1a' : isComplete ? '#161d16' : '#0a0a0a',
             padding: '8px 10px', borderBottom: '1px solid #333', marginBottom: '2px', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box',
             borderLeft: `4px solid ${getAccentColor()}`,
@@ -62,11 +62,11 @@ export const ExerciseRow = ({
             opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.3
         }}>
             <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <span style={{ 
-                    fontSize: '9px', fontWeight: '900', padding: '2px 6px', 
-                    backgroundColor: getAccentColor(), color: '#000', borderRadius: '4px' 
+                <span style={{
+                    fontSize: '9px', fontWeight: '900', padding: '2px 6px',
+                    backgroundColor: getAccentColor(), color: '#000', borderRadius: '4px'
                 }}>
-                    {isComplete ? 'DONE' : `${logs.length + 1}/${totalRounds}`}
+                    {isComplete ? 'DONE' : `${logs.length}/${totalRounds}`}
                 </span>
                 <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{exercise.name}</h3>
                 {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
@@ -110,24 +110,22 @@ export const ExerciseRow = ({
                         </div>
                     )}
 
-                    {logs.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
-                            {logs.map((log) => (
-                                <div key={log.id} style={gridStyle}>
-                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                        <input type="number" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
-                                    </div>
-                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                        <input type="number" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
-                                    </div>
-                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                        <input type="number" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
-                                    </div>
-                                    <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
+                        {logs.map((log) => (
+                            <div key={log.id} style={gridStyle}>
+                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                    <input type="number" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                    <input type="number" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                </div>
+                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                    <input type="number" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                </div>
+                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

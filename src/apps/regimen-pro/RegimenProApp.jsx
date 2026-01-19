@@ -7,11 +7,26 @@ import '../shared-premium.css';
 const RegimenProApp = ({ onExit }) => {
     const { activeSession, startSession, resetStore } = useTrainingStore();
 
+    // GLOBAL PROGRESS CALCULATION
+    const globalStats = activeSession?.blocks.reduce((acc, block) => {
+        block.exercises.forEach(ex => {
+            const target = parseInt(ex.target_sets || 3);
+            const logged = (activeSession?.logs[ex.id] || []).length;
+            acc.totalTarget += target;
+            acc.totalLogged += Math.min(logged, target);
+        });
+        return acc;
+    }, { totalTarget: 0, totalLogged: 0 }) || { totalTarget: 0, totalLogged: 0 };
+
+    const globalPercent = globalStats.totalTarget > 0 
+        ? (globalStats.totalLogged / globalStats.totalTarget) * 100 
+        : 0;
+
     return (
         <div className="app-container-v2" style={{ paddingTop: '10px' }}>
             <div style={{ width: '100%', margin: '0' }}>
                 
-                {/* Compact Header */}
+                {/* Compact Header (Static) */}
                 <header style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', padding: '0 10px' }}>
                     <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '5px' }}>
                         <ArrowLeft size={24} color="#f29b11" />
@@ -46,14 +61,39 @@ const RegimenProApp = ({ onExit }) => {
                     </div>
                 ) : (
                     <div style={{ paddingBottom: '80px' }}>
+                        {/* FIXED GLOBAL PROGRESS BAR */}
+                        <div style={{ 
+                            position: 'sticky', 
+                            top: 0, 
+                            left: 0, 
+                            zIndex: 100, 
+                            backgroundColor: '#121212', 
+                            paddingBottom: '8px', 
+                            marginTop: '-10px' 
+                        }}>
+                            <div style={{ height: '3px', width: '100%', backgroundColor: '#222' }}>
+                                <div style={{ 
+                                    height: '100%', 
+                                    width: `${globalPercent}%`, 
+                                    backgroundColor: '#f29b11', 
+                                    boxShadow: '0 0 8px #f29b1188',
+                                    transition: 'width 0.5s ease-out' 
+                                }} />
+                            </div>
+                        </div>
+
                         {/* Compact Session Meta */}
-                        <div className="premium-card" style={{ padding: '8px 15px', marginBottom: '8px' }}>
+                        <div className="premium-card" style={{ padding: '8px 15px', marginBottom: '8px', borderRadius: '0', borderLeft: 'none', borderRight: 'none' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <p style={{ fontSize: '9px', color: '#666', fontWeight: '800', textTransform: 'uppercase', margin: 0 }}>Active Session</p>
                                     <p style={{ fontSize: '12px', fontWeight: 'bold', margin: 0 }}>{new Date(activeSession.startTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
                                 </div>
-                                <button onClick={resetStore} style={{ all: 'unset', cursor: 'pointer', color: '#ef4444' }}>
+                                <div style={{ textAlign: 'right' }}>
+                                    <p style={{ fontSize: '14px', fontWeight: '900', color: '#f29b11', margin: 0 }}>{Math.round(globalPercent)}%</p>
+                                    <p style={{ fontSize: '8px', color: '#444', fontWeight: 'bold', margin: 0 }}>TOTAL COMPLETION</p>
+                                </div>
+                                <button onClick={resetStore} style={{ all: 'unset', cursor: 'pointer', color: '#ef4444', marginLeft: '10px' }}>
                                     <X size={18} />
                                 </button>
                             </div>

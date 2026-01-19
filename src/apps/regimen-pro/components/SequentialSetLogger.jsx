@@ -57,7 +57,7 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
                     fontSize: '9px', fontWeight: '900', padding: '2px 6px', 
                     backgroundColor: getAccentColor(), color: '#000', borderRadius: '4px' 
                 }}>
-                    {isComplete ? 'DONE' : `${logs.length + 1}/${totalSets}`}
+                    {isComplete ? 'DONE' : `${logs.length}/${totalSets}`}
                 </span>
                 
                 <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { CircuitBlock } from './CircuitBlock';
 import { StandardBlock } from './StandardBlock';
 import { useTrainingStore } from '../stores/useTrainingStore';
 import { ChevronDown, ChevronRight, CheckCircle2, Dumbbell, RefreshCcw, Layout } from 'lucide-react';
 
 export const TrainingBlock = ({ block, index, totalBlocks }) => {
-    const { collapsedBlocks, toggleBlockCollapse, setBlockCollapsed, activeSession } = useTrainingStore();
+    const { expandedBlockId, setExpandedBlock, activeSession } = useTrainingStore();
+
+    // REAL-TIME SET-BASED PROGRESS
+    const stats = block.exercises.reduce((acc, ex) => {
+        const target = parseInt(ex.target_sets || 3);
+        const logged = (activeSession?.logs[ex.id] || []).length;
+        acc.totalTargetSets += target;
+        acc.totalLoggedSets += Math.min(logged, target); 
+        if (logged >= target) acc.completedExercises++;
+        return acc;
+    }, { totalTargetSets: 0, totalLoggedSets: 0, completedExercises: 0 });
+
+    const totalExercises = block.exercises.length;
+    const progressPercent = (stats.totalLoggedSets / stats.totalTargetSets) * 100;
+    const isBlockDone = stats.completedExercises === totalExercises;
     
-    const [hasAutoCollapsed, setHasAutoCollapsed] = useState(false);
-
-    const isBlockDone = block.exercises.every(ex => {
-        const logs = activeSession?.logs[ex.id] || [];
-        const targetSets = parseInt(ex.target_sets || 3);
-        return logs.length >= targetSets;
-    });
-
-    const isCollapsed = collapsedBlocks.includes(block.id);
-
-    useEffect(() => {
-        if (isBlockDone && !hasAutoCollapsed) {
-            setBlockCollapsed(block.id, true);
-            setHasAutoCollapsed(true);
-        }
-    }, [isBlockDone, block.id, setBlockCollapsed, hasAutoCollapsed]);
+    // NEW ACCORDION LOGIC
+    const isExpanded = expandedBlockId === block.id;
 
     const accentColor = isBlockDone ? '#2ecc71' : '#f29b11';
 
-    // Select icon based on block type
     const getBlockIcon = () => {
         if (isBlockDone) return <CheckCircle2 size={16} color={accentColor} />;
         if (block.block_type === 'CIRCUIT') return <RefreshCcw size={16} color={accentColor} />;
@@ -35,37 +34,52 @@ export const TrainingBlock = ({ block, index, totalBlocks }) => {
     };
 
     return (
-        <div style={{ marginBottom: isCollapsed ? '4px' : '16px' }}>
+        <div style={{ marginBottom: isExpanded ? '16px' : '4px' }}>
             <div 
-                onClick={() => toggleBlockCollapse(block.id)}
+                onClick={() => setExpandedBlock(isExpanded ? null : block.id)}
                 style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    backgroundColor: !isExpanded ? '#111' : 'transparent',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}
+            >
+                <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'space-between', 
-                    cursor: 'pointer',
                     padding: '12px 10px',
-                    backgroundColor: isCollapsed ? '#111' : 'transparent',
-                    borderBottom: isCollapsed ? '1px solid #222' : 'none'
-                }}
-            >
-                <div className="section-header" style={{ marginBottom: 0, color: accentColor, gap: '10px' }}>
-                    {getBlockIcon()}
-                    <span style={{ marginLeft: '4px', fontSize: '13px', letterSpacing: '1px' }}>
-                        {block.label?.toUpperCase() || 'TRAINING BLOCK'}
-                    </span>
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {isCollapsed && (
-                        <span style={{ fontSize: '9px', fontWeight: '900', color: isBlockDone ? accentColor : '#444', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                            {isBlockDone ? 'COMPLETE' : `${block.exercises.length} EX`}
+                }}>
+                    <div className="section-header" style={{ marginBottom: 0, color: accentColor, gap: '10px' }}>
+                        {getBlockIcon()}
+                        <span style={{ marginLeft: '4px', fontSize: '13px', letterSpacing: '1px' }}>
+                            {block.label?.toUpperCase() || 'TRAINING BLOCK'}
                         </span>
-                    )}
-                    {isCollapsed ? <ChevronRight size={14} color="#444" /> : <ChevronDown size={14} color="#444" />}
+                    </div>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '10px', fontWeight: '900', color: accentColor, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            {Math.round(progressPercent)}%
+                        </span>
+                        {isExpanded ? <ChevronDown size={14} color="#444" /> : <ChevronRight size={14} color="#444" />}
+                    </div>
                 </div>
+
+                {/* PROGRESS BAR (Edge-to-Edge) */}
+                <div style={{ 
+                    position: 'absolute', 
+                    bottom: 0, 
+                    left: 0, 
+                    height: '2px', 
+                    width: `${progressPercent}%`, 
+                    backgroundColor: accentColor,
+                    transition: 'width 0.5s ease-out'
+                }} />
             </div>
             
-            {!isCollapsed && (
+            {isExpanded && (
                 <div className="animate-in fade-in slide-in-from-top-1 duration-300">
                     {block.block_type === 'CIRCUIT' ? (
                         <CircuitBlock block={block} />

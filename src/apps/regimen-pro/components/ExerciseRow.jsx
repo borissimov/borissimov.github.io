@@ -40,13 +40,12 @@ export const ExerciseRow = ({
     const getAccentColor = () => {
         if (isComplete) return '#2ecc71'; 
         if (isActive || isSystemChoice) return '#f29b11';   
-        if (hasStarted) return '#2ecc71'; // Green for partial progress
-        return '#666'; // Lightened from #333
+        if (hasStarted) return '#2ecc71'; 
+        return '#666'; 
     };
 
     const getAnimationClass = () => {
         if (isComplete) return '';
-        // Only breathe orange if it's the system recommendation but NOT currently expanded
         if (isSystemChoice && !isActive) return 'animate-breathe-orange';
         return '';
     };
@@ -60,7 +59,7 @@ export const ExerciseRow = ({
             padding: '8px 10px', borderBottom: '1px solid #333', marginBottom: '2px', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box',
             borderLeft: `4px solid ${getAccentColor()}`,
             transition: 'all 0.3s ease',
-            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 // Increased from 0.3
+            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 
         }}>
             <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <span style={{
@@ -95,14 +94,14 @@ export const ExerciseRow = ({
                         <div style={gridStyle}>
                             {!isCardio ? (
                                 <>
-                                    <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="Kg" />
-                                    <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="R" />
-                                    <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="RPE" />
+                                    <input type="text" className="premium-input" style={{ height: '38px' }} placeholder="Kg" />
+                                    <input type="text" className="premium-input" style={{ height: '38px' }} placeholder="R" />
+                                    <input type="text" className="premium-input" style={{ height: '38px' }} placeholder="RPE" />
                                 </>
                             ) : (
                                 <>
                                     <input type="text" className="premium-input" style={{ height: '38px', gridColumn: 'span 2' }} placeholder="Time" />
-                                    <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="HR" />
+                                    <input type="text" className="premium-input" style={{ height: '38px' }} placeholder="HR" />
                                 </>
                             )}
                             <button onClick={handleLocalLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: '#222', color: getAccentColor(), width: '52px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
@@ -110,23 +109,25 @@ export const ExerciseRow = ({
                             </button>
                         </div>
                     )}
+                </div>
+            )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
-                        {logs.map((log) => (
-                            <div key={log.id} style={gridStyle}>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
-                                </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
-                                </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
-                                </div>
-                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+            {logs.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
+                    {logs.map((log) => (
+                        <div key={log.id} style={gridStyle}>
+                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                <input type="text" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
                             </div>
-                        ))}
-                    </div>
+                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                <input type="text" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                            </div>
+                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                <input type="text" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                            </div>
+                            <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

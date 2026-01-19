@@ -19,12 +19,11 @@ export const useHealthStore = create(
                     }
                 };
 
-                // Add to local state immediately (Optimistic)
                 set((state) => ({ logs: [newLog, ...state.logs] }));
 
-                // Sync to Supabase
                 try {
                     const { error } = await supabase
+                        .schema('v2') // Point to v2
                         .from('health_metrics')
                         .insert([
                             { user_id: userId, metric_type: 'BP_SYS', value: systolic },
@@ -41,6 +40,7 @@ export const useHealthStore = create(
                 set({ isSyncing: true });
                 try {
                     const { data, error } = await supabase
+                        .schema('v2') // Point to v2
                         .from('health_metrics')
                         .select('*')
                         .eq('user_id', userId)
@@ -49,8 +49,6 @@ export const useHealthStore = create(
                     
                     if (error) throw error;
                     
-                    // Transform relational rows into entry groups
-                    // (Simplification for the V2 prototype)
                     const grouped = data.reduce((acc, row) => {
                         const date = row.measured_at.split('T')[0];
                         if (!acc[date]) acc[date] = { measured_at: row.measured_at, metrics: {} };
@@ -79,7 +77,7 @@ export const useHealthStore = create(
             },
         }),
         {
-            name: 'mp-health-storage',
+            name: 'mp-health-storage-v2', // Updated key for v2 schema
         }
     )
 );

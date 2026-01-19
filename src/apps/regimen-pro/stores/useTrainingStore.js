@@ -10,17 +10,14 @@ export const useTrainingStore = create(
             systemStep: null, 
             activeFocusId: null,
             
-            // SELECTOR STATE
-            availableRoutineDays: [], // List of { id, label, sequence_number, is_rest_day }
+            availableRoutineDays: [], 
             recommendedDayId: null,
             selectedDayId: null,
             isLoading: false,
 
-            // PHASE 1: Fetch the Loop & Calculate Recommendation
             fetchRoutineDays: async () => {
                 set({ isLoading: true });
                 try {
-                    // 1. Get current routine days
                     const { data: days, error } = await supabase
                         .schema('v2')
                         .from('routine_days')
@@ -29,7 +26,6 @@ export const useTrainingStore = create(
 
                     if (error) throw error;
 
-                    // 2. Fetch last completed session to find "Shadow" position
                     const { data: lastSession, error: lastError } = await supabase
                         .schema('v2')
                         .from('session_logs')
@@ -48,7 +44,7 @@ export const useTrainingStore = create(
                     set({ 
                         availableRoutineDays: days, 
                         recommendedDayId: recommendedId,
-                        selectedDayId: recommendedId, // Default selection to recommendation
+                        selectedDayId: recommendedId, 
                         isLoading: false 
                     });
                 } catch (err) {
@@ -59,11 +55,14 @@ export const useTrainingStore = create(
 
             setSelectedDay: (id) => set({ selectedDayId: id }),
 
-            // PHASE 2: Load the specific workout content and START
+            // Set specific block as the ONLY one expanded
+            setExpandedBlock: (blockId) => set({
+                expandedBlockId: blockId
+            }),
+
             startSession: async (dayId) => {
                 set({ isLoading: true });
                 try {
-                    // Fetch Workout -> Blocks -> Exercises
                     const { data: workout, error } = await supabase
                         .schema('v2')
                         .from('workouts')
@@ -79,20 +78,33 @@ export const useTrainingStore = create(
                             )
                         `)
                         .eq('routine_day_id', dayId)
-                        .single();
+                        .maybeSingle(); // Use maybeSingle to avoid 406 on empty days
 
                     if (error) throw error;
 
-                    // Map relational data to our existing "Flow Engine" format
+                    // SAFETY: Handle Rest Days or Empty Days
+                    if (!workout) {
+                        const session = {
+                            id: crypto.randomUUID(),
+                            startTime: new Date().toISOString(),
+                            routine_day_id: dayId,
+                            isRestDay: true,
+                            blocks: [],
+                            logs: {}
+                        };
+                        set({ activeSession: session, isLoading: false });
+                        return;
+                    }
+
                     const session = {
                         id: crypto.randomUUID(),
                         startTime: new Date().toISOString(),
                         routine_day_id: dayId,
-                        blocks: workout.workout_blocks.sort((a,b) => a.sort_order - b.sort_order).map(b => ({
+                        blocks: (workout.workout_blocks || []).sort((a,b) => a.sort_order - b.sort_order).map(b => ({
                             id: b.id,
                             label: b.label,
                             block_type: b.block_type,
-                            exercises: b.block_exercises.sort((a,b) => a.sort_order - b.sort_order).map(be => ({
+                            exercises: (b.block_exercises || []).sort((a,b) => a.sort_order - b.sort_order).map(be => ({
                                 id: be.id,
                                 name: be.exercises.name,
                                 target_sets: be.target_sets,
@@ -122,7 +134,35 @@ export const useTrainingStore = create(
                 }
             },
 
-            // SHARED FOCUS LOGIC (Design 2 Engine)
+            finishSession: async () => {
+                const session = get().activeSession;
+                if (!session) return;
+
+                set({ isLoading: true });
+                try {
+                    // Get current auth user
+                    const { data: { user } } = await supabase.auth.getUser();
+                    
+                    // Log the session completion to Supabase for cursor logic
+                    const { error } = await supabase
+                        .schema('v2')
+                        .from('session_logs')
+                        .insert([{
+                            user_id: user?.id, 
+                            routine_day_id: session.routine_day_id,
+                            start_time: session.startTime,
+                            end_time: new Date().toISOString()
+                        }]);
+
+                    if (error) throw error;
+                    
+                    set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, isLoading: false });
+                } catch (err) {
+                    console.error("Finish session failed:", err);
+                    set({ isLoading: false });
+                }
+            },
+
             toggleFocus: (exId, blockId) => set((state) => {
                 const isClosing = state.activeFocusId === exId;
                 const newState = { activeFocusId: isClosing ? null : exId, expandedBlockId: blockId };
@@ -186,6 +226,6 @@ export const useTrainingStore = create(
 
             resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, selectedDayId: null })
         }),
-        { name: 'mp-training-storage-v20' }
+        { name: 'mp-training-storage-v21' }
     )
 );

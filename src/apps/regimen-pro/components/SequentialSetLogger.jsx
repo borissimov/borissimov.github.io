@@ -78,9 +78,9 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
 
                     {!isComplete && (
                         <div style={{...gridStyle, marginBottom: '12px'}}>
-                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="Kg" />
-                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="R" />
-                            <input type="number" className="premium-input" style={{ height: '38px' }} placeholder="RPE" />
+                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="Kg" />
+                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="R" />
+                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px', borderStyle: 'dashed' }} placeholder="RPE" />
                             <button onClick={handleLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: '#222', color: getAccentColor(), width: '52px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
                                 <Check size={22} strokeWidth={4} />
                             </button>
@@ -91,13 +91,13 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
                         {logs.map((log, i) => (
                             <div key={log.id} style={gridStyle}>
                                 <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                    <input type="text" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
                                 </div>
                                 <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                    <input type="text" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
                                 </div>
                                 <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="number" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                    <input type="text" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
                                 </div>
                                 <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{i+1}</div>
                             </div>

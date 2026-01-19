@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useTrainingStore } from './stores/useTrainingStore';
 import { TrainingBlock } from './components/TrainingBlock';
-import { ArrowLeft, Play, X, Activity, Loader2, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Play, X, Activity, Loader2, CheckCircle2, Coffee, Check } from 'lucide-react';
 import '../shared-premium.css';
 
 const RegimenProApp = ({ onExit }) => {
     const { 
         activeSession, 
         startSession, 
+        finishSession,
         resetStore, 
         fetchRoutineDays, 
         availableRoutineDays, 
@@ -17,15 +18,13 @@ const RegimenProApp = ({ onExit }) => {
         isLoading 
     } = useTrainingStore();
 
-    // Fetch routine options on mount if no session active
     useEffect(() => {
         if (!activeSession) {
             fetchRoutineDays();
         }
     }, [activeSession, fetchRoutineDays]);
 
-    // GLOBAL PROGRESS
-    const globalStats = activeSession?.blocks.reduce((acc, block) => {
+    const globalStats = activeSession?.blocks?.reduce((acc, block) => {
         block.exercises.forEach(ex => {
             const target = parseInt(ex.target_sets || 3);
             const logged = (activeSession?.logs[ex.id] || []).length;
@@ -40,7 +39,6 @@ const RegimenProApp = ({ onExit }) => {
     return (
         <div className="app-container-v2">
             
-            {/* 1. LANDING SCREEN / SELECTOR */}
             {!activeSession ? (
                 <div style={{ padding: '20px 10px' }}>
                     <header style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
@@ -112,8 +110,23 @@ const RegimenProApp = ({ onExit }) => {
                         </div>
                     )}
                 </div>
+            ) : activeSession.isRestDay ? (
+                /* REST DAY VIEW */
+                <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+                    <div style={{ width: '80px', height: '80px', backgroundColor: '#1a1a1a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                        <Coffee size={40} color="#f29b11" />
+                    </div>
+                    <h2 style={{ fontSize: '24px', fontWeight: '900', textTransform: 'uppercase' }}>Rest & Recover</h2>
+                    <p style={{ color: '#666', marginBottom: '40px' }}>No training scheduled for this phase of the cycle. Focus on hydration and mobility.</p>
+                    <button className="premium-btn-primary" onClick={finishSession}>
+                        COMPLETE REST DAY
+                    </button>
+                    <button className="premium-btn-secondary" style={{ marginTop: '10px' }} onClick={() => resetStore()}>
+                        Back to Selector
+                    </button>
+                </div>
             ) : (
-                /* 2. THE LOGGER (Existing Perfect Flow) */
+                /* TRAINING SESSION VIEW */
                 <div style={{ width: '100%', margin: '0' }}>
                     <div style={{ position: 'sticky', top: 0, left: 0, zIndex: 100, backgroundColor: '#121212', paddingBottom: '8px' }}>
                         <div style={{ height: '3px', width: '100%', backgroundColor: '#222' }}>
@@ -126,7 +139,7 @@ const RegimenProApp = ({ onExit }) => {
                             <ArrowLeft size={24} color="#f29b11" />
                         </button>
                         <h1 style={{ flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginRight: '34px' }}>
-                            Regimen <span style={{ color: '#f29b11' }}>Pro</span>
+                            Training <span style={{ color: '#f29b11' }}>App</span>
                         </h1>
                     </header>
 
@@ -153,6 +166,18 @@ const RegimenProApp = ({ onExit }) => {
                                     <TrainingBlock block={block} index={idx} totalBlocks={activeSession.blocks.length} />
                                 </div>
                             ))}
+                        </div>
+
+                        {/* FINISH SESSION ACTION */}
+                        <div style={{ padding: '20px 15px' }}>
+                            <button 
+                                className="premium-btn-primary" 
+                                style={{ backgroundColor: globalPercent >= 100 ? '#2ecc71' : '#f29b11', color: globalPercent >= 100 ? '#000' : '#000' }}
+                                onClick={finishSession}
+                            >
+                                <Check size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                                {globalPercent >= 100 ? 'FINISH WORKOUT' : 'FINISH EARLY'}
+                            </button>
                         </div>
                     </div>
                 </div>

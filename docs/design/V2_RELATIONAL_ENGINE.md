@@ -38,6 +38,11 @@ erDiagram
 The schema is isolated in the `v2` namespace.
 *Script location: `src/data/v2_schema_init.sql`*
 
+### Required Supabase Configuration
+Since this project uses a custom PostgreSQL schema, the following steps are mandatory:
+1. **Expose Schema:** In Supabase Dashboard > Settings > API > Exposed Schemas, add `v2`.
+2. **Grant Permissions:** Run the permission block in `src/data/v2_schema_init.sql` to allow `anon` and `authenticated` roles to use the schema.
+
 ## Key UX Scenarios
 
 | Scenario | Logic Path |

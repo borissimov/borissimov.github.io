@@ -19,6 +19,7 @@ Transition the project from a collection of standalone files to a unified, Dashb
 ## Linked Issues
 - **GHI-26 (Task):** [Exercise Tracking Flow Redesign](./GHI-26_Task__Exercise_Tracking_Flow_Redesign.md) - **COMPLETED**
 - **GHI-28 (Task):** [Calendar-Ready Relational Engine](./GHI-28_Task__Implementation_Calendar-Ready_Relational_Engine.md) - **IN PROGRESS**
+- **GHI-29 (Task):** [Decommission Legacy Tracker](./GHI-29_Task__Decommission_Legacy_Tracker_and_Cleanup_Technical_Debt.md) - **PLANNED**
 - **GHI-25 (Task):** Relational Data Migration - **PLANNED**
 
 ## Status

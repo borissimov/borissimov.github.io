@@ -36,7 +36,8 @@
         {
           "name": "DB Push Press",
           "target_reps": "10-12",
-          "target_weight": "12.5 kg",
+          "target_weight": "12.5 kg"
+          ,
           "target_rpe": 9,
           "tempo": "X-0-X-0",
           "commentary": "Use aggressive leg drive."

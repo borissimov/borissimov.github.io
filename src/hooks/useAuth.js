@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../../supabaseClient';
-import { DataManager } from '../../../data/DataManager';
+import { supabase } from '../supabaseClient';
+import { DataManager } from '../data/DataManager';
 
 export const useAuth = () => {
     const [session, setSession] = useState(null);

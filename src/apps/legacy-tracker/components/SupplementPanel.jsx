@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlan } from '../../../context/PlanContext';
-import { useSectionLogic } from '../hooks/useSectionLogic';
+import { useSectionLogic } from '../../../hooks/useSectionLogic';
 import { Trash2, GripVertical } from 'lucide-react';
 
 export const SupplementPanel = ({ data, dayKey }) => {

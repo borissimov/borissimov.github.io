@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { DataManager } from '../../../data/DataManager';
-import { usePlan } from '../../../context/PlanContext';
+import { DataManager } from '../data/DataManager';
+import { usePlan } from '../context/PlanContext';
 
 export const useTrainingLogic = (dayKey, exercises) => {
     const { session, weekDates, logExerciseSet, deleteExerciseSet } = usePlan();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTimerController } from '../hooks/useTimerController';
+import { useTimerController } from '../../../hooks/useTimerController';
 import { Plus, Minus, Play, Square } from 'lucide-react';
 
 export const TimerBar = ({ defaultTime }) => {

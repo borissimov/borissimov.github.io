@@ -11,7 +11,10 @@
   --border-color: #333;
 }
 
-body, html, #root {
+.legacy-tracker-root { '
+'
+
+
   margin: 0;
   padding: 0;
   height: 100%;
@@ -556,3 +559,29 @@ body, html, #root {
     display: none; /* Chrome/Safari/Webkit */
 }
 
+
+'}
+/* Centering Fixes for Scoped Environment */
+.legacy-tracker-root .tab-btn, 
+.legacy-tracker-root .filter-btn, 
+.legacy-tracker-root .action-btn,
+.legacy-tracker-root .timer-icon-btn,
+.legacy-tracker-root .logout-btn,
+.legacy-tracker-root .week-nav-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Explicit Centering for Scoped Legacy Buttons */
+.legacy-tracker-root button,
+.legacy-tracker-root .tab-btn,
+.legacy-tracker-root .filter-btn,
+.legacy-tracker-root .action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+ }

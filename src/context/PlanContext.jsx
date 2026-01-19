@@ -1,9 +1,9 @@
 import React, { createContext, useContext } from 'react';
 import { DataManager } from '../data/DataManager';
-import { useAuth } from '../apps/legacy-tracker/hooks/useAuth';
-import { useTimer } from '../apps/legacy-tracker/hooks/useTimer';
-import { useChecklist } from '../apps/legacy-tracker/hooks/useChecklist';
-import { useRoutine } from '../apps/legacy-tracker/hooks/useRoutine';
+import { useAuth } from '../hooks/useAuth';
+import { useTimer } from '../hooks/useTimer';
+import { useChecklist } from '../hooks/useChecklist';
+import { useRoutine } from '../hooks/useRoutine';
 
 const PlanContext = createContext();
 

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { usePlan } from '../../../context/PlanContext';
+import { usePlan } from '../context/PlanContext';
 
 export const useSectionLogic = (dayKey, sectionName, data) => {
     const { updateSection } = usePlan();

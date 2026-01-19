@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { usePlan } from '../../../context/PlanContext';
 import { DataManager } from '../../../data/DataManager';
-import { useTrainingLogic } from '../hooks/useTrainingLogic';
+import { useTrainingLogic } from '../../../hooks/useTrainingLogic';
 import { ExerciseCard } from './training/ExerciseCard';
 import { Download } from 'lucide-react';
 

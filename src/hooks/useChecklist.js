@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DataManager } from '../../../data/DataManager';
+import { DataManager } from '../data/DataManager';
 
 export const useChecklist = (session, weekDates) => {
     const [checklistState, setChecklistState] = useState({});

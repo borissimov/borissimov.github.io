@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '../../../supabaseClient';
-import { DataManager } from '../../../data/DataManager';
-import { usePlan } from '../../../context/PlanContext';
+import { supabase } from '../supabaseClient';
+import { DataManager } from '../data/DataManager';
+import { usePlan } from '../context/PlanContext';
 
 export const useTimerController = (defaultTime) => {
     const { session, timerState, setTimerState } = usePlan();

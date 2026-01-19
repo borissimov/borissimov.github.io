@@ -1,31 +1,37 @@
 import React from 'react';
 import { ExerciseRow } from './ExerciseRow';
+import { RefreshCcw } from 'lucide-react';
 
-export const CircuitBlock = ({ block, logs = [] }) => {
-    // Generate Round Groups (e.g., Round 1, Round 2, Round 3)
-    // For a circuit, we usually iterate through all exercises per round
-    const numRounds = 3; // This would come from block metadata
+export const CircuitBlock = ({ block }) => {
+    const numRounds = 3; 
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-2 px-2">
-                <div className="px-2 py-1 bg-blue-500/20 text-blue-400 text-[10px] font-black uppercase rounded border border-blue-500/30">
-                    Circuit
+        <div className="regimen-pro-root font-sans">
+        <div className="space-y-8">
+            <div className="flex items-center gap-3 mb-4 px-2">
+                <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                    <RefreshCcw className="text-blue-400" size={18} />
                 </div>
-                <h3 className="font-bold text-sm tracking-tight">{block.label || 'Multi-Movement Circuit'}</h3>
+                <div>
+                    <h3 className="font-black text-sm uppercase tracking-wider">{block.label || 'Circuit'}</h3>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Vertical Flow Mode</p>
+                </div>
             </div>
 
             {[...Array(numRounds)].map((_, rIdx) => (
-                <div key={rIdx} className="bg-[#1a1a1a] rounded-2xl p-3 border border-[#222]">
-                    <div className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3 ml-1 flex justify-between items-center">
-                        <span>Round {rIdx + 1} of {numRounds}</span>
-                        <span className="text-blue-500/50">Vertical Flow</span>
+                <div key={rIdx} className="relative pl-4 border-l-2 border-blue-500/20 space-y-3">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-[#121212] border-2 border-blue-500 flex items-center justify-center">
+                        <div className="w-1 h-1 rounded-full bg-blue-500"></div>
                     </div>
                     
-                    <div className="space-y-2">
-                        {block.exercises.map((ex, eIdx) => (
+                    <div className="text-[10px] font-black text-blue-500/60 uppercase tracking-[0.2em] mb-4 ml-2">
+                        Round {rIdx + 1}
+                    </div>
+                    
+                    <div className="space-y-3">
+                        {block.exercises.map((ex) => (
                             <ExerciseRow 
-                                key={ex.id}
+                                key={`${rIdx}-${ex.id}`}
                                 exercise={ex}
                                 roundNumber={rIdx + 1}
                                 onLog={() => {}}
@@ -34,6 +40,7 @@ export const CircuitBlock = ({ block, logs = [] }) => {
                     </div>
                 </div>
             ))}
+        </div>
         </div>
     );
 };

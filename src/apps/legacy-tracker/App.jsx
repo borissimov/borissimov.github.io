@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { usePlan } from '../../context/PlanContext';
+import { PlanProvider, usePlan } from '../../context/PlanContext';
 import { Auth } from './components/Auth';
 import { TimerBar } from './components/TimerBar';
 import { TrainingPanel } from './components/TrainingPanel';
@@ -13,28 +13,26 @@ import { PlannerPanel } from './components/PlannerPanel';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ProfilePanel } from './components/ProfilePanel';
 import { DailyAIInsight } from './components/DailyAIInsight';
-import { useAppInitialization } from './hooks/useAppInitialization';
+import { useAppInitialization } from '../../hooks/useAppInitialization';
 import { DataManager } from '../../data/DataManager';
+import ErrorBoundary from './components/ErrorBoundary';
+import './App.css';
 
-function App({ onExit }) {
+function AppContent({ onExit }) {
   const { 
     session, loading, currentDay, setCurrentDay, daysMap, 
     weekDates, weekNumber, year, weekOffset, nextWeek, prevWeek, setWeekOffset,
-    getResolvedDayData, getWeekMap 
+    getResolvedDayData, getWeekMap, logout, profile
   } = usePlan();
 
   const [activeTab, setActiveTab] = useState('training');
   const [viewMode, setViewMode] = useState('tracker'); 
   const [navMode, setNavMode] = useState(() => localStorage.getItem('mp_nav_mode') || 'week');
-  const [appMode, setAppMode] = useState('master'); // Default to master to skip chooser
   
-  // Independent Header State for Continuous Mode
   const [headerOffset, setHeaderOffset] = useState(weekOffset);
 
-  // Initialization (Theme, Push)
   useAppInitialization(session, () => {}, () => {}); 
 
-  // Load Nav Mode Preference
   useEffect(() => {
       if (session?.user?.id) {
           DataManager.getProfile(session.user.id).then(p => {
@@ -43,9 +41,6 @@ function App({ onExit }) {
       }
   }, [session]);
 
-  // Sync Header with Context (One-way sync: Context -> Header)
-  // This ensures if we switch modes or reset to today, header jumps to correct place.
-  // We deliberately do NOT sync Header -> Context automatically during scroll.
   useEffect(() => {
       setHeaderOffset(weekOffset);
   }, [weekOffset]);
@@ -54,21 +49,18 @@ function App({ onExit }) {
       return getResolvedDayData ? getResolvedDayData(currentDay) : null;
   }, [getResolvedDayData, currentDay]);
 
-  // Continuous Mode Handlers
   const handleHeaderPrev = () => setHeaderOffset(prev => prev - 1);
   const handleHeaderNext = () => setHeaderOffset(prev => prev + 1);
 
   const handleContinuousDayClick = (offset, key) => {
       const targetWeekOffset = headerOffset + offset;
-      // Update Main View Context
       if (targetWeekOffset !== weekOffset) {
           setWeekOffset(targetWeekOffset);
-          setHeaderOffset(targetWeekOffset); // Sync header immediately
+          setHeaderOffset(targetWeekOffset);
       }
       setCurrentDay(key);
   };
 
-  // Data Generation for Continuous Mode (Driven by headerOffset)
   const prevMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset - 1) : {}, [headerOffset, getWeekMap]);
   const currMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset) : {}, [headerOffset, getWeekMap]);
   const nextMap = useMemo(() => getWeekMap ? getWeekMap(headerOffset + 1) : {}, [headerOffset, getWeekMap]);
@@ -85,51 +77,18 @@ function App({ onExit }) {
       };
   };
 
-  const getWeekClass = (absOffset) => {
-      if (absOffset < 0) return "past";
-      if (absOffset > 0) return "future";
-      return "current";
-  };
-
   const weeks = [
-      { map: prevMap, info: getWeekInfo(prevMap), offset: -1, class: getWeekClass(headerOffset - 1) },
-      { map: currMap, info: getWeekInfo(currMap), offset: 0, class: getWeekClass(headerOffset) },
-      { map: nextMap, info: getWeekInfo(nextMap), offset: 1, class: getWeekClass(headerOffset + 1) }
+      { map: prevMap, info: getWeekInfo(prevMap), offset: -1, class: 'past' },
+      { map: currMap, info: getWeekInfo(currMap), offset: 0, class: 'current' },
+      { map: nextMap, info: getWeekInfo(nextMap), offset: 1, class: 'future' }
   ];
 
-  if (loading) return <div className="flex h-screen items-center justify-center text-white bg-black">Loading Plan...</div>;
+  if (loading) return <div className="flex h-screen items-center justify-center text-white bg-black uppercase font-black tracking-widest">Loading Legacy Tracker...</div>;
   if (!session) return <Auth />;
 
-  // --- VERSION CHOOSER ---
-  if (!appMode) {
-      return (
-          <div className="flex flex-col items-center justify-center h-screen bg-black text-white p-4 gap-6">
-              <h1 className="text-3xl font-black text-[var(--training-accent)] uppercase tracking-widest mb-4">Master Plan</h1>
-              <div className="w-full max-w-sm flex flex-col gap-4">
-                  <button 
-                      onClick={() => setAppMode('master')}
-                      className="w-full py-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[var(--training-accent)] transition-all flex flex-col items-center group"
-                  >
-                      <span className="text-lg font-bold group-hover:text-[var(--training-accent)]">Legacy App</span>
-                      <span className="text-xs text-gray-500 mt-1">Full Feature Set</span>
-                  </button>
-                  
-                  <button 
-                      onClick={() => { setAppMode('regimen'); window.location.href = '/regimen.html'; }}
-                      className="w-full py-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[var(--nutrition-accent)] transition-all flex flex-col items-center group"
-                  >
-                      <span className="text-lg font-bold group-hover:text-[var(--nutrition-accent)]">Regimen Prototype</span>
-                      <span className="text-xs text-gray-500 mt-1">Single Page + Cloud Sync</span>
-                  </button>
-              </div>
-          </div>
-      );
-  }
-
-  // SEPARATE LAYOUT FOR NON-TRACKER VIEWS (Guarantees Scrolling)
   if (viewMode !== 'tracker') {
       return (
-          <div className="fixed inset-0 z-50 bg-black text-white overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="legacy-tracker-root font-sans fixed inset-0 z-50 bg-black text-white overflow-y-auto overscroll-contain">
               <div className="sticky top-0 z-50 bg-[#101010] border-b border-[#333]">
                   <Header 
                     viewMode={viewMode} 
@@ -148,14 +107,14 @@ function App({ onExit }) {
       );
   }
 
-  // TRACKER LAYOUT
   return (
-    <div className="app-container">
+    <div className="legacy-tracker-root font-sans app-container">
       <Header 
         viewMode={viewMode} 
         setViewMode={setViewMode} 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
+        onExit={onExit}
       />
 
       {navMode === 'continuous' ? (
@@ -181,7 +140,6 @@ function App({ onExit }) {
           />
       )}
 
-      {/* TIMER BAR (Fixed below nav) */}
       {activeTab === 'training' && currentDayData && (
         <div style={{ background: '#101010', borderBottom: '1px solid #333', paddingBottom: '4px', flexShrink: 0 }}>
             <TimerBar defaultTime={currentDayData.training.rest || 60} />
@@ -190,43 +148,27 @@ function App({ onExit }) {
 
       <div className="app-main">
         <DailyAIInsight />
-
         {currentDayData ? (
             <>
-                {activeTab === 'training' && (
-                <TrainingPanel 
-                    data={currentDayData.training} 
-                    dayKey={currentDay}
-                />
-                )}
-                
-                {activeTab === 'nutrition' && (
-                <NutritionPanel
-                    data={currentDayData.nutrition}
-                    dayKey={currentDay}
-                />
-                )}
-
-                {activeTab === 'supplements' && (
-                <SupplementPanel
-                    data={currentDayData.supplements}
-                    dayKey={currentDay}
-                />
-                )}
-
-                {activeTab === 'data' && (
-                    <DatabaseViewer />
-                )}
+                {activeTab === 'training' && <TrainingPanel data={currentDayData.training} dayKey={currentDay} />}
+                {activeTab === 'nutrition' && <NutritionPanel data={currentDayData.nutrition} dayKey={currentDay} />}
+                {activeTab === 'supplements' && <SupplementPanel data={currentDayData.supplements} dayKey={currentDay} />}
+                {activeTab === 'data' && <DatabaseViewer />}
             </>
         ) : (
-            <div className="p-8 text-center text-gray-500">
-                <p>No routine data for this day.</p>
-                <p className="text-xs mt-2">Check your cycle start date in the Planner.</p>
-            </div>
+            <div className="p-8 text-center text-gray-500"><p>No routine data.</p></div>
         )}
       </div>
     </div>
   );
 }
 
-export default App;
+const LegacyApp = ({ onExit }) => (
+    <ErrorBoundary>
+        <PlanProvider>
+            <AppContent onExit={onExit} />
+        </PlanProvider>
+    </ErrorBoundary>
+);
+
+export default LegacyApp;

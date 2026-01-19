@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { DataManager } from '../../../data/DataManager';
-import { seedMockDB } from '../../../data/seedMockData';
+import { DataManager } from '../data/DataManager';
+import { seedMockDB } from '../data/seedMockData';
 
 const VAPID_PUBLIC_KEY = 'BCfx_b-KMT2vzftgdcPRiXJLz4tGANrj-iz39RYaUVRIQdaN7DYK-Hz_bDHdkEJYEYJkZlpDDzT-whymv0TyvvI';
 

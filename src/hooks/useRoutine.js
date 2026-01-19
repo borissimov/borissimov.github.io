@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { DataManager } from '../../../data/DataManager';
-import { getStartOfWeek, getLocalDateString } from '../../../utils/dateUtils';
+import { DataManager } from '../data/DataManager';
+import { getStartOfWeek, getLocalDateString } from '../utils/dateUtils';
 
 export const useRoutine = (session, setLoading) => {
     const [planData, setPlanData] = useState(null);

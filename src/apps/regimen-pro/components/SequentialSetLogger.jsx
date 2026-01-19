@@ -32,7 +32,7 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
         if (isComplete) return '#2ecc71'; 
         if (isActive || isSystemChoice) return '#f29b11';   
         if (hasStarted) return '#2ecc71'; // Green badge for partial progress
-        return '#333';
+        return '#666'; // Lightened from #333
     };
 
     const getAnimationClass = () => {
@@ -50,7 +50,7 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
             padding: '8px 10px', borderBottom: '1px solid #333', marginBottom: '2px', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box',
             borderLeft: `4px solid ${getAccentColor()}`,
             transition: 'all 0.3s ease',
-            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.3
+            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 // Increased from 0.3
         }}>
             <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <span style={{ 

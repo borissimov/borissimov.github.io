@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { HubApp } from './apps/hub/HubApp';
-import LegacyApp from './apps/legacy-tracker/App';
 import RegimenProApp from './apps/regimen-pro/RegimenProApp';
 import BloodPressureApp from './apps/blood-pressure/BloodPressureApp';
 
@@ -9,8 +8,6 @@ const App = () => {
     const exitToHub = () => setActiveApp('hub');
 
     switch (activeApp) {
-        case 'legacy':
-            return <LegacyApp onExit={exitToHub} />;
         case 'bp':
             return <BloodPressureApp onExit={exitToHub} />;
         case 'regimen':

@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePlan } from '../../context/PlanContext';
+import { useAuth } from '../../hooks/useAuth';
 import { 
     Activity, 
     HeartPulse, 
@@ -11,7 +11,7 @@ import {
 import './HubApp.css';
 
 export const HubApp = ({ setActiveApp }) => {
-    const { session, logout, profile } = usePlan();
+    const { session, logout, profile } = useAuth();
 
     const apps = [
         {
@@ -25,7 +25,7 @@ export const HubApp = ({ setActiveApp }) => {
         },
         {
             id: 'regimen_react',
-            title: 'Regimen Pro (React)',
+            title: 'Training App',
             desc: 'Next-gen engine. Block-based circuits and real-time analytics.',
             icon: <Trophy size={28} />,
             badge: 'Alpha',
@@ -39,15 +39,6 @@ export const HubApp = ({ setActiveApp }) => {
             icon: <HeartPulse size={28} />,
             badge: 'New',
             accent: '#ef4444'
-        },
-        {
-            id: 'legacy',
-            title: 'Legacy Tracker',
-            desc: 'Access original dashboard tools and historical planning data.',
-            icon: <History size={28} />,
-            badge: 'Stable',
-            accent: '#666',
-            onClick: () => setActiveApp('legacy')
         }
     ];
 

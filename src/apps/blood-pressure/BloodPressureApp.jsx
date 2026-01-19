@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useHealthStore } from './stores/useHealthStore';
-import { usePlan } from '../../context/PlanContext';
+import { useAuth } from '../../hooks/useAuth';
 import { Heart, ArrowLeft, History, Plus } from 'lucide-react';
 import '../shared-premium.css';
 
 const BloodPressureApp = ({ onExit }) => {
-    const { session } = usePlan();
+    const { session } = useAuth();
     const { logs, addLog, fetchLogs, isSyncing } = useHealthStore();
     
     const [sys, setSys] = useState(120);

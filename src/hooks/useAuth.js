@@ -1,27 +1,35 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { DataManager } from '../data/DataManager';
 
 export const useAuth = () => {
     const [session, setSession] = useState(null);
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const refreshProfile = async (userId) => {
-        const p = await DataManager.getProfile(userId);
-        setProfile(p);
+    const fetchProfile = async (userId) => {
+        // v2 profile logic will eventually go here
+        // For now, return a placeholder until Phase 3 Step 3 is live
+        return { full_name: 'Developer Mode' };
     };
 
     useEffect(() => {
+        // Initial session check
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
-            if (session) refreshProfile(session.user.id).finally(() => setLoading(false));
-            else setLoading(false);
+            if (session) {
+                fetchProfile(session.user.id).then(p => {
+                    setProfile(p);
+                    setLoading(false);
+                });
+            } else {
+                setLoading(false);
+            }
         });
 
+        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
-            if (session) refreshProfile(session.user.id); // Auth change doesn't always need to block loading
+            if (session) fetchProfile(session.user.id).then(setProfile);
         });
 
         return () => subscription.unsubscribe();
@@ -29,17 +37,10 @@ export const useAuth = () => {
 
     const logout = async () => {
         await supabase.auth.signOut();
-        
-        // Reset to Offline Mode on Logout
-        sessionStorage.removeItem('mp_is_temp_online');
-        localStorage.setItem('mp_use_mock_db', 'true');
-
         setSession(null);
         setProfile(null);
-        
-        // Force reload to re-initialize supabase client in Mock mode
         window.location.reload();
     };
 
-    return { session, profile, loading, logout, refreshProfile, setLoading };
+    return { session, profile, loading, logout, setProfile, setLoading };
 };

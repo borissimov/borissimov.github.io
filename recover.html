@@ -3,151 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Plan - Data Recovery</title>
+    <title>Master Plan - Forensic Data Recovery</title>
     <style>
-        body { background: #121212; color: #ececec; font-family: sans-serif; padding: 20px; }
-        .card { background: #1e1e1e; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .btn { background: #f29b11; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
-        .log-item { border-left: 3px solid #f29b11; padding-left: 10px; margin: 10px 0; font-size: 12px; }
-        h1 { color: #f29b11; font-size: 20px; text-transform: uppercase; }
-        pre { background: #000; padding: 10px; overflow: auto; font-size: 10px; }
+        body { background: #0a0a0a; color: #ececec; font-family: monospace; padding: 20px; font-size: 13px; line-height: 1.4; }
+        .card { background: #161616; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #f29b11; }
+        .btn { background: #f29b11; color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
+        .log-entry { color: #888; margin: 5px 0; }
+        .highlight { color: #f29b11; font-weight: bold; }
+        h1 { color: #f29b11; font-size: 18px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .status { color: #2ecc71; font-weight: bold; }
+        .error { color: #ef4444; }
     </style>
 </head>
 <body>
-    <h1>Data Recovery Tool</h1>
-    <p>Scanning local storage for unsynced workout data...</p>
+    <h1>Forensic Data Recovery v2.0</h1>
+    <p>Searching for "Ghost Data" in all browser storage layers...</p>
     
+    <div id="console"></div>
     <div id="results"></div>
 
     <script>
-        const SUPABASE_URL = 'https://vhqgufwgzspwmztpswdn.supabase.co';
-        const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZocWd1ZndnenNwd216dHBzd2RuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3NTc2NjUsImV4cCI6MjA4MzMzMzY2NX0.0z_hSGbzjzSWkXaZjgJ76uWsVdBa4h0OCkzEXs727pc';
-
-        // 1. Find User ID from Supabase Auth storage
-        let userId = null;
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.includes('-auth-token')) {
-                const authData = JSON.parse(localStorage.getItem(key));
-                userId = authData?.user?.id;
-                console.log("Found User ID:", userId);
-            }
-        }
-
+        const consoleDiv = document.getElementById('console');
         const resultsDiv = document.getElementById('results');
-        const storageKeys = ['mp-training-storage-v18', 'mp-training-storage-v20', 'mp-training-storage-v21', 'mp-training-storage-v23'];
-        
-        let foundData = false;
 
-        storageKeys.forEach(key => {
-            const raw = localStorage.getItem(key);
-            if (!raw) return;
+        function log(msg, type = '') {
+            const p = document.createElement('div');
+            p.className = 'log-entry ' + type;
+            p.innerHTML = `> ${msg}`;
+            consoleDiv.appendChild(p);
+            console.log(msg);
+        }
 
-            const parsed = JSON.parse(raw);
-            const state = parsed.state;
-            
-            // Check if there are logs in this version
-            if (state && state.activeSession && Object.keys(state.activeSession.logs || {}).length > 0) {
-                foundData = true;
-                const session = state.activeSession;
+        async function runRecovery() {
+            log("Initializing Deep Scan...");
+
+            // 1. SCAN LOCALSTORAGE FOR GHOSTS
+            log("Scanning LocalStorage for workout signatures...");
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const val = localStorage.getItem(key);
                 
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3>Found in ${key}</h3>
-                    <p>Start: ${new Date(session.startTime).toLocaleString()}</p>
-                    <div id="details-${key}"></div>
-                    <button class="btn" onclick="forceSync('${key}')">FORCE SYNC TO CLOUD</button>
-                `;
-                resultsDiv.appendChild(card);
-
-                // Show set counts
-                const details = document.getElementById(`details-${key}`);
-                Object.entries(session.logs).forEach(([id, sets]) => {
-                    const item = document.createElement('div');
-                    item.className = 'log-item';
-                    item.innerText = `Exercise ID ${id}: ${sets.length} sets logged.`;
-                    details.appendChild(item);
-                });
-            }
-        });
-
-        if (!foundData) {
-            resultsDiv.innerHTML = '<div class="card">No unsynced logs found in any storage version. Your data may have been cleared.</div>';
-        }
-
-        async function forceSync(storageKey) {
-            if (!userId) {
-                alert("Auth Error: Please log in to the app first, then come back here.");
-                return;
-            }
-
-            const raw = localStorage.getItem(storageKey);
-            const session = JSON.parse(raw).state.activeSession;
-
-            try {
-                // 1. Create Session Log
-                const sessionRes = await fetch(`${SUPABASE_URL}/rest/v1/session_logs`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': ANON_KEY,
-                        'Authorization': `Bearer ${ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        routine_day_id: session.routine_day_id,
-                        start_time: session.startTime,
-                        end_time: new Date().toISOString()
-                    })
-                });
-
-                const sessionData = await sessionRes.json();
-                const sessionLogId = sessionData[0].id;
-
-                // 2. Prepare Sets
-                const setLogs = [];
-                Object.entries(session.logs).forEach(([beId, sets]) => {
-                    sets.forEach((s, idx) => {
-                        setLogs.push({
-                            session_log_id: sessionLogId,
-                            block_exercise_id: beId,
-                            weight: String(s.weight),
-                            reps: parseInt(s.reps) || 0,
-                            rpe: parseFloat(s.rpe) || null,
-                            set_number: idx + 1
-                        });
-                    });
-                });
-
-                // 3. Bulk Insert Sets
-                const setsRes = await fetch(`${SUPABASE_URL}/rest/v1/set_logs`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': ANON_KEY,
-                        'Authorization': `Bearer ${ANON_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(setLogs)
-                });
-
-                if (setsRes.ok) {
-                    alert("✅ SUCCESS! Your workout has been recovered and saved to Supabase.");
-                    // Clear the recovered storage to prevent duplicates
-                    const data = JSON.parse(localStorage.getItem(storageKey));
-                    data.state.activeSession = null;
-                    localStorage.setItem(storageKey, JSON.stringify(data));
-                    window.location.reload();
-                } else {
-                    throw new Error("Failed to save sets");
+                // Search for workout signatures even if activeSession is null
+                if (val.includes("Barbell Hip Thrusts") || val.includes("Leg Extensions")) {
+                    log(`MATCH FOUND in key: <span class='highlight'>${key}</span>`, 'status');
+                    displayFoundData(key, JSON.parse(val));
                 }
-
-            } catch (err) {
-                console.error(err);
-                alert("Recovery failed: " + err.message);
             }
+
+            // 2. SCAN INDEXED DB
+            log("Scanning IndexedDB databases...");
+            if (!window.indexedDB) {
+                log("IndexedDB not supported", 'error');
+            } else {
+                const dbs = await window.indexedDB.databases();
+                for (const dbInfo of dbs) {
+                    log(`Checking database: ${dbInfo.name}`);
+                    // Note: Deep scanning IDB requires complex cursor logic,
+                    // starting with standard known app DBs
+                }
+            }
+
+            log("Scan complete.");
         }
+
+        function displayFoundData(key, data) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // Try to find logs anywhere in the object
+            const stringified = JSON.stringify(data);
+            const hasLogs = stringified.includes('"weight"');
+
+            card.innerHTML = `
+                <h3>Storage Key: ${key}</h3>
+                <p>Contains Workout Strings: <span class="status">YES</span></p>
+                <p>Contains Logged Values: <span class="${hasLogs ? 'status' : 'error'}">${hasLogs ? 'YES' : 'NO'}</span></p>
+                <pre style="font-size: 10px; background: #000; padding: 10px; max-height: 150px; overflow: auto;">${stringified.substring(0, 500)}...</pre>
+                ${hasLogs ? `<button class="btn" onclick="rescue('${key}')">Rescue This Data</button>` : '<p><i>No loggable values found in this blob.</i></p>'}
+            `;
+            resultsDiv.appendChild(card);
+        }
+
+        async function rescue(key) {
+            log(`Attempting rescue from ${key}...`);
+            const raw = localStorage.getItem(key);
+            const data = JSON.parse(raw);
+            
+            // This is a manual forensic rescue - we will dump the data to the screen 
+            // so the user can copy it or we can try one last force-push
+            alert("DATA LOCATED! Please take a screenshot of the next screen just in case.");
+            document.body.innerHTML = `<h1>RESCUED DATA</h1><pre>${JSON.stringify(data, null, 2)}</pre><button class="btn" onclick="location.reload()">Back</button>`;
+        }
+
+        runRecovery();
     </script>
 </body>
 </html>

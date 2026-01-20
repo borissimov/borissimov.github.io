@@ -21,28 +21,48 @@ export const useTrainingStore = create(
                     const { data: days, error } = await supabase
                         .schema('v2')
                         .from('routine_days')
-                        .select('*')
+                        .select(`
+                            *,
+                            session_logs (
+                                end_time,
+                                start_time
+                            )
+                        `)
                         .order('sequence_number', { ascending: true });
 
                     if (error) throw error;
 
-                    const { data: lastSession, error: lastError } = await supabase
-                        .schema('v2')
-                        .from('session_logs')
-                        .select('routine_day_id')
-                        .not('end_time', 'is', null)
-                        .order('end_time', { ascending: false })
-                        .limit(1);
+                    const processedDays = days.map(day => {
+                        const sortedLogs = (day.session_logs || [])
+                            .filter(l => l.end_time)
+                            .sort((a, b) => new Date(b.end_time) - new Date(a.end_time));
+                        
+                        return {
+                            ...day,
+                            last_session: sortedLogs[0] || null
+                        };
+                    });
 
-                    let recommendedId = days[0]?.id;
-                    if (lastSession?.[0]) {
-                        const lastIdx = days.findIndex(d => d.id === lastSession[0].routine_day_id);
-                        const nextIdx = (lastIdx + 1) % days.length;
-                        recommendedId = days[nextIdx].id;
+                    const allSessions = processedDays
+                        .filter(d => d.last_session)
+                        .map(d => d.last_session)
+                        .sort((a, b) => new Date(b.end_time) - new Date(a.end_time));
+
+                    let recommendedId = processedDays[0]?.id;
+                    if (allSessions.length > 0) {
+                        const lastGlobalSession = allSessions[0];
+                        const lastDayObj = processedDays.find(d => 
+                            days.find(orig => orig.id === d.id).session_logs.some(sl => sl.end_time === lastGlobalSession.end_time)
+                        );
+                        if (lastDayObj) {
+                            const lastDayIdx = processedDays.findIndex(d => d.id === lastDayObj.id);
+                            const nextIdx = (lastDayIdx + 1) % processedDays.length;
+                            recommendedId = processedDays[nextIdx].id;
+                        }
                     }
 
                     set({ 
-                        availableRoutineDays: days, 
+                        availableRoutineDays: processedDays, 
                         recommendedDayId: recommendedId,
                         selectedDayId: recommendedId, 
                         isLoading: false 
@@ -55,7 +75,6 @@ export const useTrainingStore = create(
 
             setSelectedDay: (id) => set({ selectedDayId: id }),
 
-            // Set specific block as the ONLY one expanded
             setExpandedBlock: (blockId) => set({
                 expandedBlockId: blockId
             }),
@@ -78,11 +97,10 @@ export const useTrainingStore = create(
                             )
                         `)
                         .eq('routine_day_id', dayId)
-                        .maybeSingle(); // Use maybeSingle to avoid 406 on empty days
+                        .maybeSingle();
 
                     if (error) throw error;
 
-                    // SAFETY: Handle Rest Days or Empty Days
                     if (!workout) {
                         const session = {
                             id: crypto.randomUUID(),
@@ -140,10 +158,7 @@ export const useTrainingStore = create(
 
                 set({ isLoading: true });
                 try {
-                    // Get current auth user
                     const { data: { user } } = await supabase.auth.getUser();
-                    
-                    // Log the session completion to Supabase for cursor logic
                     const { error } = await supabase
                         .schema('v2')
                         .from('session_logs')
@@ -155,7 +170,6 @@ export const useTrainingStore = create(
                         }]);
 
                     if (error) throw error;
-                    
                     set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, isLoading: false });
                 } catch (err) {
                     console.error("Finish session failed:", err);
@@ -184,28 +198,35 @@ export const useTrainingStore = create(
 
                 const exLogs = session.logs[exId] || [];
                 const updatedLogs = { ...session.logs, [exId]: [...exLogs, { ...data, id: Date.now() }] };
-                set({ activeSession: { ...session, logs: updatedLogs } });
-
+                
                 const blockIdx = session.blocks.findIndex(b => b.id === blockId);
                 const block = session.blocks[blockIdx];
                 const exIdx = block.exercises.findIndex(e => e.id === exId);
                 const totalSets = parseInt(block.exercises[exIdx].target_sets || 3);
                 const isExerciseDone = isCircuit ? true : updatedLogs[exId].length >= totalSets;
 
+                set({ activeSession: { ...session, logs: updatedLogs } });
+
                 if (isExerciseDone) {
                     let next = null;
                     if (isCircuit) {
-                        if (exIdx < block.exercises.length - 1) next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: state.systemStep.round };
-                        else if (state.systemStep.round < 3) next = { blockId, exerciseId: block.exercises[0].id, round: state.systemStep.round + 1 };
+                        // Dynamic transition based on target_sets (rounds)
+                        if (exIdx < block.exercises.length - 1) {
+                            next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: state.systemStep.round };
+                        } else if (state.systemStep.round < totalSets) {
+                            next = { blockId, exerciseId: block.exercises[0].id, round: state.systemStep.round + 1 };
+                        }
                     } else if (exId === state.systemStep?.exerciseId && exIdx < block.exercises.length - 1) {
                         next = { blockId, exerciseId: block.exercises[exIdx + 1].id, round: 1 };
                     }
 
-                    if (!next && isExerciseDone) {
+                    // GLOBAL SEEK: Find first incomplete across entire plan
+                    if (!next) {
                         for (const b of session.blocks) {
                             const firstIncompleteEx = b.exercises.find(e => {
                                 const logs = updatedLogs[e.id] || [];
-                                return logs.length < parseInt(e.target_sets || 3);
+                                const tSets = parseInt(e.target_sets || 3);
+                                return logs.length < tSets;
                             });
                             if (firstIncompleteEx) {
                                 next = { blockId: b.id, exerciseId: firstIncompleteEx.id, round: 1 };
@@ -226,6 +247,6 @@ export const useTrainingStore = create(
 
             resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, selectedDayId: null })
         }),
-        { name: 'mp-training-storage-v21' }
+        { name: 'mp-training-storage-v22' }
     )
 );

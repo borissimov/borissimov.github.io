@@ -17,11 +17,10 @@ export const ExerciseRow = ({
         toggleFocus
     } = useTrainingStore();
 
-    const logs = activeSession?.logs[exercise.id] || [];
-    const totalRounds = 3;
-    const isComplete = logs.length >= totalRounds;
-    const hasStarted = logs.length > 0;
-
+        const logs = activeSession?.logs[exercise.id] || [];
+        const totalRounds = parseInt(exercise.target_sets || 3);
+        const isComplete = logs.length >= totalRounds;
+        const hasStarted = logs.length > 0;
     const isActive = activeFocusId === exercise.id;
     const isSystemChoice = systemStep?.exerciseId === exercise.id;
     const isFullyDone = logs.length >= totalRounds;
@@ -72,6 +71,7 @@ export const ExerciseRow = ({
                 {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
             </div>
 
+            {/* EVERYTHING BELOW IS CONDITIONAL ON isActive (The Strict Focus Rule) */}
             {isActive && (
                 <div style={{ marginTop: '8px' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderBottom: '1px solid #222', paddingBottom: '4px', marginBottom: '8px' }}>
@@ -109,25 +109,26 @@ export const ExerciseRow = ({
                             </button>
                         </div>
                     )}
-                </div>
-            )}
 
-            {logs.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
-                    {logs.map((log) => (
-                        <div key={log.id} style={gridStyle}>
-                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                <input type="text" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
-                            </div>
-                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                <input type="text" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
-                            </div>
-                            <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                <input type="text" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
-                            </div>
-                            <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+                    {/* HISTORY: Moved inside isActive block to ensure strict collapse */}
+                    {logs.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
+                            {logs.map((log) => (
+                                <div key={log.id} style={gridStyle}>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="text" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                    </div>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="text" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                    </div>
+                                    <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
+                                        <input type="text" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                    </div>
+                                    <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{log.round}</div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    )}
                 </div>
             )}
         </div>

@@ -64,6 +64,7 @@ const RegimenProApp = ({ onExit }) => {
                             {availableRoutineDays.map((day) => {
                                 const isRecommended = day.id === recommendedDayId;
                                 const isSelected = day.id === selectedDayId;
+                                const lastDone = day.last_session ? new Date(day.last_session.end_time).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase() : 'NEVER';
                                 
                                 return (
                                     <div 
@@ -82,9 +83,16 @@ const RegimenProApp = ({ onExit }) => {
                                             borderLeft: isSelected ? '4px solid #f29b11' : isRecommended ? '4px solid #f29b1188' : '4px solid transparent'
                                         }}
                                     >
-                                        <div>
+                                        <div style={{ flex: 1 }}>
                                             <span style={{ fontSize: '9px', fontWeight: '900', color: '#666', textTransform: 'uppercase' }}>Day {day.sequence_number}</span>
                                             <h3 style={{ fontSize: '16px', fontWeight: '900', margin: 0, color: isSelected ? '#f29b11' : '#fff' }}>{day.label}</h3>
+                                            
+                                            {/* QUICK REVIEW SUBTEXT */}
+                                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px', opacity: 0.6 }}>
+                                                <span style={{ fontSize: '10px', fontWeight: '800', color: day.last_session ? '#2ecc71' : '#444' }}>
+                                                    LAST DONE: {lastDone}
+                                                </span>
+                                            </div>
                                         </div>
                                         
                                         {isRecommended && !isSelected && (

@@ -64,12 +64,13 @@ ${N}`}class st extends Error{constructor({message:t,code:s,cause:i,name:a}){var 
                                     background-color: #f29b11 !important;
                                     color: #000 !important;
                                     border-radius: 50% !important;
-                                    box-shadow: 0 0 15px rgba(242, 155, 17, 0.8) !important;
+                                    box-shadow: 0 0 20px rgba(242, 155, 17, 0.7) !important;
                                 }
                                 /* Fix Today marker */
                                 .rdp-day_today {
                                     color: #2ecc71 !important;
                                     font-weight: 900 !important;
+                                    font-size: 18px !important;
                                 }
                                 /* Workout glow */
                                 .rdp-day_has_workout:not(.rdp-day_selected) {

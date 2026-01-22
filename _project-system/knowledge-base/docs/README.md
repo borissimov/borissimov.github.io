@@ -22,6 +22,26 @@ Regimen Pro is a standalone PWA (Progressive Web App) designed for rigorous perf
 
 ---
 
+## 🛠 Project Context & Standards (AI Instruction)
+- **Framework:** React 18+ with Vite
+- **Language:** JavaScript (ES6+)
+- **Backend:** Supabase (PostgreSQL)
+- **Styling:** Shared Premium CSS
+- **State Management:** Zustand (Primary) / React Context (Legacy)
+
+### Coding Conventions
+- Use Functional Components with Hooks.
+- Do NOT use class components.
+- For Supabase, use the `supabase-js` v2 client.
+- When writing SQL, assume PostgreSQL dialect.
+- Mimic the industrial, high-density UI patterns established in `RegimenProApp.jsx`.
+
+### Environment
+- Running in WSL2 (Ubuntu 24.04).
+- Production target: Mobile (Galaxy A41) high-density display.
+
+---
+
 ## Technical Highlights
 *   **Offline-First:** Uses browser LocalStorage for immediate persistence.
 *   **Dynamic Overrides:** Supports per-day plan overrides without breaking the underlying weekly schedule.

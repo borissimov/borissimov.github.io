@@ -1,0 +1,1664 @@
+[
+  {
+    "session_meta": {
+      "day": "Metabolic (Sun)",
+      "sequence": 7,
+      "started": "2026-01-18T12:00:00.000Z",
+      "finished": "2026-01-18T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 2,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 3,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 1,
+        "weight": "17.5",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 20,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "17.5",
+        "reps": 17,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "17.5",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "17.5",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "15",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "55",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "60",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "65",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Swim HIIT (Sat)",
+      "sequence": 6,
+      "started": "2026-01-17T12:00:00.000Z",
+      "finished": "2026-01-17T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Swim LISS (Fri)",
+      "sequence": 5,
+      "started": "2026-01-16T12:00:00.000Z",
+      "finished": "2026-01-16T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Pull (Thu)",
+      "sequence": 4,
+      "started": "2026-01-15T12:00:00.000Z",
+      "finished": "2026-01-15T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "45",
+        "reps": 12,
+        "rpe": "7",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "50",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "50",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 4,
+        "weight": "45",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "30",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "8",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "5",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 2,
+        "weight": "5",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 3,
+        "weight": "2.5",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 1,
+        "weight": "6",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 2,
+        "weight": "6",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 3,
+        "weight": "5",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 1,
+        "weight": "8",
+        "reps": 9,
+        "rpe": "10",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 2,
+        "weight": "7",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 3,
+        "weight": "6",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 1,
+        "weight": "0",
+        "reps": 8,
+        "rpe": "9",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "0",
+        "reps": 8,
+        "rpe": "10",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "0",
+        "reps": 6,
+        "rpe": "10",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Recovery (Mon)",
+      "sequence": 1,
+      "started": "2026-01-12T12:00:00.000Z",
+      "finished": "2026-01-12T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Metabolic (Sun)",
+      "sequence": 7,
+      "started": "2026-01-11T12:00:00.000Z",
+      "finished": "2026-01-11T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "20",
+        "reps": 12,
+        "rpe": "6",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 2,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 3,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 4,
+        "weight": "30",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 1,
+        "weight": "50",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "50",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "50",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 4,
+        "weight": "20",
+        "reps": 17,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 4,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "12.5",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "20",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "20",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "20",
+        "reps": 25,
+        "rpe": "10",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "20",
+        "reps": 25,
+        "rpe": "10",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "55",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "55",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "55",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Finisher: Cable Crunch",
+        "target_weight": "55",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Swim HIIT (Sat)",
+      "sequence": 6,
+      "started": "2026-01-10T12:00:00.000Z",
+      "finished": "2026-01-10T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Swim LISS (Fri)",
+      "sequence": 5,
+      "started": "2026-01-09T12:00:00.000Z",
+      "finished": "2026-01-09T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Pull (Thu)",
+      "sequence": 4,
+      "started": "2026-01-08T12:00:00.000Z",
+      "finished": "2026-01-08T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "45",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "45",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "45",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 4,
+        "weight": "45",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Wide Lat Pulldown",
+        "target_weight": "50",
+        "target_reps": "10-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "30",
+        "reps": 12,
+        "rpe": "7",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "35",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "V-Handle Cable Row",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "8",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "1-Arm DB Row",
+        "target_weight": "20",
+        "target_reps": "8-10",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "7.5",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 2,
+        "weight": "6",
+        "reps": 20,
+        "rpe": "10",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 3,
+        "weight": "6",
+        "reps": 20,
+        "rpe": "10",
+        "exercise_name": "Face Pulls",
+        "target_weight": "7.5",
+        "target_reps": "15-20",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 1,
+        "weight": "6",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 2,
+        "weight": "6",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 3,
+        "weight": "6",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Incline DB Curl",
+        "target_weight": "6",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 1,
+        "weight": "8",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 2,
+        "weight": "8",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 3,
+        "weight": "8",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Hammer Curls",
+        "target_weight": "8",
+        "target_reps": "10-12",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 1,
+        "weight": "0",
+        "reps": 8,
+        "rpe": "9",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "0",
+        "reps": 8,
+        "rpe": "10",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "0",
+        "reps": 6,
+        "rpe": "10",
+        "exercise_name": "Toes to Bar/Knees",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Push (Wed)",
+      "sequence": 3,
+      "started": "2026-01-07T12:00:00.000Z",
+      "finished": "2026-01-07T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "6",
+        "exercise_name": "DB Flat Bench",
+        "target_weight": "20",
+        "target_reps": "8-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 15,
+        "rpe": "6",
+        "exercise_name": "DB Flat Bench",
+        "target_weight": "20",
+        "target_reps": "8-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "20",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "DB Flat Bench",
+        "target_weight": "20",
+        "target_reps": "8-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 4,
+        "weight": "20",
+        "reps": 10,
+        "rpe": "9",
+        "exercise_name": "DB Flat Bench",
+        "target_weight": "20",
+        "target_reps": "8-12",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "DB Incline Bench",
+        "target_weight": "17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "DB Incline Bench",
+        "target_weight": "17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "17.5",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "DB Incline Bench",
+        "target_weight": "17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "10",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "High Incline DB Press",
+        "target_weight": "15",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "High Incline DB Press",
+        "target_weight": "15",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "High Incline DB Press",
+        "target_weight": "15",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "4",
+        "reps": 15,
+        "rpe": "7",
+        "exercise_name": "DB Lateral Raise",
+        "target_weight": "7.5",
+        "target_reps": "12-15",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 2,
+        "weight": "6",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "DB Lateral Raise",
+        "target_weight": "7.5",
+        "target_reps": "12-15",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 3,
+        "weight": "5",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "DB Lateral Raise",
+        "target_weight": "7.5",
+        "target_reps": "12-15",
+        "target_rpe": "9-10"
+      },
+      {
+        "set_number": 1,
+        "weight": "12.5",
+        "reps": 20,
+        "rpe": "7",
+        "exercise_name": "Cable Rope Pushdown",
+        "target_weight": "15-17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "17.5",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Cable Rope Pushdown",
+        "target_weight": "15-17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Cable Rope Pushdown",
+        "target_weight": "15-17.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Overhead Rope Ext",
+        "target_weight": "8",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "10",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Overhead Rope Ext",
+        "target_weight": "8",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "10",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Overhead Rope Ext",
+        "target_weight": "8",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "0",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "Ab Wheel Rollout",
+        "target_weight": "BW",
+        "target_reps": "8-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "0",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Ab Wheel Rollout",
+        "target_weight": "BW",
+        "target_reps": "8-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "0",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Ab Wheel Rollout",
+        "target_weight": "BW",
+        "target_reps": "8-12",
+        "target_rpe": "9"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Legs (Tue)",
+      "sequence": 2,
+      "started": "2026-01-06T12:00:00.000Z",
+      "finished": "2026-01-06T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "24",
+        "reps": 20,
+        "rpe": "8",
+        "exercise_name": "Machine Hip Thrusts",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "24",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Machine Hip Thrusts",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "24",
+        "reps": 20,
+        "rpe": "10",
+        "exercise_name": "Machine Hip Thrusts",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "24",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Machine Hip Thrusts",
+        "target_weight": "40",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "60",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "26",
+        "target_reps": "15-20",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "60",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "26",
+        "target_reps": "15-20",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "60",
+        "reps": 20,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "26",
+        "target_reps": "15-20",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "60",
+        "reps": 20,
+        "rpe": "10",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "26",
+        "target_reps": "15-20",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "30",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Leg Extensions",
+        "target_weight": "30",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "27.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Leg Extensions",
+        "target_weight": "30",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "25",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Leg Extensions",
+        "target_weight": "30",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "Lying Leg Curls",
+        "target_weight": "12.5",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Lying Leg Curls",
+        "target_weight": "12.5",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Lying Leg Curls",
+        "target_weight": "12.5",
+        "target_reps": "12-15",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "32",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB RDL",
+        "target_weight": "34",
+        "target_reps": "12-15",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "32",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "DB RDL",
+        "target_weight": "34",
+        "target_reps": "12-15",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "32",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "DB RDL",
+        "target_weight": "34",
+        "target_reps": "12-15",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "0",
+        "reps": 25,
+        "rpe": "6",
+        "exercise_name": "Calf Raises",
+        "target_weight": "10",
+        "target_reps": "20-25",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "0",
+        "reps": 25,
+        "rpe": "8",
+        "exercise_name": "Calf Raises",
+        "target_weight": "10",
+        "target_reps": "20-25",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "0",
+        "reps": 25,
+        "rpe": "8",
+        "exercise_name": "Calf Raises",
+        "target_weight": "10",
+        "target_reps": "20-25",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 4,
+        "weight": "0",
+        "reps": 25,
+        "rpe": "10",
+        "exercise_name": "Calf Raises",
+        "target_weight": "10",
+        "target_reps": "20-25",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "0",
+        "reps": 1,
+        "rpe": "90",
+        "exercise_name": "Plank",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "0",
+        "reps": 1,
+        "rpe": "90",
+        "exercise_name": "Plank",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Recovery (Mon)",
+      "sequence": 1,
+      "started": "2026-01-05T12:00:00.000Z",
+      "finished": "2026-01-05T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Metabolic (Sun)",
+      "sequence": 7,
+      "started": "2026-01-04T12:00:00.000Z",
+      "finished": "2026-01-04T13:00:00.000Z"
+    },
+    "logs": [
+      {
+        "set_number": 1,
+        "weight": "24",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 2,
+        "weight": "24",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 3,
+        "weight": "24",
+        "reps": 15,
+        "rpe": "9",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 4,
+        "weight": "24",
+        "reps": 15,
+        "rpe": "10",
+        "exercise_name": "Goblet Squats",
+        "target_weight": "24",
+        "target_reps": "12-15",
+        "target_rpe": "8"
+      },
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 12,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 2,
+        "weight": "15",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 10,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 4,
+        "weight": "15",
+        "reps": 8,
+        "rpe": "10",
+        "exercise_name": "Push-ups",
+        "target_weight": "BW",
+        "target_reps": "Failure",
+        "target_rpe": "10"
+      },
+      {
+        "set_number": 1,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 2,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 3,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 4,
+        "weight": "15",
+        "reps": 15,
+        "rpe": "8",
+        "exercise_name": "DB Bent-Over Rows",
+        "target_weight": "17.5",
+        "target_reps": "12-15",
+        "target_rpe": "8-9"
+      },
+      {
+        "set_number": 1,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "8",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "12.5",
+        "reps": 12,
+        "rpe": "9",
+        "exercise_name": "DB Push Press",
+        "target_weight": "12.5",
+        "target_reps": "10-12",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 1,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "8",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 2,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 3,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "9",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      },
+      {
+        "set_number": 4,
+        "weight": "24",
+        "reps": 25,
+        "rpe": "10",
+        "exercise_name": "DB/KB Swings",
+        "target_weight": "24",
+        "target_reps": "20-25",
+        "target_rpe": "9"
+      }
+    ]
+  },
+  {
+    "session_meta": {
+      "day": "Swim HIIT (Sat)",
+      "sequence": 6,
+      "started": "2026-01-03T12:00:00.000Z",
+      "finished": "2026-01-03T13:00:00.000Z"
+    },
+    "logs": []
+  },
+  {
+    "session_meta": {
+      "day": "Swim LISS (Fri)",
+      "sequence": 5,
+      "started": "2026-01-02T12:00:00.000Z",
+      "finished": "2026-01-02T13:00:00.000Z"
+    },
+    "logs": []
+  }
+]

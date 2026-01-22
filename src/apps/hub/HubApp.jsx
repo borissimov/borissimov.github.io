@@ -91,6 +91,21 @@ export const HubApp = ({ setActiveApp }) => {
                     <button onClick={logout} className="hub-signout-btn">
                         Terminate Session
                     </button>
+                    
+                    <button 
+                        onClick={() => window.location.href = '/recover.html'}
+                        style={{ all: 'unset', display: 'block', margin: '20px auto 0', fontSize: '10px', fontWeight: '900', color: '#f29b11', textTransform: 'uppercase', letterSpacing: '2px', cursor: 'pointer', opacity: 0.6 }}
+                    >
+                        Emergency Data Recovery
+                    </button>
+
+                    <button 
+                        onClick={() => window.location.href = '/forensic.html'}
+                        style={{ all: 'unset', display: 'block', margin: '10px auto 0', fontSize: '10px', fontWeight: '900', color: '#0f0', textTransform: 'uppercase', letterSpacing: '2px', cursor: 'pointer', opacity: 0.6 }}
+                    >
+                        Forensic Memory Scan
+                    </button>
+
                     <p style={{ fontSize: '9px', fontWeight: '900', color: '#333', marginTop: '30px', textTransform: 'uppercase', letterSpacing: '4px' }}>
                         Arch v2.0 • Build Stable
                     </p>

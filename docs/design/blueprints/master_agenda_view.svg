@@ -1,0 +1,79 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="390" height="844" fill="#121212"/>
+  
+  <!-- 54px Standard Header -->
+  <rect y="0" width="390" height="54" fill="#121212"/>
+  <path d="M10 15h34v24h-34z" fill="#0a0a0a" stroke="#222"/> <!-- LayoutGrid Mock -->
+  <text x="195" y="32" fill="#fff" font-family="Arial" font-size="18" font-weight="900" text-anchor="middle" letter-spacing="2">READY TO <tspan fill="#f29b11">TRAIN?</tspan></text>
+  <path d="M346 15h34v24h-34z" fill="#0a0a0a" stroke="#222"/> <!-- History Mock -->
+  <line x1="0" y1="54" x2="390" y2="54" stroke="#222"/>
+
+  <!-- 44px Date Scroller -->
+  <rect y="60" width="390" height="44" fill="transparent"/>
+  <!-- Date items -->
+  <rect x="10" y="60" width="44" height="44" rx="10" stroke="#222" fill="transparent"/>
+  <text x="32" y="75" fill="#666" font-family="Arial" font-size="8" font-weight="800" text-anchor="middle">MON</text>
+  <text x="32" y="95" fill="#666" font-family="Arial" font-size="17" font-weight="800" text-anchor="middle">19</text>
+  
+  <rect x="60" y="60" width="44" height="44" rx="10" stroke="#f29b11" stroke-width="2" fill="transparent"/>
+  <text x="82" y="75" fill="#666" font-family="Arial" font-size="8" font-weight="800" text-anchor="middle">TUE</text>
+  <text x="82" y="95" fill="#f29b11" font-family="Arial" font-size="17" font-weight="900" text-anchor="middle">20</text>
+
+  <!-- Chronological Feed -->
+  <text x="15" y="130" fill="#444" font-family="Arial" font-size="11" font-weight="800" letter-spacing="1">THURSDAY, JAN 22</text>
+
+  <!-- Supplement Capsule (Taken) -->
+  <g transform="translate(15, 145)">
+    <rect width="360" height="60" rx="4" stroke="#2ecc71" stroke-width="4" stroke-opacity="0.2" fill="transparent"/>
+    <rect x="0" width="4" height="60" fill="#2ecc71"/>
+    <text x="15" y="25" fill="#2ecc71" font-family="Arial" font-size="13" font-weight="900">08:00 | MORNING STACK</text>
+    <!-- Bordered Set Capsules -->
+    <rect x="15" y="32" width="60" height="18" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.05)"/>
+    <text x="45" y="45" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">ZINC</text>
+    <rect x="80" y="32" width="80" height="18" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.05)"/>
+    <text x="120" y="45" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">VITAMIN D</text>
+    <circle cx="340" cy="30" r="10" fill="#2ecc71"/>
+    <text x="340" y="34" fill="#000" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">✓</text>
+  </g>
+
+  <!-- Meal Capsule (Planned) -->
+  <g transform="translate(15, 215)">
+    <rect width="360" height="80" rx="4" stroke="#222" fill="transparent"/>
+    <rect x="0" width="4" height="80" fill="#f29b11"/>
+    <text x="15" y="25" fill="#fff" font-family="Arial" font-size="13" font-weight="900">12:30 | POST-WORKOUT MEAL</text>
+    <text x="15" y="42" fill="#666" font-family="Arial" font-size="10" font-weight="800">CHICKEN, RICE, AVOCADO</text>
+    <!-- Macro Capsules -->
+    <rect x="15" y="52" width="50" height="18" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="40" y="65" fill="#f29b11" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">45P</text>
+    <rect x="70" y="52" width="50" height="18" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="95" y="65" fill="#f29b11" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">60C</text>
+    <rect x="125" y="52" width="50" height="18" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="150" y="65" fill="#f29b11" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">12F</text>
+  </g>
+
+  <!-- Workout Capsule (Expanded Preview) -->
+  <g transform="translate(15, 305)">
+    <rect width="360" height="120" rx="4" stroke="#222" fill="transparent"/>
+    <rect x="0" width="4" height="120" fill="#f29b11"/>
+    <text x="15" y="25" fill="#fff" font-family="Arial" font-size="13" font-weight="900">14:00 | LOWER BODY ALPHA</text>
+    <text x="15" y="42" fill="#666" font-family="Arial" font-size="10" font-weight="800">4 EXERCISES · 12 SETS</text>
+    <!-- Exercise Row 1 -->
+    <text x="15" y="65" fill="#fff" font-family="Arial" font-size="11" font-weight="900">SQUATS</text>
+    <rect x="15" y="72" width="60" height="18" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="45" y="85" fill="#f29b11" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">100K · 8</text>
+    <rect x="80" y="72" width="60" height="18" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="110" y="85" fill="#f29b11" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">100K · 8</text>
+  </g>
+
+  <!-- Floating HUD -->
+  <g transform="translate(280, 720)">
+    <rect width="85" height="35" rx="17.5" fill="rgba(10,10,10,0.8)" stroke="#222"/>
+    <text x="25" y="22" fill="#f29b11" font-family="Arial" font-size="12" font-weight="900">🔥 4</text>
+    <line x1="42" y1="10" x2="42" y2="25" stroke="#333"/>
+    <text x="60" y="22" fill="#2ecc71" font-family="Arial" font-size="12" font-weight="900">🎯 5</text>
+    
+    <circle cx="42.5" cy="75" r="32" fill="#f29b11"/>
+    <text x="42.5" y="85" fill="#000" font-family="Arial" font-size="36" font-weight="900" text-anchor="middle">+</text>
+  </g>
+</svg>

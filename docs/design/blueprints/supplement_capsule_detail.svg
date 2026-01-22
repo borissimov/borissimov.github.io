@@ -1,0 +1,23 @@
+<svg width="360" height="80" viewBox="0 0 360 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="80" fill="#121212"/>
+  <rect x="2" y="2" width="356" height="76" rx="4" stroke="#2ecc71" stroke-opacity="0.3" fill="transparent"/>
+  <rect x="0" width="4" height="80" fill="#2ecc71"/>
+  
+  <text x="15" y="30" fill="#2ecc71" font-family="Arial" font-size="14" font-weight="900" letter-spacing="1">08:00 | PERFORMANCE STACK</text>
+  
+  <!-- Supplement Item Capsules -->
+  <g transform="translate(15, 45)">
+    <rect width="80" height="20" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.05)"/>
+    <text x="40" y="59" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">CREATINE</text>
+    
+    <rect x="90" width="80" height="20" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.05)"/>
+    <text x="130" y="59" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">OMEGA 3</text>
+    
+    <rect x="180" width="80" height="20" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.05)"/>
+    <text x="220" y="59" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">VITAMIN D</text>
+  </g>
+
+  <!-- Complete Indicator -->
+  <circle cx="330" cy="40" r="12" fill="#2ecc71"/>
+  <path d="M324 40l4 4 8-8" stroke="#000" stroke-width="2" fill="none"/>
+</svg>

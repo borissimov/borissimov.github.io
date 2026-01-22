@@ -1,0 +1,311 @@
+[
+  {
+    "day": "Recovery (Mon)",
+    "updates": [
+      {
+        "name": "Walking (LISS)",
+        "technique": "Active recovery focus.",
+        "targets": [
+          { "set": 1, "reps": "30-60m", "weight": "-", "rpe": "-", "tempo": "-", "label": "RECOVERY" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Legs (Tue)",
+    "updates": [
+      {
+        "name": "Machine Hip Thrusts",
+        "technique": "Focus on peak contraction.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "2-0-1-2" },
+          { "set": 2, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "2-0-1-2" },
+          { "set": 3, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "2-0-1-2" }
+        ]
+      },
+      {
+        "name": "Goblet Squats",
+        "technique": "Maintain upright torso.",
+        "targets": [
+          { "set": 1, "reps": "15-20", "weight": "26", "rpe": "9", "tempo": "3-0-1-0" },
+          { "set": 2, "reps": "15-20", "weight": "26", "rpe": "9", "tempo": "3-0-1-0" },
+          { "set": 3, "reps": "15-20", "weight": "26", "rpe": "9", "tempo": "3-0-1-0" },
+          { "set": 4, "reps": "15-20", "weight": "26", "rpe": "9", "tempo": "3-0-1-0" }
+        ]
+      },
+      {
+        "name": "Leg Extensions",
+        "technique": "Mind-muscle connection.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "30", "rpe": "10", "tempo": "2-0-1-2" },
+          { "set": 2, "reps": "12-15", "weight": "30", "rpe": "10", "tempo": "2-0-1-2" },
+          { "set": 3, "reps": "12-15", "weight": "30", "rpe": "10", "tempo": "2-0-1-2" }
+        ]
+      },
+      {
+        "name": "Lying Leg Curls",
+        "technique": "Control the eccentric.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "12.5", "rpe": "10", "tempo": "2-0-1-0" },
+          { "set": 2, "reps": "12-15", "weight": "12.5", "rpe": "10", "tempo": "2-0-1-0" },
+          { "set": 3, "reps": "12-15", "weight": "12.5", "rpe": "10", "tempo": "2-0-1-0" }
+        ]
+      },
+      {
+        "name": "DB RDL",
+        "technique": "Max stretch in hamstrings.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "34", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "12-15", "weight": "34", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "12-15", "weight": "34", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Calf Raises",
+        "technique": "Full range of motion.",
+        "targets": [
+          { "set": 1, "reps": "20-25", "weight": "10", "rpe": "10", "tempo": "2-1-1-2" },
+          { "set": 2, "reps": "20-25", "weight": "10", "rpe": "10", "tempo": "2-1-1-2" },
+          { "set": 3, "reps": "20-25", "weight": "10", "rpe": "10", "tempo": "2-1-1-2" },
+          { "set": 4, "reps": "20-25", "weight": "10", "rpe": "10", "tempo": "2-1-1-2" }
+        ]
+      },
+      {
+        "name": "Plank",
+        "technique": "Strong core engagement.",
+        "targets": [
+          { "set": 1, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "Static" },
+          { "set": 2, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "Static" },
+          { "set": 3, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "Static" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Push (Wed)",
+    "updates": [
+      {
+        "name": "DB Flat Bench",
+        "technique": "Strict form, no bouncing.",
+        "targets": [
+          { "set": 1, "reps": "8-12", "weight": "20", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "8-12", "weight": "20", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "8-12", "weight": "20", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 4, "reps": "8-12", "weight": "20", "rpe": "8-9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "DB Incline Bench",
+        "technique": "Focus on upper chest.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "17.5", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "17.5", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "17.5", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "High Incline DB Press",
+        "technique": "Shoulder stability focus.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "15", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "15", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "15", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "DB Lateral Raise",
+        "technique": "Lead with elbows.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "7.5", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "12-15", "weight": "7.5", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "12-15", "weight": "7.5", "rpe": "9-10", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Cable Rope Pushdown",
+        "technique": "Full extension.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "15-17.5", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "15-17.5", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "15-17.5", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Overhead Rope Ext",
+        "technique": "Deep triceps stretch.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "8", "rpe": "10", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "12-15", "weight": "8", "rpe": "10", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "12-15", "weight": "8", "rpe": "10", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Ab Wheel Rollout",
+        "technique": "Protect lower back.",
+        "targets": [
+          { "set": 1, "reps": "8-12", "weight": "BW", "rpe": "9", "tempo": "4-0-1-0" },
+          { "set": 2, "reps": "8-12", "weight": "BW", "rpe": "9", "tempo": "4-0-1-0" },
+          { "set": 3, "reps": "8-12", "weight": "BW", "rpe": "9", "tempo": "4-0-1-0" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Pull (Thu)",
+    "updates": [
+      {
+        "name": "Wide Lat Pulldown",
+        "technique": "Controlled movement.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "50", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "50", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "50", "rpe": "8-9", "tempo": "3-1-1-0" },
+          { "set": 4, "reps": "10-12", "weight": "50", "rpe": "8-9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "V-Handle Cable Row",
+        "technique": "Retract scapula fully.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 4, "reps": "10-12", "weight": "40", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "1-Arm DB Row",
+        "technique": "Drive elbow back.",
+        "targets": [
+          { "set": 1, "reps": "8-10", "weight": "20", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "8-10", "weight": "20", "rpe": "9", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "8-10", "weight": "20", "rpe": "9", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Face Pulls",
+        "technique": "Rear delt isolation.",
+        "targets": [
+          { "set": 1, "reps": "15-20", "weight": "7.5", "rpe": "8", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "15-20", "weight": "7.5", "rpe": "8", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "15-20", "weight": "7.5", "rpe": "8", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Incline DB Curl",
+        "technique": "Maximum bicep stretch.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "6", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "6", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "6", "rpe": "9-10", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Hammer Curls",
+        "technique": "Forearm and brachialis focus.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "8", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "10-12", "weight": "8", "rpe": "9-10", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "10-12", "weight": "8", "rpe": "9-10", "tempo": "3-1-1-0" }
+        ]
+      },
+      {
+        "name": "Toes to Bar/Knees",
+        "technique": "Control the swing.",
+        "targets": [
+          { "set": 1, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "3-1-1-0" },
+          { "set": 2, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "3-1-1-0" },
+          { "set": 3, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "3-1-1-0" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Swim LISS (Fri)",
+    "updates": [
+      {
+        "name": "Moderate Swim",
+        "technique": "Steady breathing.",
+        "targets": [
+          { "set": 1, "reps": "30-45m", "weight": "-", "rpe": "-", "tempo": "-", "label": "LISS" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Swim HIIT (Sat)",
+    "updates": [
+      {
+        "name": "Interval Swim",
+        "technique": "High intensity intervals.",
+        "targets": [
+          { "set": 1, "reps": "15-20m", "weight": "-", "rpe": "-", "tempo": "-", "label": "HIIT" }
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Metabolic (Sun)",
+    "updates": [
+      {
+        "name": "Goblet Squats",
+        "technique": "High intensity focus.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "24", "rpe": "8", "tempo": "1-0-X-0" },
+          { "set": 2, "reps": "12-15", "weight": "24", "rpe": "8", "tempo": "1-0-X-0" },
+          { "set": 3, "reps": "12-15", "weight": "24", "rpe": "8", "tempo": "1-0-X-0" },
+          { "set": 4, "reps": "12-15", "weight": "24", "rpe": "8", "tempo": "1-0-X-0" }
+        ]
+      },
+      {
+        "name": "Push-ups",
+        "technique": "Strict mechanical failure.",
+        "targets": [
+          { "set": 1, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "1-0-X-0" },
+          { "set": 2, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "1-0-X-0" },
+          { "set": 3, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "1-0-X-0" },
+          { "set": 4, "reps": "Failure", "weight": "BW", "rpe": "10", "tempo": "1-0-X-0" }
+        ]
+      },
+      {
+        "name": "DB Bent-Over Rows",
+        "technique": "Upper back engagement.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "17.5", "rpe": "8-9", "tempo": "1-0-1-0" },
+          { "set": 2, "reps": "12-15", "weight": "17.5", "rpe": "8-9", "tempo": "1-0-1-0" },
+          { "set": 3, "reps": "12-15", "weight": "17.5", "rpe": "8-9", "tempo": "1-0-1-0" },
+          { "set": 4, "reps": "12-15", "weight": "17.5", "rpe": "8-9", "tempo": "1-0-1-0" }
+        ]
+      },
+      {
+        "name": "DB Push Press",
+        "technique": "Explosive movement.",
+        "targets": [
+          { "set": 1, "reps": "10-12", "weight": "12.5", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 2, "reps": "10-12", "weight": "12.5", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 3, "reps": "10-12", "weight": "12.5", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 4, "reps": "10-12", "weight": "12.5", "rpe": "9", "tempo": "X-0-X-0" }
+        ]
+      },
+      {
+        "name": "DB/KB Swings",
+        "technique": "Powerful hip snap.",
+        "targets": [
+          { "set": 1, "reps": "20-25", "weight": "24", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 2, "reps": "20-25", "weight": "24", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 3, "reps": "20-25", "weight": "24", "rpe": "9", "tempo": "X-0-X-0" },
+          { "set": 4, "reps": "20-25", "weight": "24", "rpe": "9", "tempo": "X-0-X-0" }
+        ]
+      },
+      {
+        "name": "Finisher: Cable Crunch",
+        "technique": "Isolation of abdominals.",
+        "targets": [
+          { "set": 1, "reps": "12-15", "weight": "55", "rpe": "10", "tempo": "2-0-1-1" },
+          { "set": 2, "reps": "12-15", "weight": "55", "rpe": "10", "tempo": "2-0-1-1" },
+          { "set": 3, "reps": "12-15", "weight": "55", "rpe": "10", "tempo": "2-0-1-1" }
+        ]
+      }
+    ]
+  }
+]

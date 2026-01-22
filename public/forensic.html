@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTAL MEMORY DUMP</title>
+    <style>
+        body { background: #000; color: #fff; font-family: monospace; padding: 15px; }
+        .row { border: 1px solid #444; padding: 10px; margin-bottom: 10px; background: #111; }
+        .key { color: #f29b11; font-weight: bold; font-size: 14px; }
+        .data { color: #888; font-size: 11px; white-space: pre-wrap; word-break: break-all; max-height: 150px; overflow: auto; background: #000; padding: 5px; margin-top: 5px; border: 1px solid #222; }
+        .highlight { border: 2px solid #f00 !important; background: #200 !important; }
+        .btn { background: #f29b11; color: #000; border: none; padding: 15px; width: 100%; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Total Memory Dump</h1>
+    <p>Listing every single key found in your phone's storage...</p>
+    
+    <div id="dump"></div>
+
+    <script>
+        const dump = document.getElementById('dump');
+
+        function runDump() {
+            if (localStorage.length === 0) {
+                dump.innerHTML = "<h2>EMPTY: No data found in LocalStorage.</h2>";
+                return;
+            }
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const val = localStorage.getItem(key);
+                const hasWorkout = val.includes("weight") || val.includes("reps") || val.includes("Jan 20");
+
+                const div = document.createElement('div');
+                div.className = 'row' + (hasWorkout ? ' highlight' : '');
+                div.innerHTML = `
+                    <div class="key">${key} ${hasWorkout ? '🚨 WORKOUT DATA?' : ''}</div>
+                    <div class="data">${val}</div>
+                    <button style="margin-top:5px; padding:5px; width:100%" onclick="copyKey('${key}')">Copy Raw Text</button>
+                `;
+                dump.appendChild(div);
+            }
+        }
+
+        function copyKey(key) {
+            const val = localStorage.getItem(key);
+            const el = document.createElement('textarea');
+            el.value = val;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("Copied!");
+        }
+
+        runDump();
+    </script>
+</body>
+</html>

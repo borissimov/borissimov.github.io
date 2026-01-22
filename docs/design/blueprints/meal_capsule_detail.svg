@@ -1,0 +1,26 @@
+<svg width="360" height="150" viewBox="0 0 360 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="150" fill="#121212"/>
+  <rect x="2" y="2" width="356" height="146" rx="4" stroke="#222" fill="transparent"/>
+  <rect x="0" width="4" height="150" fill="#f29b11"/>
+  
+  <text x="15" y="30" fill="#fff" font-family="Arial" font-size="16" font-weight="900" letter-spacing="1">12:30 | MEAL 1: FUEL STACK</text>
+  <line x1="15" y1="45" x2="345" y2="45" stroke="#222"/>
+  
+  <text x="15" y="65" fill="#666" font-family="Arial" font-size="11" font-weight="800">BASE INGREDIENTS:</text>
+  <text x="15" y="85" fill="#ccc" font-family="Arial" font-size="13" font-weight="900">OATS (80g) · BLUEBERRIES · WHEY</text>
+  
+  <!-- Macro Row -->
+  <g transform="translate(15, 105)">
+    <rect width="65" height="24" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="32.5" y="21" fill="#f29b11" font-family="Arial" font-size="12" font-weight="900" text-anchor="middle">32P</text>
+    
+    <rect x="75" width="65" height="24" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="107.5" y="21" fill="#f29b11" font-family="Arial" font-size="12" font-weight="900" text-anchor="middle">55C</text>
+    
+    <rect x="150" width="65" height="24" rx="4" stroke="#f29b11" fill="rgba(242, 155, 17, 0.05)"/>
+    <text x="182.5" y="21" fill="#f29b11" font-family="Arial" font-size="12" font-weight="900" text-anchor="middle">8F</text>
+    
+    <rect x="225" width="85" height="24" rx="4" stroke="#fff" stroke-opacity="0.2" fill="transparent"/>
+    <text x="267.5" y="21" fill="#fff" fill-opacity="0.6" font-family="Arial" font-size="11" font-weight="900" text-anchor="middle">420 KCAL</text>
+  </g>
+</svg>

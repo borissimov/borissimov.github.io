@@ -1,0 +1,31 @@
+<svg width="360" height="300" viewBox="0 0 360 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="300" fill="#121212"/>
+  
+  <!-- Current Time Marker -->
+  <text x="15" y="30" fill="#f29b11" font-family="Arial" font-size="11" font-weight="900" letter-spacing="2">SYSTEM TIME: 10:45 AM</text>
+  <line x1="15" y1="40" x2="345" y2="40" stroke="#f29b11" stroke-dasharray="4 4"/>
+
+  <!-- The "Ghost" Backlog Item -->
+  <g transform="translate(15, 60)">
+    <rect width="330" height="50" rx="6" fill="#1a1a1a" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 2"/>
+    <rect x="0" width="4" height="50" fill="#ef4444"/>
+    <text x="15" y="22" fill="#ef4444" font-family="Arial" font-size="12" font-weight="900">PENDING MISSION (OVERDUE)</text>
+    <text x="15" y="38" fill="#666" font-family="Arial" font-size="10" font-weight="800">08:00 | MORNING SUPPLEMENT STACK</text>
+    
+    <!-- Quick Actions -->
+    <rect x="240" y="12" width="75" height="26" rx="4" fill="#ef4444"/>
+    <text x="277.5" y="30" fill="#000" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">DO NOW</text>
+  </g>
+
+  <!-- Next Scheduled Item -->
+  <g transform="translate(15, 130)">
+    <text x="0" y="15" fill="#444" font-family="Arial" font-size="10" font-weight="800">UPCOMING:</text>
+    <rect y="25" width="330" height="60" rx="6" fill="#1a1a1a" stroke="#333"/>
+    <rect x="0" y="25" width="4" height="60" fill="#f29b11"/>
+    <text x="15" y="50" fill="#fff" font-family="Arial" font-size="13" font-weight="900">12:30 | MEAL 1: FUEL STACK</text>
+    
+    <!-- Reschedule Icon Mock -->
+    <circle cx="305" cy="55" r="12" fill="#222" stroke="#444"/>
+    <path d="M300 55h10M305 50v10" stroke="#f29b11" stroke-width="2"/>
+  </g>
+</svg>

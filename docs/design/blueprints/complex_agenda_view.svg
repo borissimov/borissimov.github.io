@@ -1,0 +1,96 @@
+<svg width="390" height="1000" viewBox="0 0 390 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="390" height="1000" fill="#121212"/>
+  
+  <!-- 54px Unified Header -->
+  <rect y="0" width="390" height="54" fill="#121212"/>
+  <rect x="10" y="15" width="24" height="24" rx="4" fill="#1a1a1a" stroke="#222"/> <!-- LayoutGrid -->
+  <text x="195" y="32" fill="#fff" font-family="Arial" font-size="18" font-weight="900" text-anchor="middle" letter-spacing="2">AGENDA <tspan fill="#f29b11">THURSDAY</tspan></text>
+  <rect x="356" y="15" width="24" height="24" rx="4" fill="#1a1a1a" stroke="#222"/> <!-- Toggle -->
+  <line x1="0" y1="54" x2="390" y2="54" stroke="#222"/>
+
+  <!-- 44px Date Scroller -->
+  <rect x="10" y="65" width="44" height="44" rx="10" stroke="#f29b11" stroke-width="2" fill="transparent"/>
+  <text x="32" y="80" fill="#666" font-family="Arial" font-size="8" font-weight="800" text-anchor="middle">THU</text>
+  <text x="32" y="100" fill="#f29b11" font-family="Arial" font-size="17" font-weight="900" text-anchor="middle">22</text>
+
+  <!-- OVERDUE BACKLOG SECTION (Floating Ghost Capsules) -->
+  <text x="15" y="135" fill="#ef4444" font-family="Arial" font-size="10" font-weight="950" letter-spacing="1.5">OVERDUE MISSIONS (2)</text>
+  
+  <!-- Backlog 1: Morning Stack -->
+  <g transform="translate(15, 145)">
+    <rect width="360" height="45" rx="6" fill="#1a1a1a" stroke="#ef4444" stroke-dasharray="4 2"/>
+    <text x="12" y="28" fill="#ef4444" font-family="Arial" font-size="13" font-weight="900">WAS 08:00 | MORNING STACK</text>
+    <rect x="280" y="10" width="70" height="25" rx="4" fill="#ef4444"/>
+    <text x="315" y="27" fill="#000" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">RESOLVE</text>
+  </g>
+
+  <!-- Backlog 2: Training -->
+  <g transform="translate(15, 195)">
+    <rect width="360" height="45" rx="6" fill="#1a1a1a" stroke="#ef4444" stroke-dasharray="4 2"/>
+    <text x="12" y="28" fill="#ef4444" font-family="Arial" font-size="13" font-weight="900">WAS 10:00 | LOWER BODY ALPHA</text>
+    <rect x="280" y="10" width="70" height="25" rx="4" fill="#222" stroke="#444"/>
+    <text x="315" y="27" fill="#fff" font-family="Arial" font-size="10" font-weight="900" text-anchor="middle">SHIFT</text>
+  </g>
+
+  <!-- ACTIVE MISSION SECTION -->
+  <text x="15" y="275" fill="#2ecc71" font-family="Arial" font-size="10" font-weight="950" letter-spacing="1.5">ACTIVE NOW</text>
+  
+  <g transform="translate(15, 285)">
+    <!-- Active Meal -->
+    <rect width="360" height="140" rx="8" fill="#161d16" stroke="#2ecc71" stroke-width="2"/>
+    <rect x="0" width="6" height="140" fill="#2ecc71"/>
+    <text x="15" y="30" fill="#fff" font-family="Arial" font-size="16" font-weight="900">12:30 | MEAL 1 + STACK</text>
+    
+    <!-- Ingredient Instructions -->
+    <text x="15" y="55" fill="#ccc" font-family="Arial" font-size="12" font-weight="900">220G CHICKEN · 80G RICE</text>
+    
+    <!-- Nested Supplement Stack (Taken with meal) -->
+    <text x="15" y="80" fill="#666" font-family="Arial" font-size="10" font-weight="800">WITH SUPPLEMENTS:</text>
+    <rect x="15" y="88" width="100" height="22" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.1)"/>
+    <text x="65" y="104" fill="#2ecc71" font-family="Arial" font-size="11" font-weight="900" text-anchor="middle">2 · OMEGA 3</text>
+    
+    <rect x="120" y="88" width="100" height="22" rx="4" stroke="#2ecc71" fill="rgba(46, 204, 113, 0.1)"/>
+    <text x="170" y="104" fill="#2ecc71" font-family="Arial" font-size="11" font-weight="900" text-anchor="middle">1 · MULTIVIT</text>
+
+    <!-- Complete Button -->
+    <rect x="15" y="118" width="330" height="15" rx="2" fill="#2ecc71" fill-opacity="0.2"/>
+    <text x="180" y="130" fill="#2ecc71" font-family="Arial" font-size="9" font-weight="900" text-anchor="middle">FINISH MEAL &amp; SYNC STACK</text>
+  </g>
+
+  <!-- UPCOMING SECTION -->
+  <text x="15" y="455" fill="#444" font-family="Arial" font-size="10" font-weight="950" letter-spacing="1.5">UPCOMING MISSIONS</text>
+
+  <!-- Meal 2 -->
+  <g transform="translate(15, 465)">
+    <rect width="360" height="60" rx="6" fill="#1a1a1a" stroke="#222"/>
+    <text x="15" y="25" fill="#666" font-family="Arial" font-size="13" font-weight="900">18:00 | DINNER: RESTORE</text>
+    <text x="15" y="45" fill="#444" font-family="Arial" font-size="11" font-weight="800">BEEF · SWEET POTATO · GREENS</text>
+  </g>
+
+  <!-- Bedtime Stack -->
+  <g transform="translate(15, 535)">
+    <rect width="360" height="60" rx="6" fill="#1a1a1a" stroke="#222"/>
+    <text x="15" y="25" fill="#666" font-family="Arial" font-size="13" font-weight="900">21:30 | BEDTIME STACK</text>
+    <text x="15" y="45" fill="#444" font-family="Arial" font-size="11" font-weight="800">ZMA · MAGNESIUM · ASHWAGANDHA</text>
+  </g>
+
+  <!-- Sleep -->
+  <g transform="translate(15, 605)">
+    <rect width="360" height="80" rx="6" fill="#1a1a1a" stroke="#222"/>
+    <rect x="0" width="4" height="80" fill="#3b82f6"/> <!-- Blue for Sleep -->
+    <text x="15" y="30" fill="#3b82f6" font-family="Arial" font-size="14" font-weight="900">22:30 | SYSTEM RECOVERY (SLEEP)</text>
+    <text x="15" y="55" fill="#444" font-family="Arial" font-size="11" font-weight="800">TARGET: 07:30h · RECOVERY OPTIMIZATION</text>
+  </g>
+
+  <!-- Floating HUD &amp; FAB (Precision Control) -->
+  <g transform="translate(285, 850)">
+    <rect width="85" height="35" rx="17.5" fill="rgba(10,10,10,0.8)" stroke="#222"/>
+    <text x="25" y="22" fill="#f29b11" font-family="Arial" font-size="12" font-weight="900">🔥 4</text>
+    <line x1="42" y1="10" x2="42" y2="25" stroke="#333"/>
+    <text x="60" y="22" fill="#2ecc71" font-family="Arial" font-size="12" font-weight="900">🎯 5</text>
+    
+    <circle cx="42.5" cy="75" r="32" fill="#f29b11"/>
+    <text x="42.5" y="85" fill="#000" font-family="Arial" font-size="36" font-weight="900" text-anchor="middle">+</text>
+  </g>
+</svg>

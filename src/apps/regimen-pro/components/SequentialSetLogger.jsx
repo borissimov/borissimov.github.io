@@ -1,5 +1,5 @@
-import React from 'react';
-import { Check, ChevronDown, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Check, ChevronDown, ChevronRight, Clock, Dumbbell, BookOpen } from 'lucide-react';
 import { useTrainingStore } from '../stores/useTrainingStore';
 import '../../shared-premium.css';
 
@@ -13,6 +13,8 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
         toggleFocus 
     } = useTrainingStore();
     
+    // TEST: Expanded by default
+    const [showTechnique, setShowTechnique] = useState(true);
     const logs = activeSession?.logs[exercise.id] || [];
     const totalSets = parseInt(exercise.target_sets || 3);
     const isComplete = logs.length >= totalSets;
@@ -22,17 +24,43 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
     const isSystemChoice = systemStep?.exerciseId === exercise.id;
     const currentSetNum = logs.length + 1;
 
+    // DYNAMIC TARGET LOGIC
+    const currentSetTarget = exercise.set_targets?.find(t => t.set === currentSetNum) || null;
+    const targetWeight = currentSetTarget?.weight || exercise.target_weight;
+    const targetReps = currentSetTarget?.reps || exercise.target_reps;
+    const targetRpe = currentSetTarget?.rpe || exercise.target_rpe;
+    const targetTempo = currentSetTarget?.tempo || exercise.target_tempo;
+    const setLabel = currentSetTarget?.label || null;
+
+    // SMART TYPE DETECTION
+    const isCardio = exercise.name?.toLowerCase().includes('swim') || 
+                     exercise.name?.toLowerCase().includes('плуване') ||
+                     exercise.name?.toLowerCase().includes('разходка');
+                     
+    const isTimed = isCardio || (targetReps && String(targetReps).toLowerCase().match(/[sсекminмин]/i));
+
+    const [weight, setWeight] = useState('');
+    const [reps, setReps] = useState('');
+    const [rpe, setRpe] = useState('');
+
     const handleLog = () => {
         addLogEntry(exercise.id, blockId, {
-            weight: exercise.target_weight, reps: exercise.target_reps, rpe: exercise.target_rpe, set: currentSetNum
+            weight: weight || targetWeight, 
+            reps: reps || targetReps, 
+            rpe: rpe || targetRpe || 9, 
+            targetWeight,
+            targetReps,
+            targetRpe,
+            set: currentSetNum
         }, false);
+        setWeight(''); setReps(''); setRpe('');
     };
 
     const getAccentColor = () => {
         if (isComplete) return '#2ecc71'; 
         if (isActive || isSystemChoice) return '#f29b11';   
-        if (hasStarted) return '#2ecc71'; // Green badge for partial progress
-        return '#666'; // Lightened from #333
+        if (hasStarted) return '#2ecc71'; 
+        return '#666'; 
     };
 
     const getAnimationClass = () => {
@@ -46,75 +74,127 @@ export const SequentialSetLogger = ({ exercise, blockId }) => {
 
     return (
         <div className={getAnimationClass()} style={{ 
-            backgroundColor: isActive ? '#1a1a1a' : isComplete ? '#161d16' : '#0a0a0a',
+            backgroundColor: isActive ? '#1a1a1a' : isComplete ? '#161d16' : 'transparent',
             padding: '8px 10px', borderBottom: '1px solid #333', marginBottom: '2px', display: 'flex', flexDirection: 'column', width: '100%', boxSizing: 'border-box',
             borderLeft: `4px solid ${getAccentColor()}`,
             transition: 'all 0.3s ease',
-            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 // Increased from 0.3
+            opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 
         }}>
-            <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <span style={{ 
-                    fontSize: '9px', fontWeight: '900', padding: '2px 6px', 
-                    backgroundColor: getAccentColor(), color: '#000', borderRadius: '4px' 
-                }}>
-                    {isComplete ? 'DONE' : `${logs.length}/${totalSets}`}
-                </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', flex: 1, minWidth: 0 }}>
+                    <span style={{ 
+                        fontSize: '13px', 
+                        fontWeight: '900', 
+                        padding: '2px 6px', 
+                        backgroundColor: getAccentColor(), 
+                        color: '#000', 
+                        borderRadius: '4px', 
+                        minWidth: '40px', 
+                        textAlign: 'center',
+                        letterSpacing: '0.5px'
+                    }}>
+                        {isComplete ? 'DONE' : `${logs.length}/${totalSets}`}
+                    </span>
+                    <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{exercise.name}</h3>
+                </div>
                 
-                <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {exercise.name}
-                </h3>
-
-                {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
+                {isActive && exercise.technique && (
+                    <button onClick={() => setShowTechnique(!showTechnique)} style={{ all: 'unset', cursor: 'pointer', padding: '4px' }}>
+                        <BookOpen size={14} color={showTechnique ? '#f29b11' : '#444'} />
+                    </button>
+                )}
+                
+                <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ cursor: 'pointer' }}>
+                    {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
+                </div>
             </div>
 
             {isActive && (
-                <div style={{ marginTop: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderBottom: '1px solid #222', paddingBottom: '4px', marginBottom: '8px' }}>
-                        <TargetItem label="KG" value={exercise.target_weight} />
-                        <TargetItem label="REPS" value={exercise.target_reps} />
-                        <TargetItem label="RPE" value={exercise.target_rpe} />
-                        <TargetItem label="TEMPO" value={exercise.target_tempo} />
-                    </div>
-
-                    {!isComplete && (
-                        <div style={{...gridStyle, marginBottom: '12px'}}>
-                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="Kg" />
-                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px' }} placeholder="R" />
-                            <input type="text" className="premium-input" style={{ height: '38px', fontSize: '18px', borderStyle: 'dashed' }} placeholder="RPE" />
-                            <button onClick={handleLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: '#222', color: getAccentColor(), width: '52px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
-                                <Check size={22} strokeWidth={4} />
-                            </button>
+                <div style={{ marginTop: '12px' }}>
+                    {showTechnique && exercise.technique && (
+                        <div className="animate-in fade-in slide-in-from-top-1 duration-200" style={{ backgroundColor: 'rgba(242, 155, 17, 0.05)', border: '1px solid rgba(242, 155, 17, 0.1)', borderRadius: '6px', padding: '10px', marginBottom: '12px' }}>
+                            <p style={{ margin: 0, fontSize: '11px', color: '#ccc', fontStyle: 'italic', lineHeight: '1.5' }}>
+                                <span style={{ color: '#f29b11', fontWeight: '900', fontStyle: 'normal', fontSize: '9px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Technique Note:</span>
+                                {exercise.technique}
+                            </p>
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {!isComplete && (
+                        <>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px', paddingBottom: '8px', borderBottom: '1px solid #222' }}>
+                                {isTimed ? <Clock size={14} color="#f29b11" /> : <Dumbbell size={14} color="#f29b11" />}
+                                {setLabel && (
+                                    <span style={{ 
+                                        fontSize: '12px', 
+                                        fontWeight: '900', 
+                                        color: '#000', 
+                                        backgroundColor: '#f29b11', 
+                                        padding: '2px 6px', 
+                                        borderRadius: '4px', 
+                                        textTransform: 'uppercase' 
+                                    }}>
+                                        {setLabel}
+                                    </span>
+                                )}
+                                {targetTempo && !isTimed && (
+                                    <span style={{ fontSize: '12px', fontWeight: '900', color: '#fff', letterSpacing: '1px' }}>
+                                        TEMPO: <span style={{ color: '#f29b11' }}>{targetTempo}</span>
+                                    </span>
+                                )}
+                            </div>
+
+                            <div style={{...gridStyle, marginBottom: '4px'}}>
+                                <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
+                                    {isCardio ? 'DIST' : 'KG'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetWeight}</span>
+                                </div>
+                                <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
+                                    {isTimed ? 'TIME' : 'REPS'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetReps}</span>
+                                </div>
+                                <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
+                                    RPE <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetRpe}</span>
+                                </div>
+                                <div></div>
+                            </div>
+                            
+                            <div style={{...gridStyle, marginBottom: '15px'}}>
+                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px' }} value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="-" />
+                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px' }} value={reps} onChange={(e) => setReps(e.target.value)} placeholder="-" />
+                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px', borderStyle: 'dashed' }} value={rpe} onChange={(e) => setRpe(e.target.value)} placeholder="-" />
+                                <button onClick={handleLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: 'rgba(255,255,255,0.05)', color: getAccentColor(), width: '52px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
+                                    <Check size={24} strokeWidth={4} />
+                                </button>
+                            </div>
+                        </>
+                    )}
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {logs.map((log, i) => (
                             <div key={log.id} style={gridStyle}>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="text" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetWeight || '-'}</div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                        <input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                    </div>
                                 </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="text" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetReps || '-'}</div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                        <input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                    </div>
                                 </div>
-                                <div style={{ backgroundColor: '#161d16', border: '1px solid #2ecc7122', borderRadius: '8px' }}>
-                                    <input type="text" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetRpe || '-'}</div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                        <input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                    </div>
                                 </div>
-                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6 }}>{i+1}</div>
+                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{i+1}</div>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
-        </div>
-    );
-};
-
-const TargetItem = ({ label, value }) => {
-    if (!value) return null;
-    return (
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-            <span style={{ fontSize: '8px', fontWeight: '900', color: '#f29b11', textTransform: 'uppercase' }}>{label}:</span>
-            <span style={{ fontSize: '13px', fontWeight: '900', color: '#fff' }}>{value}</span>
         </div>
     );
 };

@@ -54,13 +54,13 @@ export const TrainingBlock = ({ block, index, totalBlocks }) => {
                 }}>
                     <div className="section-header" style={{ marginBottom: 0, color: accentColor, gap: '10px' }}>
                         {getBlockIcon()}
-                        <span style={{ marginLeft: '4px', fontSize: '13px', letterSpacing: '1px' }}>
+                        <span style={{ marginLeft: '4px', fontSize: '11px', fontWeight: '900', letterSpacing: '1px', opacity: 0.8 }}>
                             {block.label?.toUpperCase() || 'TRAINING BLOCK'}
                         </span>
                     </div>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '10px', fontWeight: '900', color: accentColor, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: '900', color: accentColor, textTransform: 'uppercase', letterSpacing: '1px' }}>
                             {Math.round(progressPercent)}%
                         </span>
                         {isExpanded ? <ChevronDown size={14} color="#444" /> : <ChevronRight size={14} color="#444" />}
@@ -80,7 +80,7 @@ export const TrainingBlock = ({ block, index, totalBlocks }) => {
             </div>
             
             {isExpanded && (
-                <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                <div className="animate-in fade-in slide-in-from-top-1 duration-200">
                     {block.block_type === 'CIRCUIT' ? (
                         <CircuitBlock block={block} />
                     ) : (

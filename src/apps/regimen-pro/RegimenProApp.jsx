@@ -473,8 +473,8 @@ const RegimenProApp = ({ onExit, currentView, onNavigate }) => {
             {renderModals()}
             <header style={{ display: 'flex', alignItems: 'center', height: '54px' }}>
                 <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Back to Portal"><LayoutGrid size={24} color="#f29b11" /></button>
-                <h1 style={{ flex: 1, textAlign: 'center', fontSize: '20px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>Ready to <span style={{ color: '#f29b11' }}>Train?</span></h1>
-                <button onClick={() => onNavigate('global-history')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Mission Logs"><History size={24} color="#f29b11" /></button>
+                <h1 style={{ flex: 1, textAlign: 'center', fontSize: '20px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>SELECT <span style={{ color: '#f29b11' }}>SESSION</span></h1>
+                <button onClick={() => onNavigate('global-history')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Master Agenda"><History size={24} color="#f29b11" /></button>
             </header>
 
             {activeSession && (

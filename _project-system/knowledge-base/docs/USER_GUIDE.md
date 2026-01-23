@@ -1,66 +1,51 @@
-# User Guide: Regimen Pro
+# User Guide: Master Plan
 
-Welcome to the **Regimen Pro** tactical training system. This app is designed for speed, focus, and offline reliability.
+Welcome to the **Master Plan** high-performance training system. This application is designed for precision, focus, and athletic reliability.
 
 ---
 
 ## 1. Getting Started
 
 ### **Cloud Account**
-1.  On first load, you will see the **Login Portal**.
-2.  **Sign Up:** Enter your email/password to create a secure account.
-3.  **Sync:** Logging in automatically syncs your local history with the cloud database.
+1.  Sign in via the **Login Portal** to secure your data.
+2.  **Sync:** All your logs and programs are automatically backed up to the cloud.
 
 ---
 
-## 2. The Session Selector (Dashboard)
+## 2. Program Selection
 
-The home screen shows your available **Routine Days**.
+The main dashboard is your **Program Selector**.
 
-*   **Recommended Day:** The system highlights the next logical workout in your cycle with a `REC` badge and an orange border.
-*   **Selection:** Tap any card to view the exercises for that day.
-*   **Start:** Tap the **START** button to begin the session.
-    *   *Note:* This locks the session to the current time.
+*   **Program Day:** The system highlights your current day in the program cycle (e.g., "Day 1", "Day 2").
+*   **Sessions:** Each day contains specific sessions (e.g., "Training", "Mobility").
+*   **Recommended:** The next prescribed day is marked with a `REC` badge.
+*   **Start:** Tap any day to see the sessions, then tap **START** to begin.
 
-### **Retroactive Logging (Missed Days)**
-If you forgot to log yesterday:
-1.  Tap the **+** (Plus) button in the bottom right corner.
-2.  Select the workout you performed.
-3.  The session will be created with *today's* timestamp (editable in the database if needed later).
-
----
-
-## 3. The Session Logger (Training Mode)
-
-Once started, the interface changes to **Focus Mode**.
-
-### **The "Following Shadow"**
-*   **Orange Box:** This is your current target. The app automatically expands the block you need to do.
-*   **Auto-Advance:** As you log sets, the system automatically moves the focus to the next exercise.
-*   **Circuits:** If you are doing a Circuit, the focus will jump to the next exercise in the loop, then back to the start for Round 2.
-
-### **Controls**
-*   **Log Set:** Enter Weight/Reps and tap the checkmark.
-*   **Finish Early:** Tap "END SESSION" at the bottom to save your progress.
-*   **Abandon:** Tap the `X` in the top right to discard the session (Warning: This deletes unsaved progress).
+### **Retroactive Logging**
+If you need to log a session for a previous date:
+1.  Tap the **+** (Plus) button.
+2.  Select the session you performed.
+3.  Complete the log as normal.
 
 ---
 
-## 4. Master Agenda & Vault
+## 3. The Performance Logger
 
-Tap the **History** icon (top right) to view your logs.
+Once a session is active, you enter **Focus Mode**.
 
-*   **Master Agenda:** A chronological feed of every session you've completed. Tap a card to expand details.
-*   **Vault:** Deep analytics on volume and strength trends.
-*   **Export:** You can download a JSON file of any workout for your own records or AI analysis.
+### **Prescription Details**
+*   **Execution Instructions:** Located at the top of each item (e.g., "Tempo: 3-0-1-0").
+*   **Technique Cues:** Quick reminders for proper form (e.g., "Chin tucked").
+*   **The "Following Shadow":** The app automatically focuses on the next prescribed set.
+
+### **Logging Performance**
+*   Enter your actual Weight and Reps.
+*   Tap the checkmark to record the set.
+*   **Finish:** Tap "END SESSION" once all sets are complete to sync your data.
 
 ---
 
-## 5. Health Tracker
+## 4. Master Agenda & Health
 
-A dedicated module for monitoring your vital signs.
-
-*   **Access:** Select "Health Tracker" from the main Hub menu.
-*   **Recording:** Enter your Systolic (SYS), Diastolic (DIA), and Pulse (HR) values.
-*   **Sync:** Data is saved directly to your secure health cloud storage.
-*   **Trends:** View your recent 5 logs directly on the card.
+*   **Master Agenda:** View your full history of completed sessions and performance stats.
+*   **Health Tracker:** Use this module to log and monitor Blood Pressure and Heart Rate trends.

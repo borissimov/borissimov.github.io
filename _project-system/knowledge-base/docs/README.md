@@ -1,49 +1,34 @@
-# Master Plan: Tactical Training System
+# Master Plan: High-Performance Training System
 
-**Version:** 1.3.0
+**Version:** 1.4.1
 **Status:** Live Production
+
+The **Master Plan** is a professional **Prescription vs. Performance** system designed for elite-level tracking of training and recovery.
+
+## 🚀 Key Modules
+
+*   **Program Selector:** View your **Training Program** and the manifest for your current **Program Day**.
+*   **Performance Logger:** A focus-first execution interface that provides **Execution Instructions** and **Technique Cues** while tracking your performance in real-time.
+*   **Master Agenda:** A chronological history of **Completed Sessions**, providing data-driven insights into your progression.
+*   **Health Tracker:** Dedicated module for monitoring vital signs (Blood Pressure, Heart Rate).
 
 ## 📚 System Definitions
 
-To avoid confusion during the migration, the system uses the following terminology:
+*   **Training Program:** The macro-cycle governing your schedule.
+*   **Program Day:** The daily container. A single day might include a Training Session and a Mobility Session.
+*   **Session:** A specific prescribed activity (e.g. "Upper Body Power").
+*   **Performance Log:** The immutable record of what you actually achieved.
 
-*   **Regimen Pro (Legacy):** The standalone HTML prototype (`regimen.html`). This is the "Old World" app that is being decommissioned. It uses the `public` schema.
-*   **Master Plan (Current):** The modern React application (formerly `RegimenProApp`). This is the "New World" app running on the V2 Relational Engine.
+## 📂 Project Organization
 
-## 🚀 Key Features (Master Plan)
-
-*   **Session Selector:** An intelligent dashboard that highlights the next logical workout in your cycle.
-*   **Session Logger:** A focus-first interface that highlights the next required set, automatically collapsing completed sections to keep the workspace clean.
-*   **Master Agenda:** A chronological unified timeline of all past training sessions.
-*   **Performance Vault:** Deep history view to track volume load and progress on specific exercises.
-*   **Health Tracker:** Dedicated logging for Blood Pressure and Heart Rate trends.
-*   **Offline-First:** All data is saved instantly to LocalStorage. Syncs to the cloud when online.
-*   **Retroactive Logging:** Ability to log past workouts for days you missed.
-
-## 🛠️ Tech Stack
-
-*   **Frontend:** React 18, Vite, Zustand, Tailwind CSS.
-*   **Backend:** Supabase (PostgreSQL) with a custom V2 relational schema.
-*   **Design:** "Industrial OS" High-Contrast Dark Mode.
-
-## 📂 Project Structure
-
-This repository uses a structured system layer:
-
-*   `src/`: Application Source Code (React components, Logic).
+*   `src/`: Application logic and athletic UI.
 *   `_project-system/`:
-    *   `knowledge-base/`: Documentation & Blueprints.
-    *   `system-config/`: Auth & Data Templates.
-    *   `tooling/`: Migration & Maintenance Scripts.
+    *   `knowledge-base/`: Architecture, Design, and Domain logic.
+    *   `system-config/`: Secure configurations and data blueprints.
+    *   `tooling/`: Database migrations and maintenance scripts.
 
 ## ⚡ Quick Start
 
 1.  **Install:** `npm install`
 2.  **Dev Server:** `npm run dev`
-3.  **Build:** `npm run build`
-4.  **Deploy:** `npm run deploy` (Deploys to GitHub Pages)
-
-## 🔮 Future Roadmap
-*See `_project-system/knowledge-base/docs/FUTURE/` for design specs on:*
-*   Nutrition Logging (Meal Parser)
-*   Supplement Stack Tracking
+3.  **Deploy:** `npm run deploy` (Build and push to production)

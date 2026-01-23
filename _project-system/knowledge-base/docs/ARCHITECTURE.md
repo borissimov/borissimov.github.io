@@ -11,7 +11,7 @@ The **Master Plan** is a specialized, offline-first **Progressive Web Applicatio
 
 ### Key Capabilities
 *   **Focus Engine:** An intelligent state machine that guides the user through workouts set-by-set.
-*   **Unified History:** A chronological timeline of all completed sessions.
+*   **Unified History:** A chronological timeline of all completed sessions (Master Agenda).
 *   **Offline Persistence:** Instant local saving with background cloud synchronization.
 
 ---
@@ -20,10 +20,10 @@ The **Master Plan** is a specialized, offline-first **Progressive Web Applicatio
 The codebase is separated into application logic (`src/`) and system management (`_project-system/`):
 
 *   **`archives/`**: Legacy logic (Python scripts) and raw JSON logs.
-*   **`knowledge-base/`**: Documentation and design specifications.
+*   **`knowledge-base/`**: Detailed documentation, design blueprints, and feature specifications.
     *   **`docs/FUTURE/`**: Archives for planned features (Nutrition, Supplements) not yet active in the runtime.
 *   **`system-config/`**: Authentication keys and data templates.
-*   **`tooling/`**: Node.js scripts for database migrations, seeding, and verification.
+*   **`tooling/`**: Automation scripts for migrations, seeding, and deployment.
 
 ---
 
@@ -39,14 +39,20 @@ The codebase is separated into application logic (`src/`) and system management 
 This is the application's "Brain". It manages two distinct lifecycles:
 
 #### **A. The Session Lifecycle (Active State)**
-When a workout starts, `activeSession` is created in LocalStorage:
+When a workout starts via the **Session Selector**, `activeSession` is created in LocalStorage:
 1.  **Blueprint:** Fetches `v2.block_exercises` to build a read-only template.
-2.  **Execution:** User logs sets into `activeSession.logs`.
+2.  **Execution (Session Logger):** User logs sets into `activeSession.logs`.
 3.  **State Machine:** The `systemStep` cursor calculates the next logical exercise based on completion status.
 
 #### **B. The History Lifecycle (Passive State)**
 *   **Fetch:** `fetchGlobalHistory` pulls `session_logs` joined with `set_logs` from Supabase.
-*   **Render:** Data is displayed in the "Global History" timeline or the "Vault" performance view.
+*   **Render:** Data is displayed in the **Master Agenda** (Timeline) or the "Vault" performance view.
+
+### **Component Structure**
+*   **`src/apps/master-plan/MasterPlanApp.jsx`**: The primary controller.
+    *   **Session Selector:** The landing dashboard.
+    *   **Session Logger:** The active workout view.
+    *   **Master Agenda:** The history view.
 
 ---
 

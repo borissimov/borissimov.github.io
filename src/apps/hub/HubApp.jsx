@@ -25,7 +25,7 @@ export const HubApp = ({ setActiveApp }) => {
         },
         {
             id: 'regimen_react',
-            title: 'Training App',
+            title: 'Master Plan',
             desc: 'Next-gen engine. Block-based circuits and real-time analytics.',
             icon: <Trophy size={28} />,
             badge: 'Alpha',

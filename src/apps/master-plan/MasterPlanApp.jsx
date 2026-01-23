@@ -534,4 +534,4 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     );
 };
 
-export default RegimenProApp;
+export default MasterPlanApp;

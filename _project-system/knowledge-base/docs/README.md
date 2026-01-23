@@ -3,14 +3,21 @@
 **Version:** 1.3.0
 **Status:** Live Production
 
-The **Master Plan** is a specialized PWA for tracking high-performance hypertrophy training. It features an intelligent "Focus Engine" that guides users through complex workouts (Standard and Circuit) with zero distraction.
+## 📚 System Definitions
 
-## 🚀 Key Features
+To avoid confusion during the migration, the system uses the following terminology:
 
-*   **Focus-First Logger:** An intelligent interface that highlights the next required set, automatically collapsing completed sections to keep the workspace clean.
-*   **Offline-First:** All data is saved instantly to LocalStorage. Syncs to the cloud when online.
-*   **Unified Timeline:** A chronological feed of all past training sessions.
+*   **Regimen Pro (Legacy):** The standalone HTML prototype (`regimen.html`). This is the "Old World" app that is being decommissioned. It uses the `public` schema.
+*   **Master Plan (Current):** The modern React application (formerly `RegimenProApp`). This is the "New World" app running on the V2 Relational Engine.
+
+## 🚀 Key Features (Master Plan)
+
+*   **Session Selector:** An intelligent dashboard that highlights the next logical workout in your cycle.
+*   **Session Logger:** A focus-first interface that highlights the next required set, automatically collapsing completed sections to keep the workspace clean.
+*   **Master Agenda:** A chronological unified timeline of all past training sessions.
 *   **Performance Vault:** Deep history view to track volume load and progress on specific exercises.
+*   **Health Tracker:** Dedicated logging for Blood Pressure and Heart Rate trends.
+*   **Offline-First:** All data is saved instantly to LocalStorage. Syncs to the cloud when online.
 *   **Retroactive Logging:** Ability to log past workouts for days you missed.
 
 ## 🛠️ Tech Stack
@@ -40,4 +47,3 @@ This repository uses a structured system layer:
 *See `_project-system/knowledge-base/docs/FUTURE/` for design specs on:*
 *   Nutrition Logging (Meal Parser)
 *   Supplement Stack Tracking
-*   Health Metrics (Blood Pressure)

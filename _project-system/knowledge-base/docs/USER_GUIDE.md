@@ -13,7 +13,7 @@ Welcome to the **Regimen Pro** tactical training system. This app is designed fo
 
 ---
 
-## 2. The Dashboard (Ready to Train?)
+## 2. The Session Selector (Dashboard)
 
 The home screen shows your available **Routine Days**.
 
@@ -41,15 +41,26 @@ Once started, the interface changes to **Focus Mode**.
 
 ### **Controls**
 *   **Log Set:** Enter Weight/Reps and tap the checkmark.
-*   **Finish Early:** Tap "END MISSION" at the bottom to save your progress.
+*   **Finish Early:** Tap "END SESSION" at the bottom to save your progress.
 *   **Abandon:** Tap the `X` in the top right to discard the session (Warning: This deletes unsaved progress).
 
 ---
 
-## 4. History & Vault
+## 4. Master Agenda & Vault
 
 Tap the **History** icon (top right) to view your logs.
 
-*   **Timeline:** A chronological feed of every session you've completed. Tap a card to expand details.
-*   **Vault:** (Coming Soon) Deep analytics on volume and strength trends.
+*   **Master Agenda:** A chronological feed of every session you've completed. Tap a card to expand details.
+*   **Vault:** Deep analytics on volume and strength trends.
 *   **Export:** You can download a JSON file of any workout for your own records or AI analysis.
+
+---
+
+## 5. Health Tracker
+
+A dedicated module for monitoring your vital signs.
+
+*   **Access:** Select "Health Tracker" from the main Hub menu.
+*   **Recording:** Enter your Systolic (SYS), Diastolic (DIA), and Pulse (HR) values.
+*   **Sync:** Data is saved directly to your secure health cloud storage.
+*   **Trends:** View your recent 5 logs directly on the card.

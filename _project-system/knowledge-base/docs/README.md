@@ -7,7 +7,7 @@ The **Master Plan** is a professional **Prescription vs. Performance** system de
 
 ## 🚀 Key Modules
 
-*   **Program Selector:** View your **Training Program** and the manifest for your current **Program Day**.
+*   **Session Selector:** View your **Training Program** and identify your next prescribed session.
 *   **Performance Logger:** A focus-first execution interface that provides **Execution Instructions** and **Technique Cues** while tracking your performance in real-time.
 *   **Master Agenda:** A chronological history of **Completed Sessions**, providing data-driven insights into your progression.
 *   **Health Tracker:** Dedicated module for monitoring vital signs (Blood Pressure, Heart Rate).

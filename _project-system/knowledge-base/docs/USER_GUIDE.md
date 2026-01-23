@@ -12,9 +12,9 @@ Welcome to the **Master Plan** high-performance training system. This applicatio
 
 ---
 
-## 2. Program Selection
+## 2. Session Selection
 
-The main dashboard is your **Program Selector**.
+The main dashboard is your **Session Selector**.
 
 *   **Program Day:** The system highlights your current day in the program cycle (e.g., "Day 1", "Day 2").
 *   **Sessions:** Each day contains specific sessions (e.g., "Training", "Mobility").

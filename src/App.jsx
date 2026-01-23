@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { HubApp } from './apps/hub/HubApp';
 import { LoginPortal } from './apps/hub/LoginPortal';
-import RegimenProApp from './apps/regimen-pro/RegimenProApp';
+import MasterPlanApp from './apps/master-plan/MasterPlanApp';
 import BloodPressureApp from './apps/blood-pressure/BloodPressureApp';
 import { Loader2 } from 'lucide-react';
 
@@ -101,7 +101,7 @@ const App = () => {
 
             {activeApp === 'bp' && <BloodPressureApp onExit={exitToHub} />}
             {activeApp === 'regimen' && (
-                <RegimenProApp 
+                <MasterPlanApp 
                     onExit={exitToHub} 
                     currentView={historyState?.view} 
                     onNavigate={(view) => navigate('regimen', view)} 

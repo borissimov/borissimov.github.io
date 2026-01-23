@@ -1,27 +1,26 @@
 # Master Plan v2.0: Technical Architecture
 
 **Date:** January 23, 2026
-**Version:** v1.3.0
-**Scope:** Training Engine & Data Infrastructure
+**Version:** v1.4.2 (Polymorphic Logger Model)
+**Scope:** File Structure & Application Stack
+
+> **Note:** For the detailed Domain Logic (Metric Types, Auto-Advance) and Data Rules, see the **[Technical Reference Manual](./TECHNICAL_MANUAL.md)**.
 
 ---
 
 ## 1. System Overview
-The **Master Plan** is a specialized, offline-first **Progressive Web Application (PWA)** designed for high-performance workout tracking. It replaces traditional spreadsheet logging with an intelligent "Focus-First" interface optimized for mobile devices.
+The **Master Plan** is a specialized, offline-first **Progressive Web Application (PWA)**. It uses a single, unified execution engine to handle diverse athletic activities (Strength, Cardio, Mobility).
 
 ### Key Capabilities
+*   **Polymorphic Session Logger:** A single component that adapts its UI (Inputs vs. Timer) based on the exercise type.
 *   **Focus Engine:** An intelligent state machine that guides the user through workouts set-by-set.
 *   **Unified History:** A chronological timeline of all completed sessions (Master Agenda).
-*   **Offline Persistence:** Instant local saving with background cloud synchronization.
 
 ---
 
 ## 2. Project Organization (`_project-system/`)
-The codebase is separated into application logic (`src/`) and system management (`_project-system/`):
-
 *   **`archives/`**: Legacy logic (Python scripts) and raw JSON logs.
 *   **`knowledge-base/`**: Detailed documentation, design blueprints, and feature specifications.
-    *   **`docs/FUTURE/`**: Archives for planned features (Nutrition, Supplements) not yet active in the runtime.
 *   **`system-config/`**: Authentication keys and data templates.
 *   **`tooling/`**: Automation scripts for migrations, seeding, and deployment.
 
@@ -33,42 +32,37 @@ The codebase is separated into application logic (`src/`) and system management 
 *   **Framework:** React 18 + Vite.
 *   **State Management:** `zustand` (v5.0) with `persist` middleware.
 *   **Styling:** CSS Variables (`shared-premium.css`) + Tailwind CSS (Utility classes).
-*   **Routing:** Internal state-based routing (`currentView` state) to maintain PWA context.
 
 ### **The Training Store (`useTrainingStore.js`)**
-This is the application's "Brain". It manages two distinct lifecycles:
+This is the application's "Brain". It manages the session lifecycle.
 
-#### **A. The Session Lifecycle (Active State)**
-When a workout starts via the **Session Selector**, `activeSession` is created in LocalStorage:
-1.  **Blueprint:** Fetches `v2.block_exercises` to build a read-only template.
-2.  **Execution (Session Logger):** User logs sets into `activeSession.logs`.
-3.  **State Machine:** The `systemStep` cursor calculates the next logical exercise based on completion status.
+#### **A. Active Session State**
+When a workout starts, `activeSession` is created in LocalStorage. It contains the **Blueprint** (Read-Only) and the **Logs** (Write-Only).
 
-#### **B. The History Lifecycle (Passive State)**
-*   **Fetch:** `fetchGlobalHistory` pulls `session_logs` joined with `set_logs` from Supabase.
-*   **Render:** Data is displayed in the **Master Agenda** (Timeline) or the "Vault" performance view.
+#### **B. The Session Logger (`SessionLogger.jsx`)**
+This is the unified input component. It renders different interfaces based on `metric_type`:
+*   **Load/Rep Mode:** Standard numeric inputs for lifting.
+*   **Duration Mode:** Interactive Stopwatch for planks/mobility.
+*   **Distance Mode:** Distance/Time inputs for cardio.
 
 ### **Component Structure**
-*   **`src/apps/master-plan/MasterPlanApp.jsx`**: The primary controller.
-    *   **Session Selector:** The landing dashboard.
-    *   **Session Logger:** The active workout view.
-    *   **Master Agenda:** The history view.
+*   **`src/App.jsx`**: The System Orchestrator.
+*   **`src/apps/master-plan/MasterPlanApp.jsx`**: The primary training controller.
+    *   **Session Selector:** Dashboard.
+    *   **Session Logger:** Active execution view.
+    *   **Master Agenda:** History view.
 
 ---
 
 ## 4. Backend Architecture (Supabase V2)
 
-The system runs on a custom **Relational Delta Schema** (`v2`) isolated from legacy data.
+The system runs on a custom **Relational Delta Schema** (`v2`).
 
-### **Schema Hierarchy**
-1.  **`routine_days`**: Defines the cycle (e.g., "Push", "Pull", "Legs").
-2.  **`workouts`**: Containers for specific sessions.
-3.  **`workout_blocks`**: Organizes exercises into "Main Phase", "Circuit", etc.
-4.  **`block_exercises`**: Links exercises to blocks with specific targets (Sets/Reps/RPE).
+*See `TECHNICAL_MANUAL.md` for the detailed V3 Schema definition.*
 
 ### **Data Flow**
 *   **Read (Load):** The app fetches the entire `v2` definition tree on startup to enable offline usage.
-*   **Write (Sync):** When a user finishes a workout, the app pushes individual rows to `v2.session_logs` and `v2.set_logs`.
+*   **Write (Sync):** When a user finishes a workout, the app pushes individual rows to `v2.completed_sessions` and `v2.performance_logs`.
 
 ---
 
@@ -76,9 +70,8 @@ The system runs on a custom **Relational Delta Schema** (`v2`) isolated from leg
 
 The interface is designed for the **Galaxy A41** (360x800 viewport).
 
-*   **Accordion Logic:** Only **one block** is expanded at a time to minimize scrolling.
+*   **Accordion Logic:** Only **one block** is expanded at a time.
+*   **Auto-Advance:** For Flow blocks, the system automatically moves to the next item when the timer completes.
 *   **Visual Feedback:**
-    *   **Orange (`#f29b11`):** Active Task / Recommended Action.
-    *   **Green (`#2ecc71`):** Completed Task / Success State.
-    *   **Dark Gray (`#1a1a1a`):** Inactive / Future Tasks.
-*   **Draggable HUD:** The "Add" button and stats overlay can be dragged to avoid blocking content.
+    *   **Orange (`#f29b11`):** Active Task.
+    *   **Green (`#2ecc71`):** Completed Task.

@@ -9,24 +9,29 @@ async function fixPermissions() {
         await client.connect();
         console.log("Connected to Supabase.");
 
-        console.log("🔓 Granting Usage on Schema v2...");
-        await client.query('GRANT USAGE ON SCHEMA v2 TO anon, authenticated');
-        await client.query('GRANT ALL ON ALL TABLES IN SCHEMA v2 TO anon, authenticated');
-        await client.query('GRANT ALL ON ALL SEQUENCES IN SCHEMA v2 TO anon, authenticated');
+        // 1. Enable RLS and add PERMISSIVE INSERT policy for session_logs
+        await client.query(`
+            ALTER TABLE v2.session_logs ENABLE ROW LEVEL SECURITY;
+            
+            -- Allow any authenticated user to insert logs
+            -- (In a multi-user app we'd restrict by user_id, but for now we need it functional)
+            DROP POLICY IF EXISTS "Allow session inserts" ON v2.session_logs;
+            CREATE POLICY "Allow session inserts" ON v2.session_logs FOR INSERT WITH CHECK (true);
+            
+            -- Allow viewing logs
+            DROP POLICY IF EXISTS "Allow session select" ON v2.session_logs;
+            CREATE POLICY "Allow session select" ON v2.session_logs FOR SELECT USING (true);
 
-        console.log("🔓 Disabling RLS on critical tables...");
-        await client.query('ALTER TABLE v2.routine_days DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.workouts DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.workout_blocks DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.exercises DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.block_exercises DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.session_logs DISABLE ROW LEVEL SECURITY');
-        await client.query('ALTER TABLE v2.set_logs DISABLE ROW LEVEL SECURITY');
-
-        console.log("✅ PERMISSIONS FIXED. Data should now be visible to the app.");
+            -- Same for health_metrics
+            DROP POLICY IF EXISTS "Allow health inserts" ON v2.health_metrics;
+            CREATE POLICY "Allow health inserts" ON v2.health_metrics FOR INSERT WITH CHECK (true);
+            DROP POLICY IF EXISTS "Allow health select" ON v2.health_metrics;
+            CREATE POLICY "Allow health select" ON v2.health_metrics FOR SELECT USING (true);
+        `);
+        console.log("✅ RLS Policies deployed successfully.");
 
     } catch (err) {
-        console.error("Error fixing permissions:", err.message);
+        console.error("Error:", err.message);
     } finally {
         await client.end();
     }

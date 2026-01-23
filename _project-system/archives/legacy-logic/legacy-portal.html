@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Plan Portal</title>
+    <!-- Favicon & PWA tags from old index -->
+    <link rel="icon" type="image/svg+xml" href="/icon-mp.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#f39c12" />
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #f29b11;
+            --primary-text: #ececec;
+            --secondary-text: #b0b0b0;
+            --border-color: #333;
+            --input-bg: #2a2a2a;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--primary-text); 
+            font-family: -apple-system, system-ui, sans-serif;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .portal-container { max-width: 500px; width: 100%; text-align: center; }
+        h1 { color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; font-size: 24px; }
+        
+        .app-grid { display: grid; gap: 20px; width: 100%; }
+        .app-card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            text-decoration: none; 
+            color: inherit; 
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .app-card:hover { border-color: var(--accent-color); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .app-card h3 { margin: 0 0 10px 0; font-size: 18px; color: var(--primary-text); }
+        .app-card p { margin: 0; font-size: 13px; color: var(--secondary-text); line-height: 1.4; }
+        
+        .default-toggle {
+            margin-top: 15px;
+            font-size: 11px;
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .default-toggle input { cursor: pointer; accent-color: var(--accent-color); }
+
+        /* Auth UI (Shared styles) */
+        .auth-container { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; }
+        .auth-input { width: 100%; margin-bottom: 15px; box-sizing: border-box; background: var(--input-bg); border: 1px solid #444; color: #fff; padding: 12px; border-radius: 6px; font-size:14px; }
+        .auth-btn { background: var(--accent-color); color: #000; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
+        .auth-btn.secondary { background: #333; color: #fff; }
+        .hidden { display: none !important; }
+        #auth-msg { font-size: 12px; color: #f44336; margin-top: 10px; min-height: 15px; }
+
+        .user-badge { margin-bottom: 20px; font-size: 12px; color: var(--secondary-text); background: #252525; padding: 8px 15px; border-radius: 20px; display: inline-block; }
+    </style>
+    <script>
+        // Check for stored preference only
+        const defaultApp = localStorage.getItem('regimen_default_app');
+        console.log("[Portal] Boot - Stored Default:", defaultApp);
+
+        // Register Service Worker for PWA support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[Portal] SW registered:', reg))
+                    .catch(err => console.error('[Portal] SW failed:', err));
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div class="portal-container">
+        <h1>Master Plan</h1>
+        <div id="db-status" style="font-size: 10px; color: #555; margin-bottom: 10px;">Connecting...</div>
+
+        <!-- Logged Out View -->
+        <div id="auth-view" class="auth-container">
+            <input type="email" id="email" class="auth-input" placeholder="Email">
+            <input type="password" id="pass" class="auth-input" placeholder="Password">
+            <button class="auth-btn" onclick="handleLogin()">Login</button>
+            <button class="auth-btn secondary" onclick="handleSignUp()">Sign Up</button>
+            <p id="auth-msg"></p>
+        </div>
+
+        <!-- Logged In View -->
+        <div id="app-view" class="hidden">
+            <div id="user-display" class="user-badge"></div>
+            
+            <div class="app-grid">
+                <!-- Regimen Pro -->
+                <div class="app-card-wrapper">
+                    <a href="regimen.html" class="app-card">
+                        <h3>Regimen Pro</h3>
+                        <p>Fast, offline-first performance tracker. Optimized for gym use and daily logs.</p>
+                    </a>
+                    <label class="default-toggle">
+                        <input type="checkbox" onchange="setDefault('regimen.html', this.checked)" id="check-regimen"> Set as default
+                    </label>
+                </div>
+
+                <!-- Legacy Tracker -->
+                <div class="app-card-wrapper" style="margin-top: 10px;">
+                    <a href="dashboard.html" class="app-card">
+                        <h3>Legacy Tracker</h3>
+                        <p>Full-featured management app. Detailed calendars and long-term planning.</p>
+                    </a>
+                    <label class="default-toggle">
+                        <input type="checkbox" onchange="setDefault('dashboard.html', this.checked)" id="check-dashboard"> Set as default
+                    </label>
+                </div>
+            </div>
+
+            <button class="auth-btn secondary" style="margin-top: 40px; width: auto; padding: 10px 20px; font-size: 12px;" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SB_URL = 'https://vhqgufwgzspwmztpswdn.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZocWd1ZndnenNwd216dHBzd2RuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3NTc2NjUsImV4cCI6MjA4MzMzMzY2NX0.0z_hSGbzjzSWkXaZjgJ76uWsVdBa4h0OCkzEXs727pc';
+        let sbPortalClient = null;
+
+        function logDebug(msg) {
+            console.log("[Portal]", msg);
+            const el = document.getElementById('debug-info');
+            if (el) el.innerText = msg;
+        }
+
+        function initPortal() {
+            const status = document.getElementById('db-status');
+            try {
+                if (window.supabase && window.supabase.createClient) {
+                    sbPortalClient = window.supabase.createClient(SB_URL, SB_KEY);
+                    status.innerText = "Database Connected";
+                    status.style.color = "#4caf50";
+                    setupAuthListener();
+                } else {
+                    throw new Error("Supabase library not found.");
+                }
+            } catch (e) {
+                status.innerText = "Database Error";
+                status.style.color = "#f44336";
+                logDebug("Init Error: " + e.message);
+            }
+        }
+
+        function setupAuthListener() {
+            sbPortalClient.auth.onAuthStateChange((event, session) => {
+                const authView = document.getElementById('auth-view');
+                const appView = document.getElementById('app-view');
+                const userDisplay = document.getElementById('user-display');
+
+                if (session) {
+                    const currentDefault = localStorage.getItem('regimen_default_app');
+                    const isSelectMode = window.location.search.includes('select');
+                    logDebug(`Auth Event: ${event}. Default: ${currentDefault || 'None'}`);
+
+                    // ONLY redirect if we are NOT in select mode
+                    const shouldRedirect = !isSelectMode && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION');
+
+                    if (currentDefault && shouldRedirect) {
+                        logDebug(`Auto-launching: ${currentDefault}...`);
+                        window.location.href = currentDefault;
+                        return;
+                    }
+
+                    authView.classList.add('hidden');
+                    appView.classList.remove('hidden');
+                    userDisplay.innerText = `Logged in as: ${session.user.email}`;
+                    
+                    document.getElementById('check-regimen').checked = (currentDefault === 'regimen.html');
+                    document.getElementById('check-dashboard').checked = (currentDefault === 'dashboard.html');
+                } else {
+                    logDebug("No active session.");
+                    authView.classList.remove('hidden');
+                    appView.classList.add('hidden');
+                }
+            });
+        }
+
+        async function handleLogin() {
+            if (!sbPortalClient) return;
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('auth-msg');
+            if (!email || !pass) { msg.innerText = "Email and Password required."; return; }
+            msg.innerText = "Authenticating...";
+            const { error } = await sbPortalClient.auth.signInWithPassword({ email, password: pass });
+            if (error) msg.innerText = error.message;
+        }
+
+        async function handleLogout() {
+            logDebug("Logging out...");
+            await sbPortalClient.auth.signOut();
+            // Redirect to base URL to clear ?select=true
+            window.location.href = window.location.pathname;
+        }
+
+        function setDefault(route, isChecked) {
+            logDebug(`setDefault: ${route} = ${isChecked}`);
+            if (isChecked) {
+                localStorage.setItem('regimen_default_app', route);
+                if (route === 'regimen.html') {
+                    document.getElementById('check-dashboard').checked = false;
+                } else {
+                    document.getElementById('check-regimen').checked = false;
+                }
+            } else {
+                localStorage.removeItem('regimen_default_app');
+            }
+        }
+
+        // Run Init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPortal);
+        } else {
+            initPortal();
+        }
+    </script>
+</body>
+</html>

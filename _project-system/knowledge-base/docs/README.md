@@ -1,49 +1,43 @@
-# Regimen Pro Documentation
+# Master Plan: Tactical Training System
 
-Regimen Pro is a standalone PWA (Progressive Web App) designed for rigorous performance tracking and flexible dietary/supplement management. It is designed to work offline first with seamless Supabase cloud synchronization.
+**Version:** 1.3.0
+**Status:** Live Production
 
-## 📖 Documentation Index
+The **Master Plan** is a specialized PWA for tracking high-performance hypertrophy training. It features an intelligent "Focus Engine" that guides users through complex workouts (Standard and Circuit) with zero distraction.
 
-### [1. User Guide](./USER_GUIDE.md)
-*   Account Setup & Login
-*   Daily performance logging (Checkmarks, Notes)
-*   Editing your Nutrition & Supplements schedule
-*   Cloud Sync & Data Exports
+## 🚀 Key Features
 
-### [2. System Architecture](./ARCHITECTURE.md)
-*   High-level architecture diagrams
-*   The "Three Layers of Truth" data resolution logic
-*   "System Image" cloud synchronization strategy
-*   Data schema and storage keys
+*   **Focus-First Logger:** An intelligent interface that highlights the next required set, automatically collapsing completed sections to keep the workspace clean.
+*   **Offline-First:** All data is saved instantly to LocalStorage. Syncs to the cloud when online.
+*   **Unified Timeline:** A chronological feed of all past training sessions.
+*   **Performance Vault:** Deep history view to track volume load and progress on specific exercises.
+*   **Retroactive Logging:** Ability to log past workouts for days you missed.
 
-### [3. Development Tickets](../features/)
-*   [FEATURE-001: Nutrition Flexibility (Completed)](../features/FEATURE-001_Nutrition_Schedule_Flexibility.md)
-*   [FEATURE-002: Data Redundancy Optimization (Planned)](../features/FEATURE-002_Data_Redundancy_Optimization.md)
+## 🛠️ Tech Stack
 
----
+*   **Frontend:** React 18, Vite, Zustand, Tailwind CSS.
+*   **Backend:** Supabase (PostgreSQL) with a custom V2 relational schema.
+*   **Design:** "Industrial OS" High-Contrast Dark Mode.
 
-## 🛠 Project Context & Standards (AI Instruction)
-- **Framework:** React 18+ with Vite
-- **Language:** JavaScript (ES6+)
-- **Backend:** Supabase (PostgreSQL)
-- **Styling:** Shared Premium CSS
-- **State Management:** Zustand (Primary) / React Context (Legacy)
+## 📂 Project Structure
 
-### Coding Conventions
-- Use Functional Components with Hooks.
-- Do NOT use class components.
-- For Supabase, use the `supabase-js` v2 client.
-- When writing SQL, assume PostgreSQL dialect.
-- Mimic the industrial, high-density UI patterns established in `RegimenProApp.jsx`.
+This repository uses a structured system layer:
 
-### Environment
-- Running in WSL2 (Ubuntu 24.04).
-- Production target: Mobile (Galaxy A41) high-density display.
+*   `src/`: Application Source Code (React components, Logic).
+*   `_project-system/`:
+    *   `knowledge-base/`: Documentation & Blueprints.
+    *   `system-config/`: Auth & Data Templates.
+    *   `tooling/`: Migration & Maintenance Scripts.
 
----
+## ⚡ Quick Start
 
-## Technical Highlights
-*   **Offline-First:** Uses browser LocalStorage for immediate persistence.
-*   **Dynamic Overrides:** Supports per-day plan overrides without breaking the underlying weekly schedule.
-*   **Self-Healing Sync:** Preference templates travel with history logs, enabling automatic environment reconstruction on fetch.
-*   **Zero-Install:** Designed as a single-file HTML application for maximum portability.
+1.  **Install:** `npm install`
+2.  **Dev Server:** `npm run dev`
+3.  **Build:** `npm run build`
+4.  **Deploy:** `npm run deploy` (Deploys to GitHub Pages)
+
+## 🔮 Future Roadmap
+*See `_project-system/knowledge-base/docs/FUTURE/` for design specs on:*
+*   Nutrition Logging (Meal Parser)
+*   Supplement Stack Tracking
+*   Health Metrics (Blood Pressure)

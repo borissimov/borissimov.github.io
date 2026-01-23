@@ -1,45 +1,55 @@
-# User Guide: Regimen Pro PWA
+# User Guide: Regimen Pro
 
-Welcome to Regimen Pro. This guide explains how to manage your daily performance logs and customize your weekly schedule.
-
-## 1. Getting Started: Cloud Account
-To keep your data synced across devices, you must log in.
-
-1.  Scroll to the bottom of the page to the **Cloud Account** section.
-2.  **Sign Up:** Enter your email and a password. Check your email for a confirmation link.
-3.  **Login:** Once confirmed, log in to activate cloud features.
-4.  Your **User ID** will be automatically locked to your account.
+Welcome to the **Regimen Pro** tactical training system. This app is designed for speed, focus, and offline reliability.
 
 ---
 
-## 2. Tracking Daily Progress
-The top scroller allows you to select any date between Jan 2, 2026, and Feb 2, 2026.
+## 1. Getting Started
 
-*   **Checkmarks:** Click on individual items (Ingredients, Supplements) to mark them as completed.
-*   **Log Buttons:** Click **LOG** next to a set or a mobility section to confirm completion.
-*   **Notes:** Each section has a dedicated Notes area. Your text is saved automatically as you type.
-
----
-
-## 3. Customizing Your Schedule (Edit Mode)
-You can modify the **Nutrition** and **Supplements** plans directly.
-
-1.  Navigate to the tab you wish to change.
-2.  Click the **EDIT** button in the top right corner of the card.
-3.  **Modify:** Change times, names, or ingredients.
-4.  **Add/Delete:** Use **+ Add Row** to add new items or **Delete Row** to remove them.
-5.  **Revert:** Click **LOAD SYSTEM DEFAULTS** to discard changes and see the original factory settings.
-
-### Saving Your Changes
-When you click Save, you have two choices:
-*   **SAVE TODAY ONLY:** The changes apply only to the date selected in the scroller. Use this for travel or one-off exceptions.
-*   **SAVE FOR ALL [DAYS]:** The changes apply to every [Tuesday/Monday/etc.] moving forward. Use this to update your permanent routine.
+### **Cloud Account**
+1.  On first load, you will see the **Login Portal**.
+2.  **Sign Up:** Enter your email/password to create a secure account.
+3.  **Sync:** Logging in automatically syncs your local history with the cloud database.
 
 ---
 
-## 4. Cloud Sync
-The app works offline, but you should sync regularly to back up your data.
+## 2. The Dashboard (Ready to Train?)
 
-*   **SYNC ⬆:** Uploads your local logs and your current weekly schedule to the cloud.
-*   **FETCH ⬇:** Downloads your history and your custom schedule from the cloud. Use this when switching devices or after a fresh install.
-*   **EXPORT:** Downloads a JSON file of your entire database for your own records.
+The home screen shows your available **Routine Days**.
+
+*   **Recommended Day:** The system highlights the next logical workout in your cycle with a `REC` badge and an orange border.
+*   **Selection:** Tap any card to view the exercises for that day.
+*   **Start:** Tap the **START** button to begin the session.
+    *   *Note:* This locks the session to the current time.
+
+### **Retroactive Logging (Missed Days)**
+If you forgot to log yesterday:
+1.  Tap the **+** (Plus) button in the bottom right corner.
+2.  Select the workout you performed.
+3.  The session will be created with *today's* timestamp (editable in the database if needed later).
+
+---
+
+## 3. The Session Logger (Training Mode)
+
+Once started, the interface changes to **Focus Mode**.
+
+### **The "Following Shadow"**
+*   **Orange Box:** This is your current target. The app automatically expands the block you need to do.
+*   **Auto-Advance:** As you log sets, the system automatically moves the focus to the next exercise.
+*   **Circuits:** If you are doing a Circuit, the focus will jump to the next exercise in the loop, then back to the start for Round 2.
+
+### **Controls**
+*   **Log Set:** Enter Weight/Reps and tap the checkmark.
+*   **Finish Early:** Tap "END MISSION" at the bottom to save your progress.
+*   **Abandon:** Tap the `X` in the top right to discard the session (Warning: This deletes unsaved progress).
+
+---
+
+## 4. History & Vault
+
+Tap the **History** icon (top right) to view your logs.
+
+*   **Timeline:** A chronological feed of every session you've completed. Tap a card to expand details.
+*   **Vault:** (Coming Soon) Deep analytics on volume and strength trends.
+*   **Export:** You can download a JSON file of any workout for your own records or AI analysis.

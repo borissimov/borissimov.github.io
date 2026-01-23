@@ -1,6 +1,6 @@
 # Master Plan: Technical Reference Manual
 
-**Version:** 1.4.2 (Polymorphic Logger Model)
+**Version:** 1.4.3 (Component Specifications Added)
 **Scope:** Domain Logic, Data Architecture, and System Rules.
 
 ---
@@ -51,7 +51,35 @@ To support Maintenance/Mobility sessions without breaking the user's rhythm, the
 
 ---
 
-## 4. Database Schema: The V3 Map
+## 4. Component Specifications (Frontend V3)
+
+The following components implement the athletic domain model.
+
+### **A. `SessionBlock.jsx` (Container)**
+*   **Role:** The visual container for a specific phase of the workout (e.g., "Warm Up" or "Main Lift").
+*   **Behavior:** Implements the **Accordion** logic.
+    *   *Collapsed:* Shows summary stats ("3/12 Sets").
+    *   *Expanded:* Renders the list of exercises.
+*   **Responsibility:** It delegates the rendering logic to either `LinearBlock` (Standard) or `CircuitBlock` based on `block.type`.
+
+### **B. `SessionLogger.jsx` (The Input Engine)**
+*   **Role:** The interactive form for logging performance.
+*   **State:** Local state for `weight`, `reps`, `rpe`, `time` (transient before save).
+*   **Polymorphism:** Checks `exercise.metric_type` to decide whether to render:
+    *   `NumericInput` (Weight/Reps)
+    *   `TimerInput` (Play/Pause button + Display)
+*   **Action:** On "Check" (Save), it calls `store.addLogEntry` and triggers the Focus Engine to calculate the next step.
+
+### **C. `BlockItemRow.jsx` (The Display)**
+*   **Role:** Represents a single exercise within a block.
+*   **Visuals:**
+    *   **Left:** Exercise Name + Set Counter (`1/4`).
+    *   **Right:** The **Prescription** (Target Weight, Reps, Tempo).
+*   **State:** Displays "Green" when completed, "Orange" when focused (active), "Gray" when pending.
+
+---
+
+## 5. Database Schema: The V3 Map
 
 This schema supports the full "Athletic Model" with clean separation of concerns.
 
@@ -82,14 +110,14 @@ These tables store the **Performance**.
 
 ---
 
-## 5. Logic Flow: The Focus Engine
+## 6. Logic Flow: The Focus Engine
 
 The "Following Shadow" logic is the brain of the Session Logger.
 
 1.  **Initialization:** The app loads the `Session Template` and creates a local `ActiveSession` state.
 2.  **Navigation:**
     *   The `systemStep` cursor points to the first incomplete item.
-    *   **Standard Block:** Finishes all sets of Exercise A before moving to Exercise B.
+    *   **Linear Block:** Finishes all sets of Exercise A before moving to Exercise B.
     *   **Circuit Block:** Moves Exercise A -> B -> C -> A (Round 2).
 3.  **Completion:**
     *   When a set is logged (manually or via timer), the system calculates the next index.

@@ -44,20 +44,34 @@ These files need to be renamed to match the domain model.
 
 | Current File | **Proposed Name** | Status |
 | :--- | :--- | :--- |
-| `useTrainingStore.js` | `useProgramStore.js` | ❌ Pending |
-| `TrainingBlock.jsx` | `SessionBlock.jsx` | ❌ Pending |
-| `StandardBlock.jsx` | `LinearBlock.jsx` | ❌ Pending (or keep Standard?) |
+| `StandardBlock.jsx` | **LinearBlock.jsx** | ✅ Decided |
 | `CircuitBlock.jsx` | `CircuitBlock.jsx` | ✅ Keep (Logic is sound) |
-| `SequentialSetLogger.jsx` | `SessionLogger.jsx` | ❌ Pending |
-| `ExerciseRow.jsx` | `BlockItemRow.jsx` | ❌ Pending |
+| `SequentialSetLogger.jsx` | **SessionLogger.jsx** | ✅ Decided |
+| ExerciseRow.jsx | **BlockItemRow.jsx** | ✅ Decided |
 
 ---
 
-## 4. Unresolved / Open Questions
+## 4. Modularization (Extraction from MasterPlanApp.jsx)
 
-1.  **Block Types:** We have `Standard` and `Circuit`. Should we rename `Standard` to `Linear`?
-2.  **Health Tracker:** Should its store (`useHealthStore`) be merged into `useProgramStore` or kept separate? (Recommendation: Keep separate).
-3.  **Routine vs Program in Code:** Variable names like `availableRoutineDays` in `useTrainingStore.js` need to become `programDays`. This is a massive refactor.
+To maintain a professional architecture, the monolithic views in `MasterPlanApp.jsx` will be extracted into distinct **Modules**.
+
+| Current Code Location | **New Module Path** | Status |
+| :--- | :--- | :--- |
+| `currentView === 'global-history'` (Timeline) | **modules/MasterAgenda/** | ❌ Pending |
+| `currentView === 'global-history'` (Vault Tab) | **modules/PerformanceVault/** | ❌ Pending |
+| `currentView === null` (Dashboard) | **modules/SessionSelector/** | ❌ Pending |
+| `currentView === 'session'` | **modules/SessionLogger/** | ❌ Pending |
+
+### **Sub-Components for Master Agenda**
+*   **CompletedSessionCard.jsx**: The individual history entry.
+*   **AgendaTimeline.jsx**: The chronological list view.
+
+---
+
+## 5. Unresolved / Open Questions
+
+*   **Routine vs Program in Code:** ✅ Decided: We will perform a comprehensive rename of all internal variables (e.g., `availableRoutineDays` -> `programDays`) to match the new domain language.
+*   **Health Tracker:** ✅ Decided: Keep separate from the main program store.
 
 ---
 

@@ -122,3 +122,48 @@ The "Following Shadow" logic is the brain of the Session Logger.
 3.  **Completion:**
     *   When a set is logged (manually or via timer), the system calculates the next index.
     *   It automatically **Expands** the accordion for the new active block.
+
+---
+
+## 7. Service Worker Configuration & Safety Mechanisms
+
+### 7.1 The "Zombie SW" Protection
+During the V3 migration (Jan 2026), a critical issue arose where an outdated Service Worker (`sw.js`) cached broken assets and blocked local development (`localhost`), causing a permanent white screen.
+
+To prevent this, two safety mechanisms were hard-coded into the application entry points.
+
+#### A. The Kill Switch (`index.html`)
+The application is configured to **immediately unregister** any active Service Worker if it detects a local environment. This runs synchronously before the window `load` event to ensure the Service Worker is removed even if the app crashes.
+
+```javascript
+// index.html logic
+const isLocal = window.location.hostname === 'localhost' || ...;
+if (isLocal) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister()); // KILL
+    });
+}
+```
+
+#### B. The Stand-Down Order (`sw.js`)
+The Service Worker file itself contains a guard clause to ignore fetch events from localhost. This prevents a registered SW from intercepting dev server requests (HMR, Vite).
+
+```javascript
+// public/sw.js
+self.addEventListener('fetch', event => {
+    const url = new URL(event.request.url);
+    if (url.hostname === 'localhost') return; // STAND DOWN
+    // ...
+});
+```
+
+### 7.2 Negative Impact & Reversal
+**Impact:** PWA features (Offline Mode, Install Prompt) are **DISABLED** in local development. You cannot test offline functionality on `localhost`.
+
+**How to Reverse (Enable PWA Locally):**
+If you need to test offline capabilities locally:
+1.  Open `index.html`.
+2.  Comment out the `if (isLocal) { unregister... }` block.
+3.  Open `public/sw.js`.
+4.  Comment out the `if (url.hostname === 'localhost') return;` guard clause.
+5.  **Warning:** This may re-introduce the "Zombie SW" issue if the SW caches broken assets. Use "Update on Reload" in DevTools > Application > Service Workers to mitigate this.

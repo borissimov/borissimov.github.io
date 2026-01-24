@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { useTrainingStore } from './stores/useTrainingStore';
-import { TrainingBlock } from './components/TrainingBlock';
+import { useProgramStore } from './stores/useProgramStore';
+import { SessionBlock } from './components/SessionBlock';
 import { ArrowLeft, Play, X, Activity, Loader2, Coffee, Check, ChevronDown, ChevronRight, Info, Clock, AlertTriangle, Trophy, AlertCircle, History, Calendar as CalendarIcon, Dumbbell, Archive, Download, LayoutList, CalendarPlus, Plus, Trash2, Edit2, LayoutPanelLeft, List, Flame, Target, TrendingUp, LayoutGrid, Maximize2, BookOpen } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import { motion } from 'framer-motion';
@@ -33,11 +33,11 @@ const getProgressColor = (percent) => {
 
 const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     const { 
-        activeSession, startSession, finishSession, resetStore, fetchRoutineDays, availableRoutineDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
+        activeSession, startSession, finishSession, resetStore, fetchProgramManifest, programDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
         sessionHistory, fetchDayHistory, activeHistorySession, fetchSessionDetails,
         globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises, activeExerciseHistory, fetchExerciseHistory,
-        retroactiveDate, deleteSessionLog, dailyVolumes
-    } = useTrainingStore();
+        retroactiveDate, deleteSessionRecord, dailyVolumes
+    } = useProgramStore();
 
     const [elapsed, setElapsed] = useState('00:00');
     const [showAbandonModal, setShowAbandonModal] = useState(false);
@@ -196,15 +196,17 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     // Data Loading
     useEffect(() => {
-        if (!activeSession && availableRoutineDays.length === 0) fetchRoutineDays();
+        if (!activeSession && programDays.length === 0) fetchProgramManifest();
         if (currentView === 'global-history') { fetchGlobalHistory(); fetchUniqueExercises(); }
-    }, [currentView, activeSession, fetchRoutineDays, fetchGlobalHistory, fetchUniqueExercises]);
+    }, [currentView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
 
     // Global Stats
     const globalStats = activeSession?.blocks?.reduce((acc, block) => {
-        block.exercises.forEach(ex => {
-            const target = parseInt(ex.target_sets || 3);
-            const logged = (activeSession?.logs[ex.id] || []).length;
+        // V3 Shape: block.items
+        const items = block.items || [];
+        items.forEach(item => {
+            const target = parseInt(item.target_sets || 3);
+            const logged = (activeSession?.logs[item.id] || []).length;
             acc.totalTarget += target;
             acc.totalLogged += Math.min(logged, target);
         });
@@ -212,7 +214,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     }, { totalTarget: 0, totalLogged: 0 }) || { totalTarget: 0, totalLogged: 0 };
 
     const globalPercent = globalStats.totalTarget > 0 ? (globalStats.totalLogged / globalStats.totalTarget) * 100 : 0;
-    const workoutLabel = availableRoutineDays.find(d => d.id === activeSession?.routine_day_id)?.label || 'Activity';
+    const workoutLabel = programDays.find(d => d.id === activeSession?.program_day_id)?.label || 'Activity';
 
     const handleFinalizeSession = async () => {
         setIsSaving(true);
@@ -235,7 +237,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     const handleDeleteLog = async () => {
         setIsDeleting(true);
-        try { await deleteSessionLog(confirmDeleteId); setConfirmDeleteId(null); } catch (e) { alert("Delete failed: " + e.message); } finally { setIsDeleting(false); }
+        try { await deleteSessionRecord(confirmDeleteId); setConfirmDeleteId(null); } catch (e) { alert("Delete failed: " + e.message); } finally { setIsDeleting(false); }
     };
 
     // MISSION DATA EXPORT LOGIC
@@ -386,7 +388,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'flex-end' }}><span style={{ fontSize: '12px', fontWeight: '900', color: getProgressColor(globalPercent), transition: 'color 0.5s ease' }}>{Math.round(globalPercent)}%</span><button onClick={() => setShowAbandonModal(true)} style={{ all: 'unset', cursor: 'pointer', opacity: 0.4, padding: '10px 5px' }}><X size={20} color="#fff" /></button></div>
                     </div>
                 </div>
-                <div style={{ paddingBottom: '100px' }}><div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>{activeSession.blocks.map((block, idx) => (<div key={block.id} className="premium-card" style={{ padding: '8px 10px', borderRadius: '0', border: 'none', borderBottom: '1px solid #222', marginBottom: 0, backgroundColor: 'transparent' }}><TrainingBlock block={block} index={idx} totalBlocks={activeSession.blocks.length} /></div>))}</div><div style={{ padding: '20px 15px 60px' }}><button className={globalPercent >= 100 ? "premium-btn-primary animate-pulse-bright-green" : "premium-btn-primary"} style={{ backgroundColor: globalPercent >= 100 ? '#2ecc71' : 'transparent', border: globalPercent >= 100 ? 'none' : `2px solid #f29b11`, color: globalPercent >= 100 ? '#000' : '#f29b11', boxShadow: globalPercent >= 100 ? '0 0 30px rgba(46, 204, 113, 0.4)' : '0 4px 20px rgba(0,0,0,0.5)', fontWeight: '900', fontSize: '16px', height: '54px' }} onClick={() => setShowFinishModal(true)}>End activity</button></div></div>
+                <div style={{ paddingBottom: '100px' }}><div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>{activeSession.blocks.map((block, idx) => (<div key={block.id} className="premium-card" style={{ padding: '8px 10px', borderRadius: '0', border: 'none', borderBottom: '1px solid #222', marginBottom: 0, backgroundColor: 'transparent' }}><SessionBlock block={block} index={idx} totalBlocks={activeSession.blocks.length} /></div>))}</div><div style={{ padding: '20px 15px 60px' }}><button className={globalPercent >= 100 ? "premium-btn-primary animate-pulse-bright-green" : "premium-btn-primary"} style={{ backgroundColor: globalPercent >= 100 ? '#2ecc71' : 'transparent', border: globalPercent >= 100 ? 'none' : `2px solid #f29b11`, color: globalPercent >= 100 ? '#000' : '#f29b11', boxShadow: globalPercent >= 100 ? '0 0 30px rgba(46, 204, 113, 0.4)' : '0 4px 20px rgba(0,0,0,0.5)', fontWeight: '900', fontSize: '16px', height: '54px' }} onClick={() => setShowFinishModal(true)}>End activity</button></div></div>
             </div>
         );
     }
@@ -462,7 +464,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                             return (<div key={log.id} onClick={() => handleToggleActivityExpansion(log.id)} style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'transparent', border: '1px solid #222', borderLeft: isExpanded ? '4px solid #f29b11' : '4px solid transparent', padding: '15px', cursor: 'pointer', transition: 'all 0.2s ease' }}><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}><div style={{ flex: 1, minWidth: 0 }}><h3 style={{ fontSize: '13px', fontWeight: '900', margin: 0, color: isExpanded ? '#f29b11' : '#fff', textTransform: 'uppercase' }}>{log.routine_days?.label || 'Activity'}</h3><p style={{ fontSize: '10px', color: '#666', margin: '2px 0 0', fontWeight: '800' }}>{startTimeStr ? `${startTimeStr} - ${endTimeStr}` : endTimeStr}</p><div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}><div style={{ border: '1px solid rgba(242, 155, 17, 0.3)', padding: '1px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: '900', color: '#f29b11', backgroundColor: 'rgba(242, 155, 17, 0.02)' }}>{sessionVolume.toLocaleString()} KG</div>{avgIntensity && (<div style={{ border: '1px solid rgba(46, 204, 113, 0.3)', padding: '1px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: '900', color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.02)' }}>INTENSITY: {avgIntensity}</div>)}</div></div>{isExpanded ? <ChevronDown size={20} color="#f29b11" /> : <ChevronRight size={20} color="#333" />}</div>{isExpanded && (<div className="animate-in fade-in slide-in-from-top-2 duration-200" style={{ marginTop: '15px' }}><div style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '15px' }}>{isLoading && !activeHistorySession ? <div style={{ padding: '20px', textAlign: 'center' }}><Loader2 className="animate-spin" color="#f29b11" size={16} /></div> : activeHistorySession?.groupedLogs?.map((group, gi) => (<div key={gi} style={{ padding: '8px 0', borderBottom: gi < activeHistorySession.groupedLogs.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}><div style={{ fontSize: '13px', color: '#fff', fontWeight: '900', textTransform: 'uppercase' }}>{group.name}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px', color: '#f29b11', fontSize: '10px' }}>{group.sets.map((s, si) => (<div key={si} style={{ border: '1px solid #f29b11', padding: '2px 6px', borderRadius: '4px', backgroundColor: 'rgba(242, 155, 17, 0.05)' }}>{renderSetLabel(s.weight, s.reps)}</div>))}</div></div>))}</div><div style={{ display: 'flex', gap: '8px' }}><button onClick={(e) => { e.stopPropagation(); handleExportJson(log.id); }} className="premium-btn-secondary" style={{ flex: 1, height: '40px', fontSize: '10px', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Download size={14} /> EXPORT AI</button><button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(log.id); }} className="premium-btn-secondary" style={{ flex: 1, height: '40px', fontSize: '10px', fontWeight: '800', color: '#ef4444', border: '1px solid #ef444422', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Trash2 size={14} /> DELETE</button></div></div>)}</div>); })}</div>) : (<div style={{ padding: '50px 20px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px dashed #222', borderRadius: '15px' }}><p style={{ fontSize: '11px', color: '#444', fontWeight: '800', textTransform: 'uppercase', margin: 0, letterSpacing: '1px' }}>No Activity Logged</p></div>)}
                     </div>
                 </div>
-                {isLoggingActivity && (<div className="animate-in slide-in-from-bottom-4 duration-300" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}><div style={{ maxWidth: '400px', width: '100%' }}><p style={{ fontSize: '12px', color: '#f29b11', fontWeight: '900', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', letterSpacing: '3px' }}>Initialize Activity:</p><div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>{availableRoutineDays.map(day => (<button key={day.id} onClick={() => handleInstantRetroactive(day.id)} style={{ all: 'unset', padding: '25px 10px', backgroundColor: '#0a0a0a', color: '#fff', borderRadius: '12px', fontSize: '12px', fontWeight: '900', textAlign: 'center', border: '1px solid #222' }}>{day.label}</button>))}</div><button onClick={() => setIsLoggingActivity(false)} className="premium-btn-secondary" style={{ marginTop: '25px', height: '54px', border: 'none', color: '#666', fontSize: '12px' }}>DISMISS</button></div></div>)}
+                {isLoggingActivity && (<div className="animate-in slide-in-from-bottom-4 duration-300" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}><div style={{ maxWidth: '400px', width: '100%' }}><p style={{ fontSize: '12px', color: '#f29b11', fontWeight: '900', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', letterSpacing: '3px' }}>Initialize Activity:</p><div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>{programDays.map(day => (<button key={day.id} onClick={() => handleInstantRetroactive(day.id)} style={{ all: 'unset', padding: '25px 10px', backgroundColor: '#0a0a0a', color: '#fff', borderRadius: '12px', fontSize: '12px', fontWeight: '900', textAlign: 'center', border: '1px solid #222' }}>{day.label}</button>))}</div><button onClick={() => setIsLoggingActivity(false)} className="premium-btn-secondary" style={{ marginTop: '25px', height: '54px', border: 'none', color: '#666', fontSize: '12px' }}>DISMISS</button></div></div>)}
             </div>
         );
     }
@@ -486,7 +488,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
             <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '20px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {availableRoutineDays.map((day) => {
+                    {programDays.map((day) => {
                         const isRecommended = day.id === recommendedDayId;
                         const isSelected = day.id === selectedDayId;
                         const lastDone = day.last_session ? new Date(day.last_session.end_time).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase() : 'NEVER';

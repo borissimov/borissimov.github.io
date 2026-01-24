@@ -1,27 +1,28 @@
 import React, { useEffect } from 'react';
 import { CircuitBlock } from './CircuitBlock';
-import { StandardBlock } from './StandardBlock';
-import { useTrainingStore } from '../stores/useTrainingStore';
+import { LinearBlock } from './LinearBlock';
+import { useProgramStore } from '../stores/useProgramStore';
 import { ChevronDown, ChevronRight, CheckCircle2, Dumbbell, RefreshCcw, Layout } from 'lucide-react';
 
-export const TrainingBlock = ({ block, index, totalBlocks }) => {
-    const { expandedBlockId, setExpandedBlock, activeSession } = useTrainingStore();
+export const SessionBlock = ({ block, index, totalBlocks }) => {
+    const { expandedBlockId, setExpandedBlock, activeSession } = useProgramStore();
 
-    // REAL-TIME SET-BASED PROGRESS
-    const stats = block.exercises.reduce((acc, ex) => {
-        const target = parseInt(ex.target_sets || 3);
-        const logged = (activeSession?.logs[ex.id] || []).length;
+    // REAL-TIME SET-BASED PROGRESS (V3 Shape: items)
+    const items = block.items || [];
+    const stats = items.reduce((acc, item) => {
+        const target = parseInt(item.target_sets || 3);
+        const logged = (activeSession?.logs[item.id] || []).length;
         acc.totalTargetSets += target;
         acc.totalLoggedSets += Math.min(logged, target); 
-        if (logged >= target) acc.completedExercises++;
+        if (logged >= target) acc.completedItems++;
         return acc;
-    }, { totalTargetSets: 0, totalLoggedSets: 0, completedExercises: 0 });
+    }, { totalTargetSets: 0, totalLoggedSets: 0, completedItems: 0 });
 
-    const totalExercises = block.exercises.length;
-    const progressPercent = (stats.totalLoggedSets / stats.totalTargetSets) * 100;
-    const isBlockDone = stats.completedExercises === totalExercises;
+    const totalItems = items.length;
+    const progressPercent = stats.totalTargetSets > 0 ? (stats.totalLoggedSets / stats.totalTargetSets) * 100 : 0;
+    const isBlockDone = stats.completedItems === totalItems;
     
-    // NEW ACCORDION LOGIC
+    // ACCORDION LOGIC
     const isExpanded = expandedBlockId === block.id;
 
     const accentColor = isBlockDone ? '#2ecc71' : '#f29b11';
@@ -55,7 +56,7 @@ export const TrainingBlock = ({ block, index, totalBlocks }) => {
                     <div className="section-header" style={{ marginBottom: 0, color: accentColor, gap: '10px' }}>
                         {getBlockIcon()}
                         <span style={{ marginLeft: '4px', fontSize: '11px', fontWeight: '900', letterSpacing: '1px', opacity: 0.8 }}>
-                            {block.label?.toUpperCase() || 'TRAINING BLOCK'}
+                            {block.label?.toUpperCase() || 'SESSION BLOCK'}
                         </span>
                     </div>
                     
@@ -84,7 +85,7 @@ export const TrainingBlock = ({ block, index, totalBlocks }) => {
                     {block.block_type === 'CIRCUIT' ? (
                         <CircuitBlock block={block} />
                     ) : (
-                        <StandardBlock block={block} />
+                        <LinearBlock block={block} />
                     )}
                 </div>
             )}

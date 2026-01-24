@@ -28,8 +28,11 @@
 1.  **Rename Store:** `useTrainingStore` -> `useProgramStore`.
 2.  **Implement Adapter Layer:**
     *   *Fetch:* `supabase.from('workouts')`
-    *   *Map:* `data.map(w => ({ id: w.id, session_focus: w.workout_notes, ... }))`
-    *   *State:* Store uses V3 objects (`programDays`, `sessions`).
+    *   *Map:* Transform V2 data to V3 shape as defined in `V2_SYSTEM_MAP.md`.
+        *   `workout_notes` -> `session_focus`
+        *   `exercises` array -> `items` array
+        *   `technique_notes` -> `technique_cues`
+    *   *State:* Store state (`activeSession`) must strictly adhere to the V3 schema.
 3.  **Refactor Components:**
     *   Rename `TrainingBlock` -> `SessionBlock`.
     *   Rename `StandardBlock` -> `LinearBlock`.

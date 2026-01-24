@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Check, ChevronDown, ChevronRight, Clock, Dumbbell, AlertCircle, BookOpen } from 'lucide-react';
-import { useTrainingStore } from '../stores/useTrainingStore';
+import { useProgramStore } from '../stores/useProgramStore';
+import { MetricInput } from './MetricInput';
 import '../../shared-premium.css';
 
-export const ExerciseRow = ({
-    exercise,
+export const BlockItemRow = ({
+    item,
     blockId,
     onLog
 }) => {
@@ -15,52 +16,39 @@ export const ExerciseRow = ({
         addLogEntry,
         updateLogEntry,
         toggleFocus
-    } = useTrainingStore();
+    } = useProgramStore();
 
-    // TEST: Expanded by default
+    if (!item) return null;
+
     const [showTechnique, setShowTechnique] = useState(true);
-    const logs = activeSession?.logs[exercise.id] || [];
-    const totalSets = parseInt(exercise.target_sets || 3);
+    const logs = activeSession?.logs[item.id] || [];
+    const totalSets = parseInt(item.target_sets || 3);
     const isComplete = logs.length >= totalSets;
     const hasStarted = logs.length > 0;
 
-    const isActive = activeFocusId === exercise.id;
-    const isSystemChoice = systemStep?.exerciseId === exercise.id;
+    const isActive = activeFocusId === item.id;
+    const isSystemChoice = systemStep?.itemId === item.id;
     
-    // CIRCUIT ROUND LOGIC
     const currentRoundNum = isSystemChoice ? systemStep.round : (logs.length + 1);
 
-    // DYNAMIC TARGET LOGIC (High Detail Support)
-    const currentSetTarget = exercise.set_targets?.find(t => t.set === currentRoundNum) || null;
-    const targetWeight = currentSetTarget?.weight || exercise.target_weight;
-    const targetReps = currentSetTarget?.reps || exercise.target_reps;
-    const targetRpe = currentSetTarget?.rpe || exercise.target_rpe;
-    const targetTempo = currentSetTarget?.tempo || exercise.target_tempo;
+    const currentSetTarget = item.set_targets?.find(t => t.set === currentRoundNum) || null;
+    const targetWeight = currentSetTarget?.weight || item.target_weight;
+    const targetReps = currentSetTarget?.reps || item.target_reps;
+    const targetRpe = currentSetTarget?.rpe || item.target_rpe;
+    const targetTempo = item.tempo;
     const setLabel = currentSetTarget?.label || null;
 
-    // SMART TYPE DETECTION
-    const isCardio = exercise.name?.toLowerCase().includes('swim') || 
-                     exercise.name?.toLowerCase().includes('плуване') ||
-                     exercise.name?.toLowerCase().includes('разходка');
-                     
-    const isTimed = isCardio || (targetReps && String(targetReps).toLowerCase().match(/[sсекminмин]/i));
+    const isTimed = item.metric_type === 'DURATION';
 
-    const [weight, setWeight] = useState('');
-    const [reps, setReps] = useState('');
-    const [rpe, setRpe] = useState('');
-
-    const handleLocalLog = () => {
+    const handleLocalLog = (data) => {
         if (isComplete) return;
-        addLogEntry(exercise.id, blockId, {
+        addLogEntry(item.id, blockId, {
+            ...data,
             round: currentRoundNum,
-            weight: weight || targetWeight, 
-            reps: reps || targetReps, 
-            rpe: rpe || targetRpe || 9,
             targetWeight,
             targetReps,
             targetRpe
         }, true);
-        setWeight(''); setReps(''); setRpe('');
     };
 
     const getAccentColor = () => {
@@ -88,7 +76,7 @@ export const ExerciseRow = ({
             opacity: isActive || isComplete || isSystemChoice || hasStarted ? 1 : 0.6 
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', flex: 1, minWidth: 0 }}>
+                <div onClick={() => toggleFocus(item.id, blockId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', flex: 1, minWidth: 0 }}>
                     <span style={{ 
                         fontSize: '13px', 
                         fontWeight: '900', 
@@ -102,27 +90,27 @@ export const ExerciseRow = ({
                     }}>
                         {isComplete ? 'DONE' : `${logs.length}/${totalSets}`}
                     </span>
-                    <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{exercise.name}</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h3>
                 </div>
 
-                {isActive && exercise.technique && (
+                {isActive && item.technique_cues && (
                     <button onClick={() => setShowTechnique(!showTechnique)} style={{ all: 'unset', cursor: 'pointer', padding: '4px' }}>
                         <BookOpen size={14} color={showTechnique ? '#f29b11' : '#444'} />
                     </button>
                 )}
 
-                <div onClick={() => toggleFocus(exercise.id, blockId)} style={{ cursor: 'pointer' }}>
+                <div onClick={() => toggleFocus(item.id, blockId)} style={{ cursor: 'pointer' }}>
                     {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
                 </div>
             </div>
 
             {isActive && (
                 <div style={{ marginTop: '12px' }}>
-                    {showTechnique && exercise.technique && (
+                    {showTechnique && item.technique_cues && (
                         <div className="animate-in fade-in slide-in-from-top-1 duration-200" style={{ backgroundColor: 'rgba(242, 155, 17, 0.05)', border: '1px solid rgba(242, 155, 17, 0.1)', borderRadius: '6px', padding: '10px', marginBottom: '12px' }}>
                             <p style={{ margin: 0, fontSize: '11px', color: '#ccc', fontStyle: 'italic', lineHeight: '1.5' }}>
-                                <span style={{ color: '#f29b11', fontWeight: '900', fontStyle: 'normal', fontSize: '9px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Technique Note:</span>
-                                {exercise.technique}
+                                <span style={{ color: '#f29b11', fontWeight: '900', fontStyle: 'normal', fontSize: '9px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Technique Cue:</span>
+                                {item.technique_cues}
                             </p>
                         </div>
                     )}
@@ -153,10 +141,10 @@ export const ExerciseRow = ({
 
                             <div style={{...gridStyle, marginBottom: '4px'}}>
                                 <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
-                                    {isCardio ? 'DIST' : 'KG'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetWeight}</span>
+                                    {isTimed ? 'TIME' : 'KG'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetWeight}</span>
                                 </div>
                                 <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
-                                    {isTimed ? 'TIME' : 'REPS'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetReps}</span>
+                                    {isTimed ? 'TARGET' : 'REPS'} <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetReps}</span>
                                 </div>
                                 <div style={{ fontSize: '11px', fontWeight: '900', color: '#f29b11', textAlign: 'center' }}>
                                     RPE <span style={{ color: '#fff', fontSize: '13px', letterSpacing: '0.5px' }}>{targetRpe}</span>
@@ -164,14 +152,12 @@ export const ExerciseRow = ({
                                 <div></div>
                             </div>
 
-                            <div style={gridStyle}>
-                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px' }} value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="-" />
-                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px' }} value={reps} onChange={(e) => setReps(e.target.value)} placeholder="-" />
-                                <input type="text" inputMode="decimal" className="premium-input" style={{ height: '42px', fontSize: '20px' }} value={rpe} onChange={(e) => setRpe(e.target.value)} placeholder="-" />
-                                <button onClick={handleLocalLog} style={{ all: 'unset', cursor: 'pointer', backgroundColor: 'rgba(255,255,255,0.05)', color: getAccentColor(), width: '52px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '10px', border: `1px solid ${getAccentColor()}` }}>
-                                    <Check size={24} strokeWidth={4} />
-                                </button>
-                            </div>
+                            <MetricInput 
+                                item={item} 
+                                onLog={handleLocalLog} 
+                                isComplete={isComplete} 
+                                accentColor={getAccentColor()} 
+                            />
                         </>
                     )}
 
@@ -180,15 +166,15 @@ export const ExerciseRow = ({
                             <div key={log.id} style={gridStyle}>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetWeight || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(exercise.id, log.id, 'weight', e.target.value)} style={logInputStyle} /></div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(item.id, log.id, 'weight', e.target.value)} style={logInputStyle} /></div>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetReps || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(exercise.id, log.id, 'reps', e.target.value)} style={logInputStyle} /></div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(item.id, log.id, 'reps', e.target.value)} style={logInputStyle} /></div>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetRpe || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(exercise.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} /></div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(item.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} /></div>
                                 </div>
                                 <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{log.round}</div>
                             </div>

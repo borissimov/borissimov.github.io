@@ -1,13 +1,15 @@
 import React from 'react';
-import { ExerciseRow } from './ExerciseRow';
+import { BlockItemRow } from './BlockItemRow';
 
 export const CircuitBlock = ({ block }) => {
+    // V3 Shape: items
+    const items = block.items || [];
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {block.exercises.map((ex) => (
-                <ExerciseRow 
-                    key={ex.id}
-                    exercise={ex}
+            {items.map((item) => (
+                <BlockItemRow 
+                    key={item.id}
+                    item={item}
                     blockId={block.id}
                     onLog={() => {}}
                 />

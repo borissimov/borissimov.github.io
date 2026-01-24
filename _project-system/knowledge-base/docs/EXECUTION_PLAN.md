@@ -1,70 +1,55 @@
-# Execution Plan: V3 Migration & Refactor
+# Execution Plan: The "Adapter" Refactor Strategy
 
-**Goal:** Transition the Master Plan application to the Professional Athletic Model (V1.4.1).
-**Strategy:** "The Feature Tunnel" (Single long-lived feature branch).
-
----
-
-## 🛑 Phase 0: Safety & Preparation
-*Before touching any code or database schema.*
-
-1.  **Backup Data:** Run a full export script (`export_january_logs.js`) to secure a local JSON snapshot of all `session_logs` and `set_logs`.
-2.  **Branching:** Create `feat/v3-architecture` from `main`.
+**Goal:** Safely transition Master Plan to the V3 "Professional Athletic" Architecture without a "Big Bang" break.
+**Strategy:** Decouple the Frontend Refactor from the Database Migration using an Adapter Pattern.
 
 ---
 
-## 🚧 Phase 1: Database Migration (The Hard Break)
-*Goal: Align the Database Schema with V3 Architecture.*
-*Impact: Production App will temporarily fail until Phase 2 is complete.*
+## 🛑 Phase 1: Stabilization & Verification (The Baseline)
+*Objective: Prove the current V2 application works and lock its behavior with tests.*
 
-1.  **Execute Migration:** Run `src/data/v3_schema_rename.sql` on the Supabase SQL Editor.
-    *   `routines` -> `programs`
-    *   `routine_days` -> `program_days`
-    *   `workouts` -> `sessions`
-    *   `workout_blocks` -> `blocks`
-    *   `block_exercises` -> `block_items`
-2.  **Verify Integrity:** Check that foreign keys are preserved and data is accessible under new names.
-3.  **Update Config:** Update `v2_schema_init.sql` in the repo to reflect the new structure for future deployments.
-
----
-
-## 🧠 Phase 2: The Brain Transplant (Store Refactor)
-*Goal: Update application logic to speak the new Domain Language.*
-
-1.  **Rename Store:** `useTrainingStore.js` -> `useProgramStore.js`.
-2.  **Refactor Queries:** Update all Supabase calls to reference new table names (`.from('sessions')`, etc.).
-3.  **Refactor State:**
-    *   `availableRoutineDays` -> `programDays`
-    *   `activeSession.routine_day_id` -> `activeSession.program_day_id`
-4.  **Verification:** Ensure the "Session Selector" (Dashboard) loads data correctly.
+1.  **System Mapping:** Create `V2_SYSTEM_MAP.md`.
+    *   Document exact shape of `activeSession` in V2.
+    *   Document exact props for `TrainingBlock`, `StandardBlock`, `CircuitBlock`.
+2.  **Test Infrastructure:** Install `vitest`, `jsdom`, `@testing-library/react`.
+3.  **Baseline Tests:** Write integration tests for `MasterPlanApp.jsx` (V2).
+    *   Test: Renders Dashboard.
+    *   Test: Starts Session.
+    *   Test: Renders Logger.
+4.  **Service Worker Fix:** Ensure local development is permanently safe from Zombie SWs.
 
 ---
 
-## 🦴 Phase 3: The Body (Component Evolution)
-*Goal: Update UI components to match the new architecture.*
+## 🔌 Phase 2: The "Frontend V3" Refactor (The Adapter)
+*Objective: Update the UI and Store to V3 terminology (`Program`, `Session`, `Item`) while still fetching from V2 Database (`routines`, `workouts`).*
 
-1.  **Rename Components:**
-    *   `TrainingBlock.jsx` -> **`SessionBlock.jsx`**
-    *   `StandardBlock.jsx` -> **`LinearBlock.jsx`**
-    *   `ExerciseRow.jsx` -> **`BlockItemRow.jsx`**
-    *   `SequentialSetLogger.jsx` -> **`SessionLogger.jsx`**
-2.  **Update Imports:** Fix all references in `MasterPlanApp.jsx` and sub-components.
-3.  **Visual Update:** Rename UI headers (e.g., "Workout Notes" -> "Session Focus").
+**Branch:** `feat/v3-frontend-adapter`
 
----
-
-## ⚡ Phase 4: The Polymorphic Upgrade
-*Goal: Enable Metric-based inputs (Time/Distance).*
-
-1.  **Update `SessionLogger.jsx`:**
-    *   Add logic to check `block_item.metric_type`.
-    *   Implement switch: `LOAD_REP` (Standard) vs `DURATION` (Timer).
-2.  **Add Timer UI:** Implement the interactive stopwatch for Duration-based items.
-3.  **Auto-Advance:** Wire up the "Flow" logic to auto-complete sets when the timer hits zero.
+1.  **Rename Store:** `useTrainingStore` -> `useProgramStore`.
+2.  **Implement Adapter Layer:**
+    *   *Fetch:* `supabase.from('workouts')`
+    *   *Map:* `data.map(w => ({ id: w.id, session_focus: w.workout_notes, ... }))`
+    *   *State:* Store uses V3 objects (`programDays`, `sessions`).
+3.  **Refactor Components:**
+    *   Rename `TrainingBlock` -> `SessionBlock`.
+    *   Rename `StandardBlock` -> `LinearBlock`.
+    *   Update them to consume V3 props (`block.items` instead of `block.exercises`).
+4.  **Verify:** Run the Test Suite (updated for V3 component names) against the *live V2 database*.
 
 ---
 
-## ✅ Phase 5: Deployment
-1.  **UAT:** Verify a full cycle (Start -> Log -> Finish -> History).
-2.  **Merge:** `feat/v3-architecture` -> `main`.
-3.  **Deploy:** `npm run deploy`.
+## 💾 Phase 3: Database Migration (The Switch)
+*Objective: Migrate the backend to V3 and remove the Adapter.*
+
+**Branch:** `feat/v3-database-switch`
+
+1.  **Create V3 Schema:** Run `v3_schema_creation.sql` (Non-destructive).
+2.  **Seed Data:** Copy V2 data to V3.
+3.  **Update Store:** Remove the Adapter mapping. Point `supabase.from('workouts')` to `supabase.from('sessions')`.
+4.  **Verify:** Run the Test Suite.
+
+---
+
+## ✅ Phase 4: Cleanup
+1.  **Decommission:** Archive/Delete V2 tables (after 48h stability).
+2.  **Docs:** Update Technical Manual to reflect final state.

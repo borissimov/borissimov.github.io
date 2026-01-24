@@ -1,11 +1,13 @@
-# V3 System Map (The Current Reality)
+# V3 System Map (Live Reference)
 
-**Goal:** Document the architecture of the Native V3 Professional Athletic Model.
-**Activated:** Jan 23, 2026.
+**Status:** ACTIVE
+**Version:** V1.5 (Native V3 Schema)
 
 ---
 
 ## 1. Store State (`useProgramStore`)
+
+The store has been refactored to speak "Native V3".
 
 ### **A. `activeSession`**
 ```javascript
@@ -23,8 +25,8 @@
         weight: string,
         reps: number,
         rpe: number,
-        duration_seconds: number, // NEW
-        distance_meters: number, // NEW
+        duration_seconds: number, // Polymorphic
+        distance_meters: number,  // Polymorphic
         set: number 
       }
     ]
@@ -40,7 +42,7 @@
         {
           id: "uuid", // v3.block_items.id
           name: "string", // v3.exercise_library.name
-          technique_cues: "string", // v3.exercise_library.technique_cues
+          technique_cues: "string",
           metric_type: "LOAD_REP" | "DURATION" | "DISTANCE",
           
           target_sets: number,
@@ -78,10 +80,10 @@
 ## 3. Key Rules & Filters
 
 1.  **Ghost Block Filtering:**
-    *   The Store explicitly excludes any blocks where the label starts with `HISTORY` or `ARCHIVED`. These are artifacts of the V2 legacy system.
+    *   The Store explicitly excludes any blocks where the label starts with `HISTORY` or `ARCHIVED`.
 2.  **Metric Polymorphism:**
     *   The `MetricInput` component switches UI based on `item.metric_type`.
     *   `DURATION` items enable the Stopwatch.
-3.  **Local Dev Safety:**
-    *   Service Workers are automatically unregistered on `localhost` or port `5173`.
-    *   `sw.js` ignores any fetch event with `hostname: localhost`.
+3.  **Calendar-First Flow:**
+    *   App defaults to `MasterAgendaView` (Timeline).
+    *   `LibraryView` contains the full Program list.

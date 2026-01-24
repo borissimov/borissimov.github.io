@@ -1,34 +1,58 @@
-# Master Plan: High-Performance Training System
+# Master Plan PWA (V1.5)
 
-**Version:** 1.4.1
-**Status:** Live Production
+**The Professional Athletic Programming System.**
 
-The **Master Plan** is a professional **Prescription vs. Performance** system designed for elite-level tracking of training and recovery.
+Master Plan is a specialized, offline-first Progressive Web Application designed for high-performance athletic training. It moves beyond simple "workout tracking" to provide a structured **Regimen** system that integrates heavy lifting, metabolic conditioning, and targeted mobility work.
 
-## 🚀 Key Modules
+---
 
-*   **Session Selector:** View your **Training Program** and identify your next prescribed session.
-*   **Performance Logger:** A focus-first execution interface that provides **Execution Instructions** and **Technique Cues** while tracking your performance in real-time.
-*   **Master Agenda:** A chronological history of **Completed Sessions**, providing data-driven insights into your progression.
-*   **Health Tracker:** Dedicated module for monitoring vital signs (Blood Pressure, Heart Rate).
+## 🏗️ Architecture: V3 (Modular & Native)
 
-## 📚 System Definitions
+The application runs on a "Calendar-First" architecture, prioritizing the daily schedule (Master Agenda) over the static program library.
 
-*   **Training Program:** The macro-cycle governing your schedule.
-*   **Program Day:** The daily container. A single day might include a Training Session and a Mobility Session.
-*   **Session:** A specific prescribed activity (e.g. "Upper Body Power").
-*   **Performance Log:** The immutable record of what you actually achieved.
+### **Core Modules**
+1.  **Master Agenda (Home):** A unified timeline of past performance and future prescriptions. "Today's Objective" is front and center.
+2.  **Program Library (The Plan):** A repository of structured microcycles and ad-hoc modules.
+3.  **Session Engine (The Worker):** A polymorphic execution environment that adapts to Load (Weight/Reps), Duration (Timer), or Distance metrics.
 
-## 📂 Project Organization
+### **Tech Stack**
+*   **Frontend:** React 18, Vite, Tailwind CSS.
+*   **State:** Zustand (v5) with Persist Middleware.
+*   **Backend:** Supabase (PostgreSQL) running the custom **V3 Schema**.
+*   **Design:** "Industrial OS" Aesthetic (Dark Mode, High Contrast, Tactical).
 
-*   `src/`: Application logic and athletic UI.
-*   `_project-system/`:
-    *   `knowledge-base/`: Architecture, Design, and Domain logic.
-    *   `system-config/`: Secure configurations and data blueprints.
-    *   `tooling/`: Database migrations and maintenance scripts.
+---
 
-## ⚡ Quick Start
+## 📂 Project Structure
+
+We follow a **Feature-Based Modular Architecture**:
+
+```text
+src/apps/master-plan/
+├── features/
+│   ├── agenda/              # Timeline & History View
+│   ├── library/             # Program Repository (was Dashboard)
+│   ├── session/             # Active Training Logger
+├── shared/                  # Reused Components & Hooks
+├── stores/                  # Native V3 Logic
+└── MasterPlanApp.jsx        # System Orchestrator
+```
+
+---
+
+## 🚀 Getting Started
 
 1.  **Install:** `npm install`
-2.  **Dev Server:** `npm run dev`
-3.  **Deploy:** `npm run deploy` (Build and push to production)
+2.  **Run:** `npm run dev`
+3.  **Build:** `npm run build`
+
+**Local Development Safety:**
+The app includes a "Zombie Service Worker" protection mechanism. `sw.js` automatically unregisters itself on `localhost` to prevent caching issues during development.
+
+---
+
+## 📜 Documentation
+
+*   **[Technical Manual](./_project-system/knowledge-base/docs/TECHNICAL_MANUAL.md):** Deep dive into data models and component logic.
+*   **[Execution Plan](./_project-system/knowledge-base/docs/EXECUTION_PLAN.md):** History of the V3 migration and refactor.
+*   **[V3 System Map](./_project-system/knowledge-base/docs/V3_SYSTEM_MAP.md):** Database schema and store state reference.

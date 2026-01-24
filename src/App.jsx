@@ -15,7 +15,7 @@ const App = () => {
     const getInitialState = () => {
         const saved = localStorage.getItem(PERSISTENCE_KEY);
         if (saved) return JSON.parse(saved);
-        return { appId: 'regimen', view: null }; // Default to Training App during construction
+        return { appId: 'regimen', view: 'master-agenda' }; // Default to Master Agenda
     };
 
     const initialState = getInitialState();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, Play, Pause, RotateCcw } from 'lucide-react';
-import '../../shared-premium.css';
+import '../../../../shared-premium.css';
 
 export const MetricInput = ({ item, onLog, isComplete, accentColor }) => {
     const [weight, setWeight] = useState('');

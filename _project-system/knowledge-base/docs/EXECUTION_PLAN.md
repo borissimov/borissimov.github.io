@@ -34,6 +34,28 @@
 ---
 
 ## ✅ Phase 4: Cleanup (COMPLETE)
-1.  [x] Archive Failed Plans.
-2.  [x] Establish V3 System Map.
+1.  [x] Decommission: Archive/Delete V2 tables (after 48h stability).
+2.  [x] Docs: Update Technical Manual to reflect final state.
 3.  [x] Remove migration scripts.
+
+---
+
+## 🏗️ Phase 5: Modularization & Master Agenda (V1.5)
+*Objective: Break the `MasterPlanApp.jsx` monolith into feature-based modules and formally establish the "Master Agenda" view.*
+
+**Branch:** `refactor/v1.5-modularization`
+
+1.  **Extract Shared Core:**
+    *   Move helpers to `src/apps/master-plan/shared/utils/`.
+    *   Create hooks: `useSessionTimer`, `useDraggableScroll`.
+2.  **Feature: Dashboard ("Ready to Train"):**
+    *   Extract Dashboard UI to `features/dashboard/DashboardView.jsx`.
+3.  **Feature: Session Engine:**
+    *   Extract Active Session UI to `features/session/SessionView.jsx`.
+    *   Move `SessionBlock`, `SessionLogger`, `MetricInput` to `features/session/components/`.
+4.  **Feature: Master Agenda (The Transition):**
+    *   **Refactor:** Extract "Global History" UI to `features/agenda/MasterAgendaView.jsx`.
+    *   **Rename:** Update UI terminology from "Mission Logs" / "History" -> **"Master Agenda"**.
+    *   **Enhance:** Ensure the "Vault" vs "Timeline" toggle is cleanly implemented within this module.
+5.  **The Orchestrator:**
+    *   Clean `MasterPlanApp.jsx` to act strictly as a Router/State Connector.

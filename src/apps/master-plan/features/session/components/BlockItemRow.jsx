@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { Check, ChevronDown, ChevronRight, Clock, Dumbbell, BookOpen } from 'lucide-react';
-import { useProgramStore } from '../stores/useProgramStore';
+import { Check, ChevronDown, ChevronRight, Clock, Dumbbell, AlertCircle, BookOpen } from 'lucide-react';
+import { useProgramStore } from '../../../stores/useProgramStore';
 import { MetricInput } from './MetricInput';
-import '../../shared-premium.css';
+import '../../../../shared-premium.css';
 
-export const SessionLogger = ({ item, blockId }) => {
-    const { 
-        systemStep, 
-        activeFocusId, 
+export const BlockItemRow = ({
+    item,
+    blockId,
+    onLog
+}) => {
+    const {
+        systemStep,
+        activeFocusId,
         activeSession,
-        addLogEntry, 
+        addLogEntry,
         updateLogEntry,
-        toggleFocus 
+        toggleFocus
     } = useProgramStore();
-    
-    // SAFETY CHECK
+
     if (!item) return null;
 
     const [showTechnique, setShowTechnique] = useState(true);
@@ -25,10 +28,10 @@ export const SessionLogger = ({ item, blockId }) => {
 
     const isActive = activeFocusId === item.id;
     const isSystemChoice = systemStep?.itemId === item.id;
-    const currentSetNum = logs.length + 1;
+    
+    const currentRoundNum = isSystemChoice ? systemStep.round : (logs.length + 1);
 
-    // DYNAMIC TARGET LOGIC
-    const currentSetTarget = item.set_targets?.find(t => t.set === currentSetNum) || null;
+    const currentSetTarget = item.set_targets?.find(t => t.set === currentRoundNum) || null;
     const targetWeight = currentSetTarget?.weight || item.target_weight;
     const targetReps = currentSetTarget?.reps || item.target_reps;
     const targetRpe = currentSetTarget?.rpe || item.target_rpe;
@@ -37,14 +40,15 @@ export const SessionLogger = ({ item, blockId }) => {
 
     const isTimed = item.metric_type === 'DURATION';
 
-    const handleLog = (data) => {
+    const handleLocalLog = (data) => {
+        if (isComplete) return;
         addLogEntry(item.id, blockId, {
             ...data,
+            round: currentRoundNum,
             targetWeight,
             targetReps,
-            targetRpe,
-            set: currentSetNum
-        }, false);
+            targetRpe
+        }, true);
     };
 
     const getAccentColor = () => {
@@ -88,13 +92,13 @@ export const SessionLogger = ({ item, blockId }) => {
                     </span>
                     <h3 style={{ fontSize: '14px', fontWeight: '900', color: isComplete ? '#2ecc71' : '#fff', margin: 0, textTransform: 'uppercase', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h3>
                 </div>
-                
+
                 {isActive && item.technique_cues && (
                     <button onClick={() => setShowTechnique(!showTechnique)} style={{ all: 'unset', cursor: 'pointer', padding: '4px' }}>
                         <BookOpen size={14} color={showTechnique ? '#f29b11' : '#444'} />
                     </button>
                 )}
-                
+
                 <div onClick={() => toggleFocus(item.id, blockId)} style={{ cursor: 'pointer' }}>
                     {isActive ? <ChevronDown size={14} color={getAccentColor()} /> : <ChevronRight size={14} color="#444" />}
                 </div>
@@ -147,38 +151,32 @@ export const SessionLogger = ({ item, blockId }) => {
                                 </div>
                                 <div></div>
                             </div>
-                            
+
                             <MetricInput 
                                 item={item} 
-                                onLog={handleLog} 
+                                onLog={handleLocalLog} 
                                 isComplete={isComplete} 
                                 accentColor={getAccentColor()} 
                             />
                         </>
                     )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {logs.map((log, i) => (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                        {logs.map((log) => (
                             <div key={log.id} style={gridStyle}>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetWeight || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(item.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
-                                    </div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(item.id, log.id, 'weight', e.target.value)} style={logInputStyle} /></div>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetReps || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(item.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
-                                    </div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(item.id, log.id, 'reps', e.target.value)} style={logInputStyle} /></div>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetRpe || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(item.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
-                                    </div>
+                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}><input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(item.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} /></div>
                                 </div>
-                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{i+1}</div>
+                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{log.round}</div>
                             </div>
                         ))}
                     </div>

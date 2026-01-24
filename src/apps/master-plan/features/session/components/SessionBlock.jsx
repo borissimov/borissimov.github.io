@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CircuitBlock } from './CircuitBlock';
 import { LinearBlock } from './LinearBlock';
-import { useProgramStore } from '../stores/useProgramStore';
+import { useProgramStore } from '../../../stores/useProgramStore';
 import { ChevronDown, ChevronRight, CheckCircle2, Dumbbell, RefreshCcw, Layout } from 'lucide-react';
 
 export const SessionBlock = ({ block, index, totalBlocks }) => {

@@ -56,7 +56,7 @@ export const SessionBlock = ({ block, index, totalBlocks }) => {
                     <div className="section-header" style={{ marginBottom: 0, color: accentColor, gap: '10px' }}>
                         {getBlockIcon()}
                         <span style={{ marginLeft: '4px', fontSize: '11px', fontWeight: '900', letterSpacing: '1px', opacity: 0.8 }}>
-                            {block.label?.toUpperCase() || 'SESSION BLOCK'}
+                            {block.label?.trim() ? block.label.toUpperCase() : 'SESSION BLOCK'}
                         </span>
                     </div>
                     

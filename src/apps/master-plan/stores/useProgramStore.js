@@ -3,9 +3,8 @@ import { persist } from 'zustand/middleware';
 import { supabase } from '../../../supabaseClient';
 
 /**
- * ADAPTER STORE (V3 UI -> V2 DB)
- * This store speaks the V3 Language (programDays, sessions, items)
- * but communicates with the V2 Database (routine_days, workouts, block_exercises).
+ * NATIVE V3 STORE
+ * Directly communicates with V3 Schema.
  */
 export const useProgramStore = create(
     persist(
@@ -32,33 +31,32 @@ export const useProgramStore = create(
             retroactiveDate: null,
 
             fetchProgramManifest: async () => {
-                console.log("[Adapter Store] fetchProgramManifest starting...");
+                console.log("[Store] fetchProgramManifest V3 starting...");
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     
-                    // FETCH FROM V2
-                    const { data: days, error: daysErr } = await supabase.schema('v2').from('routine_days').select('*').order('sequence_number');
-                    const { data: workouts, error: workErr } = await supabase.schema('v2').from('workouts').select('id, routine_day_id');
-                    const { data: blocks, error: blockErr } = await supabase.schema('v2').from('workout_blocks').select('id, workout_id, label, block_type, sort_order');
-                    const { data: beData, error: beErr } = await supabase.schema('v2').from('block_exercises').select('id, block_id, target_weight, target_reps, exercises(name)');
+                    // FETCH V3 NATIVE
+                    const { data: days, error: daysErr } = await supabase.schema('v3').from('program_days').select('*').order('sequence_number');
+                    const { data: sessions, error: sessErr } = await supabase.schema('v3').from('sessions').select('id, program_day_id');
+                    const { data: blocks, error: blockErr } = await supabase.schema('v3').from('blocks').select('id, session_id, label, block_type, sort_order');
+                    const { data: items, error: itemErr } = await supabase.schema('v3').from('block_items').select('id, session_block_id, target_sets, target_reps, target_weight, target_rpe, tempo, metric_type, sort_order, exercise_library(name, technique_cues)');
 
-                    if (daysErr || workErr || blockErr || beErr) throw (daysErr || workErr || blockErr || beErr);
+                    if (daysErr || sessErr || blockErr || itemErr) throw (daysErr || sessErr || blockErr || itemErr);
 
                     const { data: history, error: histErr } = await supabase
-                        .schema('v2')
-                        .from('session_logs')
-                        .select('id, routine_day_id, start_time, end_time') 
+                        .schema('v3')
+                        .from('completed_sessions')
+                        .select('id, program_day_id, start_time, end_time') 
                         .eq('user_id', user?.id)
                         .order('end_time', { ascending: false });
 
                     if (histErr) throw histErr;
 
-                    // ADAPTER LOGIC: Process V2 data into V3 shapes
                     const latestDaySessions = {};
                     history.forEach(log => {
-                        if (!latestDaySessions[log.routine_day_id]) {
-                            latestDaySessions[log.routine_day_id] = log.id;
+                        if (!latestDaySessions[log.program_day_id]) {
+                            latestDaySessions[log.program_day_id] = log.id;
                         }
                     });
 
@@ -66,36 +64,35 @@ export const useProgramStore = create(
                     let snapshots = [];
                     if (sessionIdsToFetch.length > 0) {
                         const { data: sData } = await supabase
-                            .schema('v2')
-                            .from('set_logs')
-                            .select('session_log_id, block_exercise_id, weight, reps')
-                            .in('session_log_id', sessionIdsToFetch);
+                            .schema('v3')
+                            .from('performance_logs')
+                            .select('completed_session_id, block_item_id, weight, reps')
+                            .in('completed_session_id', sessionIdsToFetch);
                         snapshots = sData || [];
                     }
 
                     const processedDays = days.map(day => {
-                        const dayHistory = history.filter(h => h.routine_day_id === day.id);
+                        const dayHistory = history.filter(h => h.program_day_id === day.id);
                         const lastSession = dayHistory[0] || null;
-                        const workout = workouts.find(w => w.routine_day_id === day.id);
-                        const dayBlocks = workout ? blocks.filter(b => b.workout_id === workout.id) : [];
+                        const session = sessions.find(s => s.program_day_id === day.id);
+                        
+                        // SMART FILTER: Exclude History/Archived blocks
+                        const sessionBlocks = session ? blocks.filter(b => b.session_id === session.id && !b.label?.startsWith('HISTORY') && !b.label?.startsWith('ARCHIVED')) : [];
                         
                         const exerciseData = [];
-                        dayBlocks.forEach(b => {
-                            if (b.label === 'MAIN PHASE') {
-                                const activeBe = beData.filter(be => be.block_id === b.id);
-                                activeBe.forEach(be => {
-                                    if (be.exercises?.name) {
-                                        const sessionForPreview = latestDaySessions[day.id];
-                                        const lastSets = snapshots
-                                            .filter(s => s.session_log_id === sessionForPreview && s.block_exercise_id === be.id)
-                                            .map(s => `${s.weight} KG · ${s.reps}`);
-                                        exerciseData.push({ name: be.exercises.name, snapshot: lastSets.length > 0 ? lastSets.join(', ') : null });
-                                    }
-                                });
-                            }
+                        sessionBlocks.forEach(b => {
+                            const blockItems = items.filter(i => i.session_block_id === b.id);
+                            blockItems.forEach(i => {
+                                if (i.exercise_library?.name) {
+                                    const sessionForPreview = latestDaySessions[day.id];
+                                    const lastSets = snapshots
+                                        .filter(s => s.completed_session_id === sessionForPreview && s.block_item_id === i.id)
+                                        .map(s => `${s.weight} KG · ${s.reps}`);
+                                    exerciseData.push({ name: i.exercise_library.name, snapshot: lastSets.length > 0 ? lastSets.join(', ') : null });
+                                }
+                            });
                         });
                         
-                        // RETURN V3 SHAPE
                         return { 
                             ...day, 
                             last_session: lastSession, 
@@ -106,23 +103,23 @@ export const useProgramStore = create(
                     let recommendedId = processedDays[0]?.id;
                     if (history.length > 0) {
                         const lastGlobalSession = history[0];
-                        const lastDayIdx = processedDays.findIndex(d => d.id === lastGlobalSession.routine_day_id);
+                        const lastDayIdx = processedDays.findIndex(d => d.id === lastGlobalSession.program_day_id);
                         if (lastDayIdx !== -1) recommendedId = processedDays[(lastDayIdx + 1) % processedDays.length].id;
                     }
 
                     set((state) => ({ 
-                        programDays: processedDays, // RENAME
+                        programDays: processedDays, 
                         recommendedDayId: recommendedId,
                         selectedDayId: state.selectedDayId === null ? recommendedId : (processedDays.some(d => d.id === state.selectedDayId) ? state.selectedDayId : recommendedId), 
                         isLoading: false 
                     }));
-                } catch (err) { console.error("[Adapter Store] fetchProgramManifest FAILED:", err); set({ isLoading: false }); }
+                } catch (err) { console.error("[Store V3] fetchProgramManifest FAILED:", err); set({ isLoading: false }); }
             },
 
             deleteSessionRecord: async (sessionId) => {
                 set({ isLoading: true });
                 try {
-                    const { error } = await supabase.schema('v2').from('session_logs').delete().eq('id', sessionId);
+                    const { error } = await supabase.schema('v3').from('completed_sessions').delete().eq('id', sessionId);
                     if (error) throw error;
                     await get().fetchGlobalHistory();
                     await get().fetchProgramManifest();
@@ -135,9 +132,9 @@ export const useProgramStore = create(
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     const { data, error } = await supabase
-                        .schema('v2')
-                        .from('session_logs')
-                        .select('*, routine_days(label), set_logs(weight, reps, rpe)') 
+                        .schema('v3')
+                        .from('completed_sessions')
+                        .select('*, program_days(label), performance_logs(weight, reps, rpe)') 
                         .eq('user_id', user?.id)
                         .order('end_time', { ascending: false });
 
@@ -147,15 +144,15 @@ export const useProgramStore = create(
                     data.forEach(session => {
                         const dateKey = new Date(session.end_time).toDateString();
                         let sessionVolume = 0;
-                        session.set_logs.forEach(set => {
+                        session.performance_logs.forEach(log => {
                             let w = 0;
-                            const weightStr = String(set.weight || '0').toLowerCase();
+                            const weightStr = String(log.weight || '0').toLowerCase();
                             if (weightStr === 'bw') w = 0; 
                             else {
                                 const parts = weightStr.match(/\d+(\.\d+)?/);
                                 w = parts ? parseFloat(parts[0]) : 0;
                             }
-                            const r = parseInt(set.reps) || 0;
+                            const r = parseInt(log.reps) || 0;
                             sessionVolume += (w * r);
                         });
                         volumeMap[dateKey] = (volumeMap[dateKey] || 0) + sessionVolume;
@@ -168,7 +165,7 @@ export const useProgramStore = create(
             fetchUniqueExercises: async () => {
                 set({ isLoading: true, uniqueExercises: [] });
                 try {
-                    const { data, error } = await supabase.schema('v2').from('exercises').select('name').order('name', { ascending: true });
+                    const { data, error } = await supabase.schema('v3').from('exercise_library').select('name').order('name', { ascending: true });
                     if (error) throw error;
                     set({ uniqueExercises: [...new Set(data.map(e => e.name))], isLoading: false });
                 } catch (err) { console.error("Failed to fetch exercises:", err); set({ isLoading: false }); }
@@ -177,29 +174,29 @@ export const useProgramStore = create(
             fetchSessionDetails: async (sessionId) => {
                 set({ isLoading: true, activeHistorySession: null });
                 try {
-                    const { data: session, error: sErr } = await supabase.schema('v2').from('session_logs').select('*, routine_days(label)').eq('id', sessionId).single();
+                    const { data: session, error: sErr } = await supabase.schema('v3').from('completed_sessions').select('*, program_days(label)').eq('id', sessionId).single();
                     if (sErr) throw sErr;
                     
                     const { data: logs, error: lErr } = await supabase
-                        .schema('v2')
-                        .from('set_logs')
-                        .select(`*, block_exercises!inner ( target_weight, target_reps, target_rpe, target_tempo, sort_order, exercises!inner ( name ) )`)
-                        .eq('session_log_id', sessionId)
+                        .schema('v3')
+                        .from('performance_logs')
+                        .select(`*, block_items!inner ( target_weight, target_reps, target_rpe, tempo, sort_order, exercise_library!inner ( name ) )`)
+                        .eq('completed_session_id', sessionId)
                         .order('created_at', { ascending: true });
                     
                     if (lErr) throw lErr;
                     const groups = [];
                     logs.forEach(log => {
-                        const exName = log.block_exercises.exercises.name;
+                        const exName = log.block_items.exercise_library.name;
                         const lastGroup = groups[groups.length - 1];
                         if (!lastGroup || lastGroup.name !== exName) {
                             groups.push({ 
                                 name: exName, 
                                 targets: { 
-                                    w: log.block_exercises.target_weight, 
-                                    r: log.block_exercises.target_reps, 
-                                    e: log.block_exercises.target_rpe,
-                                    t: log.block_exercises.target_tempo
+                                    w: log.block_items.target_weight, 
+                                    r: log.block_items.target_reps, 
+                                    e: log.block_items.target_rpe,
+                                    t: log.block_items.tempo
                                 }, 
                                 sets: [log] 
                             });
@@ -216,40 +213,43 @@ export const useProgramStore = create(
             startSession: async (dayId, customDate = null) => {
                 set({ isLoading: true, retroactiveDate: customDate });
                 try {
-                    // FETCH FROM V2
-                    const { data: workout, error } = await supabase.schema('v2').from('workouts').select(`id, name, workout_notes, workout_blocks ( id, label, block_type, sort_order, block_exercises ( id, target_sets, target_reps, target_weight, target_rpe, target_tempo, set_targets, sort_order, exercises ( name, technique_notes ) ) )`).eq('routine_day_id', dayId).maybeSingle();
+                    // FETCH NATIVE V3
+                    const { data: sessionTemplate, error } = await supabase.schema('v3').from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
                     if (error) throw error;
                     
-                    if (!workout) {
+                    if (!sessionTemplate) {
                         const session = { id: crypto.randomUUID(), startTime: customDate || new Date().toISOString(), program_day_id: dayId, isRestDay: true, blocks: [], logs: {} };
                         set({ activeSession: session, isLoading: false });
                         return;
                     }
 
-                    // ADAPTER: Map to V3 Session Shape
-                    const activeBlocks = (workout.workout_blocks || []).filter(b => b.label === 'MAIN PHASE').sort((a,b) => a.sort_order - b.sort_order);
+                    const activeBlocks = (sessionTemplate.blocks || [])
+                        .filter(b => !b.label?.startsWith('HISTORY') && !b.label?.startsWith('ARCHIVED'))
+                        .sort((a,b) => a.sort_order - b.sort_order);
+
                     const session = {
                         id: crypto.randomUUID(), 
                         startTime: customDate || new Date().toISOString(), 
-                        program_day_id: dayId, // RENAME
+                        program_day_id: dayId, 
                         isRestDay: false, 
-                        sessionFocus: workout.workout_notes, // RENAME
+                        sessionFocus: sessionTemplate.session_focus, 
                         blocks: activeBlocks.map(b => ({
                             id: b.id, 
                             label: b.label, 
                             block_type: b.block_type,
-                            items: (b.block_exercises || []).sort((a,b) => a.sort_order - b.sort_order).map(be => ({
-                                id: be.id, 
-                                name: be.exercises.name, 
-                                technique_cues: be.exercises.technique_notes, // RENAME
-                                target_sets: be.target_sets, 
-                                target_reps: be.target_reps, 
-                                target_weight: be.target_weight,
-                                target_rpe: be.target_rpe, 
-                                tempo: be.target_tempo, // RENAME
-                                set_targets: be.set_targets, 
-                                sort_order: be.sort_order,
-                                metric_type: 'LOAD_REP' // V2 Default
+                            // Direct Mapping: V3 DB structure matches V3 Store structure
+                            items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(bi => ({
+                                id: bi.id, 
+                                name: bi.exercise_library.name, 
+                                technique_cues: bi.exercise_library.technique_cues,
+                                target_sets: bi.target_sets, 
+                                target_reps: bi.target_reps, 
+                                target_weight: bi.target_weight,
+                                target_rpe: bi.target_rpe, 
+                                tempo: bi.tempo, 
+                                set_targets: bi.set_targets, 
+                                sort_order: bi.sort_order,
+                                metric_type: bi.metric_type
                             }))
                         })),
                         logs: {}
@@ -271,28 +271,30 @@ export const useProgramStore = create(
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     
-                    // SAVE TO V2
-                    const { data: sessionData, error: sessionError } = await supabase.schema('v2').from('session_logs').insert([{ user_id: user?.id, routine_day_id: session.program_day_id, start_time: session.startTime, end_time: get().retroactiveDate ? session.startTime : new Date().toISOString() }]).select().single();
+                    // SAVE TO V3
+                    const { data: sessionData, error: sessionError } = await supabase.schema('v3').from('completed_sessions').insert([{ user_id: user?.id, program_day_id: session.program_day_id, start_time: session.startTime, end_time: get().retroactiveDate ? session.startTime : new Date().toISOString() }]).select().single();
                     if (sessionError) throw sessionError;
                     
-                    const setLogsToInsert = [];
-                    Object.entries(session.logs).forEach(([blockExId, sets]) => {
+                    const logsToInsert = [];
+                    Object.entries(session.logs).forEach(([itemId, sets]) => {
                         sets.forEach((setEntry, index) => {
-                            setLogsToInsert.push({ 
-                                session_log_id: sessionData.id, 
-                                block_exercise_id: blockExId, 
+                            logsToInsert.push({ 
+                                completed_session_id: sessionData.id, 
+                                block_item_id: itemId, 
                                 weight: String(setEntry.weight), 
                                 reps: parseInt(setEntry.reps) || 0, 
                                 rpe: parseFloat(setEntry.rpe) || null, 
+                                duration_seconds: setEntry.duration_seconds, // V3 FIELD
+                                distance_meters: setEntry.distance_meters, // V3 FIELD
                                 set_number: index + 1, 
                                 created_at: session.startTime 
                             });
                         });
                     });
                     
-                    if (setLogsToInsert.length > 0) {
-                        const { error: setLogsError } = await supabase.schema('v2').from('set_logs').insert(setLogsToInsert);
-                        if (setLogsError) throw setLogsError;
+                    if (logsToInsert.length > 0) {
+                        const { error: logsError } = await supabase.schema('v3').from('performance_logs').insert(logsToInsert);
+                        if (logsError) throw logsError;
                     }
                     set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, retroactiveDate: null, isLoading: false });
                 } catch (err) { console.error("finishSession FAILED:", err); alert("Sync Error: " + err.message); set({ isLoading: false }); }
@@ -367,6 +369,6 @@ export const useProgramStore = create(
             resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, selectedDayId: null, retroactiveDate: null }),
             setExpandedBlock: (blockId) => set({ expandedBlockId: blockId })
         }),
-        { name: 'mp-program-storage-v3-adapter' }
+        { name: 'mp-program-storage-v3-native' }
     )
 );

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'master-plan-v3';
+const CACHE_NAME = 'master-plan-v3-fix-2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -20,6 +20,22 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  
+  // SAFETY: IGNORE ALL LOCALHOST REQUESTS
+  // This prevents the SW from caching dev server assets or interfering with HMR
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+    return;
+  }
+
+  // IGNORE VITE DEV SERVER REQUESTS (Fixes "Failed to fetch" in dev)
+  if (url.pathname.includes('@vite') || 
+      url.pathname.includes('@react-refresh') || 
+      url.pathname.includes('src/') ||
+      url.pathname.includes('node_modules')) {
+     return;
+  }
+
   // Network First, fallback to Cache strategy for HTML
   // Cache First for Assets
   if (event.request.mode === 'navigate') {

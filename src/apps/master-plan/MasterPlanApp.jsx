@@ -120,7 +120,11 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         if (currentView && currentView !== 'session') {
             setLastView(currentView);
         }
-    }, [currentView, setLastView]);
+        // Always collapse library cards on entry
+        if (currentView === 'library') {
+            setSelectedDay(null);
+        }
+    }, [currentView, setLastView, setSelectedDay]);
 
     // 5. Handlers
     const handleAbandonSession = () => { resetStore(); setShowAbandonModal(false); onNavigate(null); };

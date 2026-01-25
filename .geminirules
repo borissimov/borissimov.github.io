@@ -2,18 +2,24 @@
 
 You are an expert full-stack developer. You MUST adhere to the following Professional Workflow for every task.
 
+## 0. Mandatory Session Startup
+At the start of EVERY new session, you MUST read the following files to align with the current project state:
+1. _project-system/knowledge-base/DEVELOPER_PROTOCOL.md (Follow the startup routine)
+2. _project-system/knowledge-base/SYSTEM_CONTEXT.md
+3. _project-system/knowledge-base/PROJECT_WISDOM.md
+
 ## 1. The Professional Workflow
 Every request must follow these phases strictly:
 
 ### Phase 1: Initiation (The Anchor)
-1. **Sync Workspace:** Run `npm run sync-tasks` to ensure local `/features` match GitHub.
+1. **Sync Workspace:** Run `npm run sync-tasks` to ensure local `_project-system/GH-Issues` match GitHub.
 2. **Identify Task:** Use an existing GitHub Issue ID (e.g., #4) or create a new one (`gh issue create`).
 3. **Move to In Progress:** Update the project item status to "In Progress".
 4. **Branch Out:** Create a task-specific branch: `git checkout -b task-[ID]-short-description`.
 
 ### Phase 2: Implementation (The Build)
 1. **Code:** Implement changes following project patterns.
-2. **Update Docs:** Update the local `features/GHI-[ID]_...md` file with technical implementation details.
+2. **Update Docs:** Update the local `_project-system/GH-Issues/GHI-[ID]_...md` file with technical implementation details.
 3. **Lint:** Ensure code matches project style.
 
 ### Phase 3: UAT (User Acceptance Testing)
@@ -48,27 +54,19 @@ All plan-related logic (Training, Nutrition, Supplements) must follow:
 - **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`.
 - **Layer 2 (User Templates):** `localStorage.regimen_user_template`.
 - **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object.
-- **CRITICAL:** Never modify `DEFAULT_PLAN`.
+- **CRITICAL:** Never modify `DEFAULT_PLAN` directly without user approval.
 
 ## 4. GitHub & Project Standards
 - **Branching:** `task-[ID]-description`.
 - **Conventional Commits:** `type: description (fixes #[ID])`.
-- **Project Board:** Every issue must have:
-    - **Tier:** 1 (Initiative), 2 (Epic), 3 (Task).
-    - **Work Type:** Feature, Bug, Enhancement, Refactor, Chore, Compatibility, Documentation, Security, Performance.
-    - **Status Sequence:** Todo → In Progress → UAT → Testing → Done.
+- **Project Board:** Every issue must have a Tier (1-3) and Work Type assigned.
 
-## 5. Technology Stack Constraints
-- **Standalone PWA:** `public/regimen.html` is a single-file app.
-- **Supabase:** Use `sbClient` global variable.
-- **Interactivity:** Attach event handlers to `window`.
+## 5. UI/UX Style Guide ("Industrial High-Density")
+- **Aesthetic:** Dark mode, high contrast (`#f29b11` Orange, `#2ecc71` Green), monospace numbers.
+- **Density:** Prefer informative, compact displays over sparse layouts.
+- **Buttons:** Prefer small, right-aligned header buttons for primary actions.
 
 ## 6. Two-Way Task Mirroring
 - Always run `npm run sync-tasks` before starting and after finishing a task.
-- Active tickets live in `/features`.
-- Documentation and architectural guides live in `/docs`.
-
----
-
-## 7. Interaction Guidelines
-- **Brief Descriptions:** Always provide a brief, one-sentence description of what you are about to do BEFORE calling any tools. This ensures the user is informed of the intended action.
+- Active tickets live in `_project-system/GH-Issues`.
+- Documentation and architectural guides live in `_project-system/knowledge-base/docs`.

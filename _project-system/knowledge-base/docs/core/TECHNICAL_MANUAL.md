@@ -59,6 +59,59 @@ src/apps/master-plan/
 *   **State Management:** `zustand` (v5.0) with `persist` middleware.
 *   **Styling:** CSS Variables (`shared-premium.css`) + Tailwind CSS (Utility classes).
 
+### **Store State (`useProgramStore`)**
+The `activeSession` object acts as the core execution context.
+
+```javascript
+{
+  id: "uuid",
+  startTime: "ISO Date String",
+  program_day_id: "uuid", // Foreign Key to v3.program_days
+  isRestDay: boolean,
+  sessionFocus: string, // Mapped from v3.sessions.session_focus
+  
+  logs: {
+    [itemId]: [
+      {
+        id: number, // timestamp
+        weight: string,
+        reps: number,
+        rpe: number,
+        duration_seconds: number, // Polymorphic
+        distance_meters: number,  // Polymorphic
+        set: number 
+      }
+    ]
+  },
+
+  blocks: [
+    {
+      id: "uuid", // v3.blocks.id
+      label: "string",
+      block_type: "STANDARD" | "CIRCUIT",
+      
+      items: [
+        {
+          id: "uuid", // v3.block_items.id
+          name: "string", // v3.exercise_library.name
+          technique_cues: "string",
+          metric_type: "LOAD_REP" | "DURATION" | "DISTANCE",
+          
+          target_sets: number,
+          target_reps: string,
+          target_weight: string,
+          target_rpe: string,
+          tempo: string,
+          
+          set_targets: JSON | null, 
+          sort_order: number
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### **Navigation Flow (Calendar-First)**
 1.  **Entry:** App opens to **Master Agenda**.
 2.  **Action:** User sees "Today's Objective" or browses history.
@@ -71,13 +124,21 @@ src/apps/master-plan/
 
 The system runs on the **Native V3 Schema**, designed for professional athletic data.
 
-### **Key Tables (`v3` Schema)**
-*   **`programs`**: Top-level macrocycles.
-*   **`program_days`**: The slots in a microcycle (e.g., "Day 1", "Push Day").
-*   **`sessions`**: The actual workout content linked to a day.
-*   **`blocks` / `block_items`**: The structural units of a workout.
-*   **`completed_sessions`**: The header record for a finished workout.
-*   **`performance_logs`**: The granular data points (sets, reps, time).
+### **Schema Map**
+| Entity | V3 Table | Primary Relation |
+| :--- | :--- | :--- |
+| **Program** | `v3.programs` | Top Level |
+| **Day Slot** | `v3.program_days` | `program_id` |
+| **Session** | `v3.sessions` | `program_day_id` |
+| **Block** | `v3.blocks` | `session_id` |
+| **Item (Rx)** | `v3.block_items` | `session_block_id` |
+| **Library** | `v3.exercise_library`| Reference |
+| **Session (Log)**| `v3.completed_sessions`| `session_id`, `program_day_id` |
+| **Log Entry** | `v3.performance_logs` | `completed_session_id`, `block_item_id` |
+
+### **Key Rules & Filters**
+1.  **Ghost Block Filtering:** The Store explicitly excludes any blocks where the label starts with `HISTORY` or `ARCHIVED`.
+2.  **Metric Polymorphism:** The `MetricInput` component switches UI based on `item.metric_type`. `DURATION` items enable the Stopwatch.
 
 ---
 

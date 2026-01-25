@@ -1,7 +1,7 @@
 import React from 'react';
 import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
 import { AgendaCalendar } from './components/AgendaCalendar';
-import { ActivityLogCard } from './components/ActivityLogCard';
+import CompletedSessionCard from './components/CompletedSessionCard';
 import { AgendaStats } from './components/AgendaStats';
 
 /**
@@ -90,7 +90,7 @@ export const MasterAgendaView = ({
                     {activitiesOnSelectedDate.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             {activitiesOnSelectedDate.map(log => (
-                                <ActivityLogCard 
+                                <CompletedSessionCard 
                                     key={log.id}
                                     log={log}
                                     expandedActivityId={expandedActivityId}

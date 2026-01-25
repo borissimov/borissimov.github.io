@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronDown, ChevronRight, Loader2, Download, Trash2 } from 'lucide-react';
 import { renderSetLabel } from '../../../shared/utils/formatting.jsx';
 
-export const ActivityLogCard = ({
+export const CompletedSessionCard = ({
     log,
     expandedActivityId,
     handleToggleActivityExpansion,
@@ -18,7 +18,10 @@ export const ActivityLogCard = ({
     let sessionVolume = 0;
     let totalRPE = 0;
     let rpeCount = 0;
-    (log.set_logs || []).forEach(set => {
+    // V3 uses performance_logs instead of set_logs
+    const sets = log.performance_logs || [];
+    
+    sets.forEach(set => {
         let w = 0;
         const weightStr = String(set.weight || '0').toLowerCase();
         if (weightStr !== 'bw') {
@@ -34,15 +37,26 @@ export const ActivityLogCard = ({
     });
     const avgIntensity = rpeCount > 0 ? (totalRPE / rpeCount).toFixed(1) : null;
 
+    // Unified pill style to match set details
+    const pillBaseStyle = {
+        border: '1px solid #f29b11',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        fontSize: '10px',
+        fontWeight: '900',
+        backgroundColor: 'rgba(242, 155, 17, 0.05)',
+        textTransform: 'uppercase'
+    };
+
     return (
         <div onClick={() => handleToggleActivityExpansion(log.id)} style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'transparent', border: '1px solid #222', borderLeft: isExpanded ? '4px solid #f29b11' : '4px solid transparent', padding: '15px', cursor: 'pointer', transition: 'all 0.2s ease' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <h3 style={{ fontSize: '13px', fontWeight: '900', margin: 0, color: isExpanded ? '#f29b11' : '#fff', textTransform: 'uppercase' }}>{log.program_days?.label || 'Activity'}</h3>
                     <p style={{ fontSize: '10px', color: '#666', margin: '2px 0 0', fontWeight: '800' }}>{startTimeStr ? `${startTimeStr} - ${endTimeStr}` : endTimeStr}</p>
-                    <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
-                        <div style={{ border: '1px solid rgba(242, 155, 17, 0.3)', padding: '1px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: '900', color: '#f29b11', backgroundColor: 'rgba(242, 155, 17, 0.02)' }}>{sessionVolume.toLocaleString()} KG</div>
-                        {avgIntensity && (<div style={{ border: '1px solid rgba(46, 204, 113, 0.3)', padding: '1px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: '900', color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.02)' }}>INTENSITY: {avgIntensity}</div>)}
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
+                        <div style={{ ...pillBaseStyle, color: '#f29b11' }}>{sessionVolume.toLocaleString()} KG</div>
+                        {avgIntensity && (<div style={{ ...pillBaseStyle, color: '#2ecc71', borderColor: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.05)' }}>INT: {avgIntensity}</div>)}
                     </div>
                 </div>
                 {isExpanded ? <ChevronDown size={20} color="#f29b11" /> : <ChevronRight size={20} color="#333" />}
@@ -56,7 +70,7 @@ export const ActivityLogCard = ({
                             <div key={gi} style={{ padding: '8px 0', borderBottom: gi < activeHistorySession.groupedLogs.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
                                 <div style={{ fontSize: '13px', color: '#fff', fontWeight: '900', textTransform: 'uppercase' }}>{group.name}</div>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px', color: '#f29b11', fontSize: '10px' }}>
-                                    {group.sets.map((s, si) => (<div key={si} style={{ border: '1px solid #f29b11', padding: '2px 6px', borderRadius: '4px', backgroundColor: 'rgba(242, 155, 17, 0.05)' }}>{renderSetLabel(s.weight, s.reps)}</div>))}
+                                    {group.sets.map((s, si) => (<div key={si} style={pillBaseStyle}>{renderSetLabel(s.weight, s.reps)}</div>))}
                                 </div>
                             </div>
                         ))}
@@ -70,3 +84,5 @@ export const ActivityLogCard = ({
         </div>
     );
 };
+
+export default CompletedSessionCard;

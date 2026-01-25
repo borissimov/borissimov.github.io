@@ -11,6 +11,7 @@ import { SessionModals } from './shared/components/SessionModals';
 import { LibraryView } from './features/library/LibraryView';
 import { SessionView } from './features/session/SessionView';
 import { MasterAgendaView } from './features/agenda/MasterAgendaView';
+import { ProgramEditorView } from './features/builder/ProgramEditorView';
 
 import '../shared-premium.css';
 
@@ -37,6 +38,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
     const [expandedActivityId, setExpandedActivityId] = useState(null);
+    const [editingProgramId, setEditingProgramId] = useState(null);
 
     // 3. Derived State
     const scrollerDates = useMemo(() => {
@@ -117,7 +119,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     // Track last relevant view
     useEffect(() => {
-        if (currentView && currentView !== 'session') {
+        if (currentView && currentView !== 'session' && currentView !== 'builder') {
             setLastView(currentView);
         }
         // Always collapse library cards on entry
@@ -222,6 +224,15 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     setShowAbandonModal={setShowAbandonModal}
                     setShowFinishModal={setShowFinishModal}
                     lastView={lastView}
+                />
+            );
+        }
+
+        if (currentView === 'builder') {
+            return (
+                <ProgramEditorView 
+                    onNavigate={onNavigate}
+                    programId={editingProgramId}
                 />
             );
         }

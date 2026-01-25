@@ -14,7 +14,8 @@ export const SessionView = ({
     retroactiveDate,
     globalPercent,
     setShowAbandonModal,
-    setShowFinishModal
+    setShowFinishModal,
+    lastView
 }) => {
     return (
         <div className="app-container-v2" style={{ padding: '0' }}>
@@ -24,7 +25,7 @@ export const SessionView = ({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 10px', height: '54px', borderBottom: '1px solid #222' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
-                        <button onClick={() => onNavigate(null)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }}>
+                        <button onClick={() => onNavigate(lastView || 'library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }}>
                             <ArrowLeft size={20} color="#f29b11" />
                         </button>
                         <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', margin: 0 }}>

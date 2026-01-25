@@ -19,7 +19,8 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         activeSession, startSession, finishSession, resetStore, fetchProgramManifest, programDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
         sessionHistory, fetchDayHistory, activeHistorySession, fetchSessionDetails,
         globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises, activeExerciseHistory, fetchExerciseHistory,
-        retroactiveDate, deleteSessionRecord, dailyVolumes
+        retroactiveDate, deleteSessionRecord, dailyVolumes,
+        lastView, setLastView
     } = useProgramStore();
 
     // 1. Hooks
@@ -105,13 +106,23 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     // 4. Effects
     useEffect(() => {
         if (!activeSession && programDays.length === 0) fetchProgramManifest();
-        if (currentView === 'master-agenda') { fetchGlobalHistory(); fetchUniqueExercises(); }
-    }, [currentView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
+        if (currentView === 'master-agenda' || (currentView === null && lastView === 'master-agenda')) { 
+            fetchGlobalHistory(); 
+            fetchUniqueExercises(); 
+        }
+    }, [currentView, lastView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
 
     useEffect(() => {
         setIsLoggingActivity(false);
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
+
+    // Track last relevant view
+    useEffect(() => {
+        if (currentView && currentView !== 'session') {
+            setLastView(currentView);
+        }
+    }, [currentView, setLastView]);
 
     // 5. Handlers
     const handleAbandonSession = () => { resetStore(); setShowAbandonModal(false); onNavigate(null); };
@@ -119,7 +130,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         setIsSaving(true);
         try { await finishSession(); setShowFinishModal(false); onNavigate('master-agenda'); } 
         catch (e) { alert("Error saving: " + e.message); } 
-        finally { setIsSaving(false); }
+        finally { setIsSaving(true); }
     };
     const handleDeleteLog = async () => {
         setIsDeleting(true);
@@ -191,6 +202,8 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     // 6. Navigation Router
     const renderView = () => {
+        const effectiveView = currentView || lastView;
+
         if (currentView === 'session' && activeSession) {
             return (
                 <SessionView 
@@ -202,11 +215,12 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     globalPercent={globalPercent}
                     setShowAbandonModal={setShowAbandonModal}
                     setShowFinishModal={setShowFinishModal}
+                    lastView={lastView}
                 />
             );
         }
 
-        if (currentView === 'master-agenda') {
+        if (effectiveView === 'master-agenda') {
             return (
                 <MasterAgendaView 
                     onExit={onExit}
@@ -234,6 +248,10 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     activeHistorySession={activeHistorySession}
                     getDateStyle={getDateStyle}
                     expandedActivityId={expandedActivityId}
+                    activeSession={activeSession}
+                    workoutLabel={workoutLabel}
+                    elapsed={elapsed}
+                    setShowAbandonModal={setShowAbandonModal}
                 />
             );
         }

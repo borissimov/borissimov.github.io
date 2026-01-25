@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, Dumbbell, Coffee, Loader2 } from 'lucide-react';
+import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import { ActivityLogCard } from './components/ActivityLogCard';
 import { AgendaStats } from './components/AgendaStats';
@@ -32,7 +32,11 @@ export const MasterAgendaView = ({
     isLoading,
     activeHistorySession,
     getDateStyle,
-    expandedActivityId
+    expandedActivityId,
+    activeSession,
+    workoutLabel,
+    elapsed,
+    setShowAbandonModal
 }) => {
     return (
         <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
@@ -52,7 +56,7 @@ export const MasterAgendaView = ({
                         Vault
                     </button>
                 </div>
-                <button onClick={() => onNavigate(null)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
+                <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
             </header>
 
             <AgendaStats stats={stats} onLogActivity={() => setIsLoggingActivity(true)} />
@@ -67,6 +71,18 @@ export const MasterAgendaView = ({
                     scrollHandlers={scrollHandlers}
                     getDateStyle={getDateStyle}
                 />
+
+                {activeSession && (
+                    <div style={{ backgroundColor: 'transparent', border: '1px solid #2ecc71', padding: '12px', borderRadius: '8px', marginTop: '10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div onClick={() => onNavigate('session')} style={{ flex: 1, cursor: 'pointer' }}>
+                            <p style={{ fontSize: '10px', fontWeight: '900', color: '#2ecc71', textTransform: 'uppercase', margin: 0 }}>Active Session in Progress</p>
+                            <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>{workoutLabel} • {elapsed}</p>
+                        </div>
+                        <button onClick={() => setShowAbandonModal(true)} style={{ all: 'unset', padding: '10px', cursor: 'pointer', opacity: 0.6 }}>
+                            <X size={20} color="#ef4444" />
+                        </button>
+                    </div>
+                )}
                 
                 <div style={{ flex: 1, paddingBottom: '100px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', marginTop: '5px' }}>

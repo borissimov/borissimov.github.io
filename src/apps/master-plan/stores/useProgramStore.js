@@ -13,6 +13,7 @@ export const useProgramStore = create(
             expandedBlockId: null,
             systemStep: null, 
             activeFocusId: null,
+            lastView: 'library',
             
             programDays: [], 
             recommendedDayId: null,
@@ -367,7 +368,8 @@ export const useProgramStore = create(
             },
 
             resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, selectedDayId: null, retroactiveDate: null }),
-            setExpandedBlock: (blockId) => set({ expandedBlockId: blockId })
+            setExpandedBlock: (blockId) => set({ expandedBlockId: blockId }),
+            setLastView: (view) => set({ lastView: view })
         }),
         { name: 'mp-program-storage-v3-native' }
     )

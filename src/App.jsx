@@ -25,8 +25,8 @@ const App = () => {
     const [exitNotice, setExitNotice] = useState(false);
 
     // Unified Navigation function
-    const navigate = useCallback((appId, view = null) => {
-        const newState = { appId, view };
+    const navigate = useCallback((appId, view = null, navState = null) => {
+        const newState = { appId, view, navState };
         window.history.pushState(newState, '', '');
         setActiveApp(appId);
         setHistoryState(newState);
@@ -104,7 +104,8 @@ const App = () => {
                 <MasterPlanApp 
                     onExit={exitToHub} 
                     currentView={historyState?.view} 
-                    onNavigate={(view) => navigate('regimen', view)} 
+                    navState={historyState?.navState}
+                    onNavigate={(view, state) => navigate('regimen', view, state)} 
                 />
             )}
             {activeApp === 'hub' && <HubApp setActiveApp={(id) => navigate(id)} />}

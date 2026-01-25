@@ -15,7 +15,7 @@ import { ProgramEditorView } from './features/builder/ProgramEditorView';
 
 import '../shared-premium.css';
 
-const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
+const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
     const { 
         activeSession, startSession, finishSession, resetStore, fetchProgramManifest, programDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
         sessionHistory, fetchDayHistory, activeHistorySession, fetchSessionDetails,
@@ -38,7 +38,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
     const [expandedActivityId, setExpandedActivityId] = useState(null);
-    const [editingProgramId, setEditingProgramId] = useState(null);
 
     // 3. Derived State
     const scrollerDates = useMemo(() => {
@@ -232,7 +231,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
             return (
                 <ProgramEditorView 
                     onNavigate={onNavigate}
-                    programId={editingProgramId}
+                    navState={navState}
                 />
             );
         }

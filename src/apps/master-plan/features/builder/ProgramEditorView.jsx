@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Save, Plus, Trash2, ChevronDown, ChevronRight, Settings, RefreshCcw, Dumbbell, X, Search, GripVertical, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, ChevronDown, ChevronRight, RefreshCcw, Dumbbell, X, Search, Loader2 } from 'lucide-react';
 import { useProgramStore } from '../../stores/useProgramStore';
 
 /**
  * Program Editor: Nested accordion builder for training programs.
+ * Supports both creating new and editing existing programs.
  */
-export const ProgramEditorView = ({ onNavigate, programId = null }) => {
-    const { uniqueExercises, fetchUniqueExercises, saveProgram, isLoading } = useProgramStore();
+export const ProgramEditorView = ({ onNavigate, navState = null }) => {
+    const programId = navState?.programId;
+    const { uniqueExercises, fetchUniqueExercises, saveProgram, fetchProgramDetails, isLoading } = useProgramStore();
     
     const [programName, setProgramName] = useState("NEW PROGRAM");
     const [days, setDays] = useState([]);
@@ -14,10 +16,35 @@ export const ProgramEditorView = ({ onNavigate, programId = null }) => {
     const [activeSearch, setActiveSearch] = useState(null); // { dayId, blockId }
     const [searchTerm, setSearchTerm] = useState("");
     const [isSaving, setIsSaving] = useState(false);
+    const [isHydrating, setIsHydrating] = useState(!!programId);
 
+    // Initial Load & Hydration
     useEffect(() => {
         fetchUniqueExercises();
-    }, [fetchUniqueExercises]);
+        if (programId) {
+            loadProgramForEdit();
+        } else {
+            // Start with one default day if new
+            const firstDay = { id: crypto.randomUUID(), label: 'DAY 1', sequence_number: 1, blocks: [] };
+            setDays([firstDay]);
+            setExpandedDayId(firstDay.id);
+        }
+    }, [programId]);
+
+    const loadProgramForEdit = async () => {
+        try {
+            const data = await fetchProgramDetails(programId);
+            setProgramName(data.name);
+            setDays(data.days);
+            if (data.days.length > 0) setExpandedDayId(data.days[0].id);
+        } catch (err) {
+            console.error("Failed to hydrate builder:", err);
+            alert("Failed to load program for editing.");
+            onNavigate('library');
+        } finally {
+            setIsHydrating(false);
+        }
+    };
 
     const filteredLibrary = useMemo(() => {
         if (!searchTerm) return uniqueExercises.slice(0, 10);
@@ -129,7 +156,7 @@ export const ProgramEditorView = ({ onNavigate, programId = null }) => {
         }
         setIsSaving(true);
         try {
-            await saveProgram(programName, days);
+            await saveProgram(programName, days, programId);
             onNavigate('library');
         } catch (err) {
             alert("Error saving program: " + err.message);
@@ -137,6 +164,17 @@ export const ProgramEditorView = ({ onNavigate, programId = null }) => {
             setIsSaving(false);
         }
     };
+
+    if (isHydrating) {
+        return (
+            <div className="app-container-v2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <Loader2 size={32} color="#f29b11" className="animate-spin" style={{ marginBottom: '15px' }} />
+                    <p style={{ fontSize: '12px', fontWeight: '900', color: '#f29b11', letterSpacing: '2px' }}>DEEP LOADING PROGRAM DATA...</p>
+                </div>
+            </div>
+        );
+    }
 
     const gridStyle = { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '4px', marginTop: '8px' };
     const miniInputStyle = { all: 'unset', backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid #333', borderRadius: '4px', padding: '4px', fontSize: '10px', color: '#fff', textAlign: 'center' };

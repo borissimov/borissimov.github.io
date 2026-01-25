@@ -17,6 +17,7 @@ export const useProgramStore = create(
             
             programs: [],
             activeProgramId: null,
+            showArchivedPrograms: false,
             programDays: [], 
             recommendedDayId: null,
             selectedDayId: null,
@@ -33,34 +34,39 @@ export const useProgramStore = create(
             // Retroactive State
             retroactiveDate: null,
 
+            setShowArchivedPrograms: (show) => {
+                set({ showArchivedPrograms: show });
+                get().fetchProgramManifest();
+            },
+
             fetchProgramManifest: async () => {
                 console.log("[Store] fetchProgramManifest V3 starting...");
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
-                    console.log("[Store] Authenticated User:", user?.email, user?.id);
                     
-                    // 1. FETCH ALL PROGRAMS
-                    const { data: progs, error: progsErr } = await supabase
-                        .schema('v3')
-                        .from('programs')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-                    
-                    if (progsErr) {
-                        console.error("[Store] Programs Fetch ERROR:", progsErr.message);
-                        throw progsErr;
+                    // 1. FETCH PROGRAMS (Conditional filter)
+                    let query = supabase.schema('v3').from('programs').select('*');
+                    if (!get().showArchivedPrograms) {
+                        query = query.is('archived_at', null);
                     }
+                    const { data: progs, error: progsErr } = await query.order('created_at', { ascending: false });
+                    
+                    if (progsErr) throw progsErr;
 
-                    console.log("[Store] Fetched Programs Count:", progs?.length);
-                    console.log("[Store] Programs Detail:", progs);
-
-                    // Determine active program ID (default to first if none set)
+                    // Determine active program ID
                     let currentActiveId = get().activeProgramId;
                     if (!currentActiveId && progs.length > 0) {
-                        currentActiveId = progs[0].id;
+                        // Prefer non-archived for default
+                        const activeOnes = progs.filter(p => !p.archived_at);
+                        currentActiveId = activeOnes.length > 0 ? activeOnes[0].id : progs[0].id;
                     }
-                    console.log("[Store] Current Active Program ID:", currentActiveId);
+
+                    // If current active is archived and we are NOT showing archived, reset
+                    if (currentActiveId && !get().showArchivedPrograms) {
+                        const activeMatch = progs.find(p => p.id === currentActiveId);
+                        if (!activeMatch && progs.length > 0) currentActiveId = progs[0].id;
+                    }
 
                     // 2. FETCH V3 NATIVE DAYS (Filtered by active program)
                     let days = [];
@@ -74,7 +80,6 @@ export const useProgramStore = create(
                         if (daysErr) throw daysErr;
                         days = d;
                     }
-                    console.log("[Store] Fetched Days Count:", days?.length);
 
                     const { data: sessions, error: sessErr } = await supabase.schema('v3').from('sessions').select('id, program_day_id');
                     const { data: blocks, error: blockErr } = await supabase.schema('v3').from('blocks').select('id, session_id, label, block_type, sort_order');
@@ -114,7 +119,6 @@ export const useProgramStore = create(
                         const lastSession = dayHistory[0] || null;
                         const session = sessions.find(s => s.program_day_id === day.id);
                         
-                        // SMART FILTER: Exclude History/Archived blocks
                         const sessionBlocks = session ? blocks.filter(b => b.session_id === session.id && !b.label?.startsWith('HISTORY') && !b.label?.startsWith('ARCHIVED')) : [];
                         
                         const exerciseData = [];
@@ -131,11 +135,7 @@ export const useProgramStore = create(
                             });
                         });
                         
-                        return { 
-                            ...day, 
-                            last_session: lastSession, 
-                            exercisePreview: exerciseData 
-                        };
+                        return { ...day, last_session: lastSession, exercisePreview: exerciseData };
                     });
 
                     let recommendedId = processedDays[0]?.id;
@@ -145,7 +145,7 @@ export const useProgramStore = create(
                         if (lastDayIdx !== -1) recommendedId = processedDays[(lastDayIdx + 1) % processedDays.length].id;
                     }
 
-                    set((state) => ({ 
+                    set((state) => ({
                         programs: progs,
                         activeProgramId: currentActiveId,
                         programDays: processedDays, 
@@ -154,6 +154,109 @@ export const useProgramStore = create(
                         isLoading: false 
                     }));
                 } catch (err) { console.error("[Store V3] fetchProgramManifest FAILED:", err); set({ isLoading: false }); }
+            },
+
+            fetchProgramDetails: async (programId) => {
+                console.log("[Store] Deep loading program details for ID:", programId);
+                set({ isLoading: true });
+                try {
+                    const { data: program, error: pErr } = await supabase.schema('v3').from('programs').select('*').eq('id', programId).single();
+                    if (pErr) throw pErr;
+
+                    const { data: days, error: dErr } = await supabase
+                        .schema('v3')
+                        .from('program_days')
+                        .select(`
+                            id, label, sequence_number,
+                            sessions (
+                                id, name,
+                                blocks (
+                                    id, label, block_type, sort_order,
+                                    block_items (
+                                        id, target_sets, target_reps, target_weight, target_rpe, tempo, metric_type, sort_order,
+                                        exercise_library ( name )
+                                    )
+                                )
+                            )
+                        `)
+                        .eq('program_id', programId)
+                        .order('sequence_number');
+                    
+                    if (dErr) throw dErr;
+
+                    const hydratedDays = days.map(d => ({
+                        id: d.id,
+                        label: d.label,
+                        sequence_number: d.sequence_number,
+                        blocks: (d.sessions[0]?.blocks || []).sort((a,b) => a.sort_order - b.sort_order).map(b => ({
+                            id: b.id,
+                            label: b.label,
+                            block_type: b.block_type,
+                            sort_order: b.sort_order,
+                            items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(i => ({
+                                id: i.id,
+                                name: i.exercise_library.name,
+                                target_sets: i.target_sets,
+                                target_reps: i.target_reps,
+                                target_weight: i.target_weight,
+                                target_rpe: i.target_rpe,
+                                tempo: i.tempo,
+                                metric_type: i.metric_type,
+                                sort_order: i.sort_order
+                            }))
+                        }))
+                    }));
+
+                    set({ isLoading: false });
+                    return { name: program.name, days: hydratedDays };
+                } catch (err) {
+                    console.error("[Store] fetchProgramDetails FAILED:", err);
+                    set({ isLoading: false });
+                    throw err;
+                }
+            },
+
+            archiveProgram: async (programId) => {
+                set({ isLoading: true });
+                try {
+                    const { error } = await supabase
+                        .schema('v3')
+                        .from('programs')
+                        .update({ archived_at: new Date().toISOString() })
+                        .eq('id', programId);
+                    
+                    if (error) throw error;
+                    
+                    if (get().activeProgramId === programId) {
+                        set({ activeProgramId: null });
+                    }
+                    
+                    await get().fetchProgramManifest();
+                    set({ isLoading: false });
+                } catch (err) {
+                    console.error("[Store] archiveProgram FAILED:", err);
+                    set({ isLoading: false });
+                    throw err;
+                }
+            },
+
+            unarchiveProgram: async (programId) => {
+                set({ isLoading: true });
+                try {
+                    const { error } = await supabase
+                        .schema('v3')
+                        .from('programs')
+                        .update({ archived_at: null })
+                        .eq('id', programId);
+                    
+                    if (error) throw error;
+                    await get().fetchProgramManifest();
+                    set({ isLoading: false });
+                } catch (err) {
+                    console.error("[Store] unarchiveProgram FAILED:", err);
+                    set({ isLoading: false });
+                    throw err;
+                }
             },
 
             setActiveProgramId: (id) => {
@@ -258,7 +361,6 @@ export const useProgramStore = create(
             startSession: async (dayId, customDate = null) => {
                 set({ isLoading: true, retroactiveDate: customDate });
                 try {
-                    // FETCH NATIVE V3
                     const { data: sessionTemplate, error } = await supabase.schema('v3').from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
                     if (error) throw error;
                     
@@ -282,7 +384,6 @@ export const useProgramStore = create(
                             id: b.id, 
                             label: b.label, 
                             block_type: b.block_type,
-                            // Direct Mapping: V3 DB structure matches V3 Store structure
                             items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(bi => ({
                                 id: bi.id, 
                                 name: bi.exercise_library.name, 
@@ -315,8 +416,6 @@ export const useProgramStore = create(
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
-                    
-                    // SAVE TO V3
                     const { data: sessionData, error: sessionError } = await supabase.schema('v3').from('completed_sessions').insert([{ user_id: user?.id, program_day_id: session.program_day_id, start_time: session.startTime, end_time: get().retroactiveDate ? session.startTime : new Date().toISOString() }]).select().single();
                     if (sessionError) throw sessionError;
                     
@@ -329,8 +428,8 @@ export const useProgramStore = create(
                                 weight: String(setEntry.weight), 
                                 reps: parseInt(setEntry.reps) || 0, 
                                 rpe: parseFloat(setEntry.rpe) || null, 
-                                duration_seconds: setEntry.duration_seconds, // V3 FIELD
-                                distance_meters: setEntry.distance_meters, // V3 FIELD
+                                duration_seconds: setEntry.duration_seconds, 
+                                distance_meters: setEntry.distance_meters, 
                                 set_number: index + 1, 
                                 created_at: session.startTime 
                             });
@@ -415,28 +514,35 @@ export const useProgramStore = create(
             setExpandedBlock: (blockId) => set({ expandedBlockId: blockId }),
             setLastView: (view) => set({ lastView: view }),
 
-            saveProgram: async (programName, days) => {
-                console.log("[Store] Starting complex V3 Program Save...");
+            saveProgram: async (programName, days, existingProgramId = null) => {
+                console.log("[Store] Starting V3 Program Save (Edit/Create)...");
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     if (!user) throw new Error("Authentication required to save programs.");
 
-                    // 1. Create Program with correct cycle_length
+                    const programPayload = { 
+                        name: programName, 
+                        user_id: user.id, 
+                        cycle_length: days.length 
+                    };
+                    if (existingProgramId) programPayload.id = existingProgramId;
+
                     const { data: program, error: progErr } = await supabase
                         .schema('v3')
                         .from('programs')
-                        .insert([{ name: programName, user_id: user.id, cycle_length: days.length }])
+                        .upsert([programPayload])
                         .select()
                         .single();
                     if (progErr) throw progErr;
 
-                    // 2. Fetch full library for ID mapping
                     const { data: library } = await supabase.schema('v3').from('exercise_library').select('id, name');
 
-                    // 3. Sequential Hierarchical Insert (Maintain relational integrity)
+                    if (existingProgramId) {
+                        await supabase.schema('v3').from('program_days').delete().eq('program_id', program.id);
+                    }
+
                     for (const day of days) {
-                        // A. Program Day
                         const { data: progDay, error: dayErr } = await supabase
                             .schema('v3')
                             .from('program_days')
@@ -445,7 +551,6 @@ export const useProgramStore = create(
                             .single();
                         if (dayErr) throw dayErr;
 
-                        // B. Session
                         const { data: session, error: sessErr } = await supabase
                             .schema('v3')
                             .from('sessions')
@@ -454,22 +559,15 @@ export const useProgramStore = create(
                             .single();
                         if (sessErr) throw sessErr;
 
-                        // C. Blocks
                         for (const block of day.blocks) {
                             const { data: v3Block, error: blockErr } = await supabase
                                 .schema('v3')
                                 .from('blocks')
-                                .insert([{ 
-                                    session_id: session.id, 
-                                    label: block.label, 
-                                    block_type: block.block_type, 
-                                    sort_order: block.sort_order 
-                                }])
+                                .insert([{ session_id: session.id, label: block.label, block_type: block.block_type, sort_order: block.sort_order }])
                                 .select()
                                 .single();
                             if (blockErr) throw blockErr;
 
-                            // D. Block Items
                             const itemsToInsert = block.items.map(item => {
                                 const libItem = library.find(l => l.name === item.name);
                                 return {
@@ -483,28 +581,21 @@ export const useProgramStore = create(
                                     metric_type: item.metric_type,
                                     sort_order: item.sort_order
                                 };
-                            }).filter(i => i.exercise_library_id); // Only insert if exercise exists
+                            }).filter(i => i.exercise_library_id);
 
                             if (itemsToInsert.length > 0) {
-                                const { error: itemErr } = await supabase
-                                    .schema('v3')
-                                    .from('block_items')
-                                    .insert(itemsToInsert);
+                                const { error: itemErr } = await supabase.schema('v3').from('block_items').insert(itemsToInsert);
                                 if (itemErr) throw itemErr;
                             }
                         }
                     }
 
                     console.log("✨ Program Saved Successfully!");
-                    set({ activeProgramId: program.id }); // Automatically switch to new program
+                    set({ activeProgramId: program.id }); 
                     await get().fetchProgramManifest();
                     set({ isLoading: false });
                     return true;
-                } catch (err) {
-                    console.error("[Store V3] saveProgram FAILED:", err);
-                    set({ isLoading: false });
-                    throw err;
-                }
+                } catch (err) { console.error("[Store V3] saveProgram FAILED:", err); set({ isLoading: false }); throw err; }
             }
         }),
         { name: 'mp-program-storage-v3-native' }

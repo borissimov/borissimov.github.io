@@ -36,7 +36,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     const [historyTab, setHistoryTab] = useState('timeline');
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
-    const [isLoggingActivity, setIsLoggingActivity] = useState(false);
     const [expandedActivityId, setExpandedActivityId] = useState(null);
 
     // 3. Derived State
@@ -113,7 +112,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     }, [currentView, lastView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
 
     useEffect(() => {
-        setIsLoggingActivity(false);
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
 
@@ -130,7 +128,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         setIsSaving(true);
         try { await finishSession(); setShowFinishModal(false); onNavigate('master-agenda'); } 
         catch (e) { alert("Error saving: " + e.message); } 
-        finally { setIsSaving(true); }
+        finally { setIsSaving(false); }
     };
     const handleDeleteLog = async () => {
         setIsDeleting(true);
@@ -138,10 +136,14 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         catch (e) { alert("Delete failed: " + e.message); } 
         finally { setIsDeleting(false); }
     };
-    const handleInstantRetroactive = (dayId) => {
-        setSelectedDay(dayId);
-        startSession(dayId, selectedCalendarDate.toISOString()).then(() => onNavigate('session'));
+    
+    // Updated to navigate to library with context
+    const handlePrepareActivity = () => {
+        const isToday = selectedCalendarDate.toDateString() === new Date().toDateString();
+        useProgramStore.setState({ retroactiveDate: isToday ? null : selectedCalendarDate.toISOString() });
+        onNavigate('library');
     };
+
     const handleToggleActivityExpansion = (sessionId) => {
         if (expandedActivityId === sessionId) setExpandedActivityId(null);
         else { setExpandedActivityId(sessionId); fetchSessionDetails(sessionId); }
@@ -237,13 +239,11 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     scrollerDates={scrollerDates}
                     scrollHandlers={scrollHandlers}
                     activitiesOnSelectedDate={activitiesOnSelectedDate}
-                    isLoggingActivity={isLoggingActivity}
-                    setIsLoggingActivity={setIsLoggingActivity}
                     handleToggleActivityExpansion={handleToggleActivityExpansion}
                     handleExportJson={handleExportJson}
                     setConfirmDeleteId={setConfirmDeleteId}
                     programDays={programDays}
-                    handleInstantRetroactive={handleInstantRetroactive}
+                    handlePrepareActivity={handlePrepareActivity}
                     isLoading={isLoading}
                     activeHistorySession={activeHistorySession}
                     getDateStyle={getDateStyle}
@@ -269,6 +269,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                 setSelectedDay={setSelectedDay}
                 startSession={startSession}
                 setShowAbandonModal={setShowAbandonModal}
+                retroactiveDate={retroactiveDate}
             />
         );
     };

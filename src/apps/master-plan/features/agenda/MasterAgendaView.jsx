@@ -22,13 +22,11 @@ export const MasterAgendaView = ({
     scrollerDates,
     scrollHandlers,
     activitiesOnSelectedDate,
-    isLoggingActivity,
-    setIsLoggingActivity,
     handleToggleActivityExpansion,
     handleExportJson,
     setConfirmDeleteId,
     programDays,
-    handleInstantRetroactive,
+    handlePrepareActivity,
     isLoading,
     activeHistorySession,
     getDateStyle,
@@ -59,7 +57,7 @@ export const MasterAgendaView = ({
                 <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
             </header>
 
-            <AgendaStats stats={stats} onLogActivity={() => setIsLoggingActivity(true)} />
+            <AgendaStats stats={stats} onLogActivity={handlePrepareActivity} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1, overflowY: 'auto' }}>
                 <AgendaCalendar 
@@ -112,20 +110,6 @@ export const MasterAgendaView = ({
                     )}
                 </div>
             </div>
-
-            {isLoggingActivity && (
-                <div className="animate-in slide-in-from-bottom-4 duration-300" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ maxWidth: '400px', width: '100%' }}>
-                        <p style={{ fontSize: '12px', color: '#f29b11', fontWeight: '900', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', letterSpacing: '3px' }}>Initialize Activity:</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                            {programDays.map(day => (
-                                <button key={day.id} onClick={() => handleInstantRetroactive(day.id)} style={{ all: 'unset', padding: '25px 10px', backgroundColor: '#0a0a0a', color: '#fff', borderRadius: '12px', fontSize: '12px', fontWeight: '900', textAlign: 'center', border: '1px solid #222' }}>{day.label}</button>
-                            ))}
-                        </div>
-                        <button onClick={() => setIsLoggingActivity(false)} className="premium-btn-secondary" style={{ marginTop: '25px', height: '54px', border: 'none', color: '#666', fontSize: '12px' }}>DISMISS</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

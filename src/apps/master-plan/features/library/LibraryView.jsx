@@ -16,7 +16,8 @@ export const LibraryView = ({
     selectedDayId,
     setSelectedDay,
     startSession,
-    setShowAbandonModal
+    setShowAbandonModal,
+    retroactiveDate
 }) => {
     return (
         <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -44,6 +45,7 @@ export const LibraryView = ({
                             setSelectedDay={setSelectedDay}
                             startSession={startSession}
                             onNavigate={onNavigate}
+                            retroactiveDate={retroactiveDate}
                         />
                     ))}
                 </div>

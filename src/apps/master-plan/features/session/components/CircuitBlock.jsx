@@ -11,7 +11,7 @@ export const CircuitBlock = ({ block }) => {
                     key={item.id}
                     item={item}
                     blockId={block.id}
-                    onLog={() => {}}
+                    isCircuit={true}
                 />
             ))}
         </div>

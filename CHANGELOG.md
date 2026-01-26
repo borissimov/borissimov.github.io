@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-01-26
+
+### Added
+- **Surgical JSON Backup Engine:** Automated multi-schema snapshotting tool for `v3` and `v3_dev`.
+- **The Vault:** Dedicated archival directory `_project-system/archives/db-backups/` for timestamped database states.
+- **npm run backup-db:** Simplified command-line interface for manual and automated backups.
+- **Service Role Integration:** Configured secure `.env` protocol to bypass RLS for administrative data preservation.
+- **Push Notification Support:** Added VAPID keys to `.env` for future edge function integration.
+
+### Security
+- **Credential Hardening:** Excluded `database_access.txt` from git tracking and updated `.gitignore` to prevent accidental exposure of master secrets.
+
 ## [1.6.0] - 2026-01-26
 
 ### Added

@@ -1,7 +1,7 @@
 # SYSTEM CONTEXT: Master Plan
 
 **Last Updated:** January 26, 2026
-**Version:** 1.6.0 (Sandbox Hardening)
+**Version:** 1.7.0 (Surgical Backups)
 
 ## 1. Project Identity & Goal
 **Master Plan** is a high-performance athletic platform built for rigorous training management. 
@@ -61,10 +61,11 @@ A unified `navState` object is passed through the root `App.jsx` to all sub-apps
 ## 5. Current State Snapshot (Jan 26, 2026)
 
 ### Recently Completed
+*   **Surgical Backups:** Implementation of `npm run backup-db` for multi-schema JSON snapshots.
 *   **Sandbox Environment:** Creation, exposure, and population of the `v3_dev` playground.
+*   **Program Archiving:** Soft-delete "Graveyard" for template management.
 *   **Relational Hardening:** Full Foreign Key restoration and permission granting for the sandbox.
 *   **App-wide HUD:** Standardized "Sandbox Mode" indicators in all headers.
-*   **Program Archiving:** Soft-delete "Graveyard" for template management.
 
 ### Immediate Roadmap
 *   **Structural Sync:** Implementation of SQL migrations to maintain schema parity.
@@ -79,4 +80,5 @@ A unified `navState` object is passed through the root `App.jsx` to all sub-apps
 *   `src/apps/master-plan/MasterPlanApp.jsx`: Feature-level router and modal manager.
 *   `src/apps/master-plan/stores/useProgramStore.js`: The central "brain" for Native V3 data.
 *   `src/apps/master-plan/features/builder/ProgramEditorView.jsx`: The hierarchical program authoring engine.
+*   `_project-system/tooling/db/backup_db.js`: The surgical multi-schema backup engine.
 *   `CHANGELOG.md`: The mandatory audit log of all system changes.

@@ -54,9 +54,10 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
 
     const activitiesOnSelectedDate = useMemo(() => {
         return globalHistory.filter(s => {
-            const d1 = new Date(s.end_time).toDateString();
-            const d2 = selectedCalendarDate.toDateString();
-            return d1 === d2;
+            // Standardize both to YYYY-MM-DD for comparison
+            const dateStr = new Date(s.end_time).toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD
+            const selectedStr = selectedCalendarDate.toLocaleDateString('en-CA');
+            return dateStr === selectedStr;
         });
     }, [globalHistory, selectedCalendarDate]);
 

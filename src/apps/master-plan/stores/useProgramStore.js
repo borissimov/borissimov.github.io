@@ -184,28 +184,34 @@ export const useProgramStore = create(
                     
                     if (dErr) throw dErr;
 
-                    const hydratedDays = days.map(d => ({
-                        id: d.id,
-                        label: d.label,
-                        sequence_number: d.sequence_number,
-                        blocks: (d.sessions[0]?.blocks || []).sort((a,b) => a.sort_order - b.sort_order).map(b => ({
-                            id: b.id,
-                            label: b.label,
-                            block_type: b.block_type,
-                            sort_order: b.sort_order,
-                            items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(i => ({
-                                id: i.id,
-                                name: i.exercise_library.name,
-                                target_sets: i.target_sets,
-                                target_reps: i.target_reps,
-                                target_weight: i.target_weight,
-                                target_rpe: i.target_rpe,
-                                tempo: i.tempo,
-                                metric_type: i.metric_type,
-                                sort_order: i.sort_order
+                    const hydratedDays = days.map(d => {
+                        // Handle both object (due to unique constraint) and array responses
+                        const session = Array.isArray(d.sessions) ? d.sessions[0] : d.sessions;
+                        const blocks = (session?.blocks || []).sort((a,b) => a.sort_order - b.sort_order);
+
+                        return {
+                            id: d.id,
+                            label: d.label,
+                            sequence_number: d.sequence_number,
+                            blocks: blocks.map(b => ({
+                                id: b.id,
+                                label: b.label,
+                                block_type: b.block_type,
+                                sort_order: b.sort_order,
+                                items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(i => ({
+                                    id: i.id,
+                                    name: i.exercise_library.name,
+                                    target_sets: i.target_sets,
+                                    target_reps: i.target_reps,
+                                    target_weight: i.target_weight,
+                                    target_rpe: i.target_rpe,
+                                    tempo: i.tempo,
+                                    metric_type: i.metric_type,
+                                    sort_order: i.sort_order
+                                }))
                             }))
-                        }))
-                    }));
+                        };
+                    });
 
                     set({ isLoading: false });
                     return { name: program.name, days: hydratedDays };
@@ -331,27 +337,40 @@ export const useProgramStore = create(
                     const { data: session, error: sErr } = await supabase.schema(activeSchema).from('completed_sessions').select('*, program_days(label)').eq('id', sessionId).single();
                     if (sErr) throw sErr;
                     
+                    // SNAPSHOT STRATEGY: Fetch both relational data AND snapshots
                     const { data: logs, error: lErr } = await supabase
                         .schema(activeSchema)
                         .from('performance_logs')
-                        .select(`*, block_items!inner ( target_weight, target_reps, target_rpe, tempo, sort_order, exercise_library!inner ( name ) )`)
+                        .select(`*, 
+                            block_items ( target_weight, target_reps, target_rpe, tempo, sort_order, exercise_library ( name ) )
+                        `)
                         .eq('completed_session_id', sessionId)
                         .order('created_at', { ascending: true });
                     
                     if (lErr) throw lErr;
+                    
                     const groups = [];
                     logs.forEach(log => {
-                        const exName = log.block_items.exercise_library.name;
+                        // FALLBACK LOGIC: Try relational link first, then snapshot
+                        const exName = log.block_items?.exercise_library?.name || log.exercise_name_snapshot || 'Unknown Exercise';
+                        
+                        const targets = {
+                            w: log.block_items?.target_weight || '?',
+                            r: log.block_items?.target_reps || '?',
+                            e: log.block_items?.target_rpe || '?',
+                            t: log.block_items?.tempo || ''
+                        };
+
+                        // Use snapshot target if available and relational is dead
+                        if (!log.block_items && log.target_snapshot) {
+                            targets.w = log.target_snapshot; // We stored the whole string here in migration
+                        }
+
                         const lastGroup = groups[groups.length - 1];
                         if (!lastGroup || lastGroup.name !== exName) {
                             groups.push({ 
                                 name: exName, 
-                                targets: { 
-                                    w: log.block_items.target_weight, 
-                                    r: log.block_items.target_reps, 
-                                    e: log.block_items.target_rpe,
-                                    t: log.block_items.tempo
-                                }, 
+                                targets, 
                                 sets: [log] 
                             });
                         } else { lastGroup.sets.push(log); }
@@ -366,16 +385,20 @@ export const useProgramStore = create(
 
             startSession: async (dayId, customDate = null) => {
                 const activeSchema = getActiveSchema();
+                console.log(`[Store] Starting Session for Day ID: ${dayId}`);
                 set({ isLoading: true, retroactiveDate: customDate });
                 try {
-                    const { data: sessionTemplate, error } = await supabase.schema(activeSchema).from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
+                    const { data: sessionTemplate, error } = await supabase.schema(activeSchema).from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, exercise_library_id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
                     if (error) throw error;
                     
                     if (!sessionTemplate) {
-                        const session = { id: crypto.randomUUID(), startTime: customDate || new Date().toISOString(), program_day_id: dayId, isRestDay: true, blocks: [], logs: {} };
-                        set({ activeSession: session, isLoading: false });
+                        console.warn("[Store] No session template found for this Day ID. It might have been deleted.");
+                        alert("Template not found. Please refresh the library.");
+                        set({ isLoading: false });
                         return;
                     }
+
+                    console.log("[Store] Session Template Loaded:", sessionTemplate);
 
                     const activeBlocks = (sessionTemplate.blocks || [])
                         .filter(b => !b.label?.startsWith('HISTORY') && !b.label?.startsWith('ARCHIVED'))
@@ -393,6 +416,7 @@ export const useProgramStore = create(
                             block_type: b.block_type,
                             items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(bi => ({
                                 id: bi.id, 
+                                exercise_library_id: bi.exercise_library_id,
                                 name: bi.exercise_library.name, 
                                 technique_cues: bi.exercise_library.technique_cues,
                                 target_sets: bi.target_sets, 
@@ -429,10 +453,25 @@ export const useProgramStore = create(
                     
                     const logsToInsert = [];
                     Object.entries(session.logs).forEach(([itemId, sets]) => {
+                        // Snapshot Strategy: Capture the text truth at moment of completion
+                        let snapshotName = null;
+                        let snapshotTarget = null;
+
+                        for (const b of session.blocks) {
+                            const item = b.items.find(i => i.id === itemId);
+                            if (item) {
+                                snapshotName = item.name; // Preserved from Library
+                                snapshotTarget = `${item.target_sets}x${item.target_reps} @ ${item.target_weight}`;
+                                break;
+                            }
+                        }
+
                         sets.forEach((setEntry, index) => {
                             logsToInsert.push({ 
                                 completed_session_id: sessionData.id, 
-                                block_item_id: itemId, 
+                                block_item_id: itemId,
+                                exercise_name_snapshot: snapshotName, // THE SNAPSHOT
+                                target_snapshot: snapshotTarget,
                                 weight: String(setEntry.weight), 
                                 reps: parseInt(setEntry.reps) || 0, 
                                 rpe: parseFloat(setEntry.rpe) || null, 
@@ -524,7 +563,7 @@ export const useProgramStore = create(
 
             saveProgram: async (programName, days, existingProgramId = null) => {
                 const activeSchema = getActiveSchema();
-                console.log(`[Store] Starting Program Save (${activeSchema})...`);
+                console.log(`[Store] Starting Surgical Program Save (${activeSchema})...`);
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
@@ -537,6 +576,7 @@ export const useProgramStore = create(
                     };
                     if (existingProgramId) programPayload.id = existingProgramId;
 
+                    // 1. UPSERT PROGRAM
                     const { data: program, error: progErr } = await supabase
                         .schema(activeSchema)
                         .from('programs')
@@ -547,59 +587,107 @@ export const useProgramStore = create(
 
                     const { data: library } = await supabase.schema(activeSchema).from('exercise_library').select('id, name');
 
-                    if (existingProgramId) {
-                        await supabase.schema(activeSchema).from('program_days').delete().eq('program_id', program.id);
-                    }
+                    // 2. GET EXISTING DATA FOR DIFFING
+                    const { data: existingDays } = await supabase.schema(activeSchema).from('program_days').select('id').eq('program_id', program.id);
+                    const existingDayIds = existingDays?.map(d => d.id) || [];
+                    const incomingDayIds = days.map(d => d.id).filter(id => !id.includes('-') || id.length > 30); // simplistic UUID check
 
+                    // 3. SURGICAL DAY SAVING
                     for (const day of days) {
                         const { data: progDay, error: dayErr } = await supabase
                             .schema(activeSchema)
                             .from('program_days')
-                            .insert([{ program_id: program.id, label: day.label, sequence_number: day.sequence_number }])
+                            .upsert([{ 
+                                id: day.id.length > 30 ? day.id : undefined, // Only pass ID if it looks like a UUID
+                                program_id: program.id, 
+                                label: day.label, 
+                                sequence_number: day.sequence_number 
+                            }])
                             .select()
                             .single();
                         if (dayErr) throw dayErr;
 
+                        // Upsert Session for this day
                         const { data: session, error: sessErr } = await supabase
                             .schema(activeSchema)
                             .from('sessions')
-                            .insert([{ program_day_id: progDay.id, name: `${day.label} SESSION` }])
+                            .upsert([{ 
+                                program_day_id: progDay.id, 
+                                name: `${day.label} SESSION` 
+                            }], { onConflict: 'program_day_id' })
                             .select()
                             .single();
                         if (sessErr) throw sessErr;
+
+                        // Get existing blocks for this session to diff
+                        const { data: existingBlocks } = await supabase.schema(activeSchema).from('blocks').select('id').eq('session_id', session.id);
+                        const existingBlockIds = existingBlocks?.map(b => b.id) || [];
+                        const incomingBlockIds = day.blocks.map(b => b.id);
 
                         for (const block of day.blocks) {
                             const { data: v3Block, error: blockErr } = await supabase
                                 .schema(activeSchema)
                                 .from('blocks')
-                                .insert([{ session_id: session.id, label: block.label, block_type: block.block_type, sort_order: block.sort_order }])
+                                .upsert([{ 
+                                    id: block.id.length > 30 ? block.id : undefined,
+                                    session_id: session.id, 
+                                    label: block.label, 
+                                    block_type: block.block_type, 
+                                    sort_order: block.sort_order 
+                                }])
                                 .select()
                                 .single();
                             if (blockErr) throw blockErr;
 
-                            const itemsToInsert = block.items.map(item => {
-                                const libItem = library.find(l => l.name === item.name);
-                                return {
-                                    session_block_id: v3Block.id,
-                                    exercise_library_id: libItem?.id,
-                                    target_sets: parseInt(item.target_sets),
-                                    target_reps: String(item.target_reps),
-                                    target_weight: String(item.target_weight),
-                                    target_rpe: String(item.target_rpe),
-                                    tempo: String(item.tempo),
-                                    metric_type: item.metric_type,
-                                    sort_order: item.sort_order
-                                };
-                            }).filter(i => i.exercise_library_id);
+                            // Diff Items
+                            const { data: existingItems } = await supabase.schema(activeSchema).from('block_items').select('id').eq('session_block_id', v3Block.id);
+                            const existingItemIds = existingItems?.map(i => i.id) || [];
+                            const incomingItemIds = block.items.map(i => i.id);
 
-                            if (itemsToInsert.length > 0) {
-                                const { error: itemErr } = await supabase.schema(activeSchema).from('block_items').insert(itemsToInsert);
+                            for (const item of block.items) {
+                                const libItem = library.find(l => l.name === item.name);
+                                if (!libItem) continue;
+
+                                const { error: itemErr } = await supabase
+                                    .schema(activeSchema)
+                                    .from('block_items')
+                                    .upsert([{
+                                        id: item.id.length > 30 ? item.id : undefined,
+                                        session_block_id: v3Block.id,
+                                        exercise_library_id: libItem.id,
+                                        target_sets: parseInt(item.target_sets),
+                                        target_reps: String(item.target_reps),
+                                        target_weight: String(item.target_weight),
+                                        target_rpe: String(item.target_rpe),
+                                        tempo: String(item.tempo),
+                                        metric_type: item.metric_type,
+                                        sort_order: item.sort_order
+                                    }]);
                                 if (itemErr) throw itemErr;
                             }
+
+                            // DELETE REMOVED ITEMS
+                            const itemsToDelete = existingItemIds.filter(id => !incomingItemIds.includes(id));
+                            if (itemsToDelete.length > 0) {
+                                await supabase.schema(activeSchema).from('block_items').delete().in('id', itemsToDelete);
+                            }
+                        }
+
+                        // DELETE REMOVED BLOCKS
+                        const blocksToDelete = existingBlockIds.filter(id => !incomingBlockIds.includes(id));
+                        if (blocksToDelete.length > 0) {
+                            await supabase.schema(activeSchema).from('blocks').delete().in('id', blocksToDelete);
                         }
                     }
 
-                    console.log("✨ Program Saved Successfully!");
+                    // DELETE REMOVED DAYS
+                    const finalIncomingDayIds = days.map(d => d.id);
+                    const daysToDelete = existingDayIds.filter(id => !finalIncomingDayIds.includes(id));
+                    if (daysToDelete.length > 0) {
+                        await supabase.schema(activeSchema).from('program_days').delete().in('id', daysToDelete);
+                    }
+
+                    console.log("✨ Program Saved Surgically!");
                     set({ activeProgramId: program.id }); 
                     await get().fetchProgramManifest();
                     set({ isLoading: false });
@@ -607,6 +695,14 @@ export const useProgramStore = create(
                 } catch (err) { console.error("[Store V3] saveProgram FAILED:", err); set({ isLoading: false }); throw err; }
             }
         }),
-        { name: 'mp-program-storage-v3-native' }
-    )
-);
+                { 
+                    name: `mp-v3-storage-${getActiveSchema()}`, // DYNAMIC KEY for isolation
+                    storage: {
+                        getItem: (name) => localStorage.getItem(name),
+                        setItem: (name, value) => localStorage.setItem(name, value),
+                        removeItem: (name) => localStorage.removeItem(name),
+                    }
+                }
+            )
+        );
+        

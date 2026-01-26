@@ -8,14 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.0] - 2026-01-26
 
 ### Added
+- **Immutable History Engine:** Implemented "Snapshot Strategy" for performance logs. Exercise names and targets are now "baked" into the log at the moment of completion, making history immune to program edits or exercise deletions.
+- **Environment Isolation:** Implemented dynamic persistence keys for Zustand. Production and Sandbox environments now have completely isolated local storage caches to prevent data leakage during schema switching.
 - **Surgical JSON Backup Engine:** Automated multi-schema snapshotting tool for `v3` and `v3_dev`.
 - **The Vault:** Dedicated archival directory `_project-system/archives/db-backups/` for timestamped database states.
 - **npm run backup-db:** Simplified command-line interface for manual and automated backups.
-- **Service Role Integration:** Configured secure `.env` protocol to bypass RLS for administrative data preservation.
-- **Push Notification Support:** Added VAPID keys to `.env` for future edge function integration.
+- **Identity Awareness:** Integrated full user email display in the HubApp header for testing transparency.
 
-### Security
-- **Credential Hardening:** Excluded `database_access.txt` from git tracking and updated `.gitignore` to prevent accidental exposure of master secrets.
+### Fixed
+- **History Data Loss:** Resolved a critical bug where editing a program would physically delete historical logs due to `ON DELETE CASCADE`.
+- **Relational Stability:** Added unique constraints to the `sessions` table to support reliable surgical updates.
+- **Timezone Drift:** Standardized date comparisons in the Master Agenda using ISO strings to prevent day-shifting in UTC+2 (Sofia) contexts.
+- **PGRST201 Ambiguity:** Resolved PostgREST join errors by implementing explicit relationship hinting in store queries.
 
 ## [1.6.0] - 2026-01-26
 

@@ -67,7 +67,7 @@ export const HubApp = ({ setActiveApp }) => {
                     <div className="hub-status-badge">
                         <div className="hub-status-pulse" style={{ backgroundColor: activeSchema === 'v3_dev' ? '#ef4444' : '#2ecc71' }}></div>
                         <span style={{ fontSize: '10px', fontWeight: '900', color: '#555', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                            {profile?.full_name || session?.user?.email.split('@')[0]} System Active {activeSchema === 'v3_dev' && "(SANDBOX)"}
+                            {session?.user?.email || 'OFFLINE'} ACTIVE {activeSchema === 'v3_dev' && "(SANDBOX)"}
                         </span>
                     </div>
                 </header>

@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2026-01-26
+
+### Fixed
+- **Mobile Responsiveness (Builder):** Implemented flexible wrapping for exercise target fields in the Program Builder to prevent horizontal overflow on narrow devices (e.g., Galaxy A41).
+
 ## [1.7.0] - 2026-01-26
 
 ### Added
@@ -14,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The Vault:** Dedicated archival directory `_project-system/archives/db-backups/` for timestamped database states.
 - **npm run backup-db:** Simplified command-line interface for manual and automated backups.
 - **Identity Awareness:** Integrated full user email display in the HubApp header for testing transparency.
+
+### Fixed
+- **History Data Loss:** Resolved a critical bug where editing a program would physically delete historical logs due to `ON DELETE CASCADE`.
+- **Relational Stability:** Added unique constraints to the `sessions` table to support reliable surgical updates.
+- **Timezone Drift:** Standardized date comparisons in the Master Agenda using ISO strings to prevent day-shifting in UTC+2 (Sofia) contexts.
+- **PGRST201 Ambiguity:** Resolved PostgREST join errors by implementing explicit relationship hinting in store queries.
 
 ### Removed
 - **Legacy V2 Logic:** Deleted `useTrainingStore.js` and `seed_performance_protocol.js`. The system now relies exclusively on the Modular V3 architecture.

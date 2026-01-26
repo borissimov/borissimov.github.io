@@ -15,11 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **npm run backup-db:** Simplified command-line interface for manual and automated backups.
 - **Identity Awareness:** Integrated full user email display in the HubApp header for testing transparency.
 
-### Fixed
-- **History Data Loss:** Resolved a critical bug where editing a program would physically delete historical logs due to `ON DELETE CASCADE`.
-- **Relational Stability:** Added unique constraints to the `sessions` table to support reliable surgical updates.
-- **Timezone Drift:** Standardized date comparisons in the Master Agenda using ISO strings to prevent day-shifting in UTC+2 (Sofia) contexts.
-- **PGRST201 Ambiguity:** Resolved PostgREST join errors by implementing explicit relationship hinting in store queries.
+### Removed
+- **Legacy V2 Logic:** Deleted `useTrainingStore.js` and `seed_performance_protocol.js`. The system now relies exclusively on the Modular V3 architecture.
+- **Hardcoded Credentials:** Removed obsolete script containing legacy database connection strings and passwords.
 
 ## [1.6.0] - 2026-01-26
 

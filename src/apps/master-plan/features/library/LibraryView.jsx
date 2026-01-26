@@ -65,7 +65,7 @@ export const LibraryView = ({
                                 <div 
                                     key={prog.id}
                                     onClick={(e) => { 
-                                        if (isArchived) return; // Prevent selection of archived ones without restore
+                                        if (isArchived) return; 
                                         e.stopPropagation(); 
                                         setActiveProgramId(prog.id); 
                                         setShowSwitcher(false); 
@@ -123,19 +123,17 @@ export const LibraryView = ({
                             <PlusCircle size={18} color="#f29b11" />
                             <span style={{ fontSize: '12px', fontWeight: '900', color: '#f29b11', textTransform: 'uppercase' }}>Create New Program</span>
                         </div>
-                    </div>
 
-                    {/* FOOTER TOGGLE */}
-                    <div style={{ padding: '20px 0', borderTop: '1px solid #222', marginTop: 'auto' }}>
-                        <button 
+                        {/* GRAVEYARD TOGGLE INTEGRATED INTO LIST */}
+                        <div 
                             onClick={(e) => { e.stopPropagation(); setShowArchivedPrograms(!showArchivedPrograms); }}
-                            style={{ all: 'unset', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', margin: '0 auto' }}
+                            style={{ padding: '15px', marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', cursor: 'pointer', borderTop: '1px solid #222' }}
                         >
                             {showArchivedPrograms ? <EyeOff size={14} color="#666" /> : <Eye size={14} color="#666" />}
                             <span style={{ fontSize: '10px', fontWeight: '900', color: '#666', textTransform: 'uppercase', letterSpacing: '1px' }}>
                                 {showArchivedPrograms ? "Hide Archived" : "Show Archived Programs"}
                             </span>
-                        </button>
+                        </div>
                     </div>
                 </div>
             )}

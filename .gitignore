@@ -89,3 +89,4 @@ node_modules/
 # Logs and Temp
 *.log
 /home/dev/.gemini/tmp/*
+_project-system/system-config/auth/database_access.txt

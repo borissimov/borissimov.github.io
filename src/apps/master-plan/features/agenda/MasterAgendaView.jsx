@@ -1,8 +1,9 @@
 import React from 'react';
-import { LayoutGrid, Dumbbell, Coffee, Loader2 } from 'lucide-react';
+import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
 import { AgendaCalendar } from './components/AgendaCalendar';
-import { ActivityLogCard } from './components/ActivityLogCard';
+import CompletedSessionCard from './components/CompletedSessionCard';
 import { AgendaStats } from './components/AgendaStats';
+import { getActiveSchema } from '../../../../supabaseClient';
 
 /**
  * Master Agenda: The formal chronological timeline and performance vault.
@@ -22,22 +23,25 @@ export const MasterAgendaView = ({
     scrollerDates,
     scrollHandlers,
     activitiesOnSelectedDate,
-    isLoggingActivity,
-    setIsLoggingActivity,
     handleToggleActivityExpansion,
     handleExportJson,
     setConfirmDeleteId,
     programDays,
-    handleInstantRetroactive,
+    handlePrepareActivity,
     isLoading,
     activeHistorySession,
     getDateStyle,
-    expandedActivityId
+    expandedActivityId,
+    activeSession,
+    workoutLabel,
+    elapsed,
+    setShowAbandonModal
 }) => {
     return (
         <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50 }}>
+            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50, position: 'relative' }}>
                 <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Back to Portal"><LayoutGrid size={24} color="#f29b11" /></button>
+                
                 <div style={{ display: 'flex', backgroundColor: '#0a0a0a', borderRadius: '8px', padding: '4px', border: '1px solid #222', flex: 1.5 }}>
                     <button 
                         onClick={() => { if (historyTab === 'timeline') setIsGridExpanded(!isGridExpanded); else setHistoryTab('timeline'); }} 
@@ -52,10 +56,17 @@ export const MasterAgendaView = ({
                         Vault
                     </button>
                 </div>
-                <button onClick={() => onNavigate(null)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
+
+                {getActiveSchema() === 'v3_dev' && (
+                    <span style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', fontSize: '7px', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                        Sandbox Mode
+                    </span>
+                )}
+
+                <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
             </header>
 
-            <AgendaStats stats={stats} onLogActivity={() => setIsLoggingActivity(true)} />
+            <AgendaStats stats={stats} onLogActivity={handlePrepareActivity} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1, overflowY: 'auto' }}>
                 <AgendaCalendar 
@@ -67,6 +78,18 @@ export const MasterAgendaView = ({
                     scrollHandlers={scrollHandlers}
                     getDateStyle={getDateStyle}
                 />
+
+                {activeSession && (
+                    <div style={{ backgroundColor: 'transparent', border: '1px solid #2ecc71', padding: '12px', borderRadius: '8px', marginTop: '10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div onClick={() => onNavigate('session')} style={{ flex: 1, cursor: 'pointer' }}>
+                            <p style={{ fontSize: '10px', fontWeight: '900', color: '#2ecc71', textTransform: 'uppercase', margin: 0 }}>Active Session in Progress</p>
+                            <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>{workoutLabel} • {elapsed}</p>
+                        </div>
+                        <button onClick={() => setShowAbandonModal(true)} style={{ all: 'unset', padding: '10px', cursor: 'pointer', opacity: 0.6 }}>
+                            <X size={20} color="#ef4444" />
+                        </button>
+                    </div>
+                )}
                 
                 <div style={{ flex: 1, paddingBottom: '100px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', marginTop: '5px' }}>
@@ -76,7 +99,7 @@ export const MasterAgendaView = ({
                     {activitiesOnSelectedDate.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             {activitiesOnSelectedDate.map(log => (
-                                <ActivityLogCard 
+                                <CompletedSessionCard 
                                     key={log.id}
                                     log={log}
                                     expandedActivityId={expandedActivityId}
@@ -96,20 +119,6 @@ export const MasterAgendaView = ({
                     )}
                 </div>
             </div>
-
-            {isLoggingActivity && (
-                <div className="animate-in slide-in-from-bottom-4 duration-300" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ maxWidth: '400px', width: '100%' }}>
-                        <p style={{ fontSize: '12px', color: '#f29b11', fontWeight: '900', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', letterSpacing: '3px' }}>Initialize Activity:</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                            {programDays.map(day => (
-                                <button key={day.id} onClick={() => handleInstantRetroactive(day.id)} style={{ all: 'unset', padding: '25px 10px', backgroundColor: '#0a0a0a', color: '#fff', borderRadius: '12px', fontSize: '12px', fontWeight: '900', textAlign: 'center', border: '1px solid #222' }}>{day.label}</button>
-                            ))}
-                        </div>
-                        <button onClick={() => setIsLoggingActivity(false)} className="premium-btn-secondary" style={{ marginTop: '25px', height: '54px', border: 'none', color: '#666', fontSize: '12px' }}>DISMISS</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

@@ -11,15 +11,17 @@ import { SessionModals } from './shared/components/SessionModals';
 import { LibraryView } from './features/library/LibraryView';
 import { SessionView } from './features/session/SessionView';
 import { MasterAgendaView } from './features/agenda/MasterAgendaView';
+import { ProgramEditorView } from './features/builder/ProgramEditorView';
 
 import '../shared-premium.css';
 
-const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
+const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
     const { 
         activeSession, startSession, finishSession, resetStore, fetchProgramManifest, programDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
         sessionHistory, fetchDayHistory, activeHistorySession, fetchSessionDetails,
         globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises, activeExerciseHistory, fetchExerciseHistory,
-        retroactiveDate, deleteSessionRecord, dailyVolumes
+        retroactiveDate, deleteSessionRecord, dailyVolumes,
+        lastView, setLastView
     } = useProgramStore();
 
     // 1. Hooks
@@ -35,7 +37,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     const [historyTab, setHistoryTab] = useState('timeline');
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
-    const [isLoggingActivity, setIsLoggingActivity] = useState(false);
     const [expandedActivityId, setExpandedActivityId] = useState(null);
 
     // 3. Derived State
@@ -53,9 +54,10 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     const activitiesOnSelectedDate = useMemo(() => {
         return globalHistory.filter(s => {
-            const d1 = new Date(s.end_time).toDateString();
-            const d2 = selectedCalendarDate.toDateString();
-            return d1 === d2;
+            // Standardize both to YYYY-MM-DD for comparison
+            const dateStr = new Date(s.end_time).toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD
+            const selectedStr = selectedCalendarDate.toLocaleDateString('en-CA');
+            return dateStr === selectedStr;
         });
     }, [globalHistory, selectedCalendarDate]);
 
@@ -105,13 +107,26 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
     // 4. Effects
     useEffect(() => {
         if (!activeSession && programDays.length === 0) fetchProgramManifest();
-        if (currentView === 'master-agenda') { fetchGlobalHistory(); fetchUniqueExercises(); }
-    }, [currentView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
+        if (currentView === 'master-agenda' || (currentView === null && lastView === 'master-agenda')) { 
+            fetchGlobalHistory(); 
+            fetchUniqueExercises(); 
+        }
+    }, [currentView, lastView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
 
     useEffect(() => {
-        setIsLoggingActivity(false);
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
+
+    // Track last relevant view
+    useEffect(() => {
+        if (currentView && currentView !== 'session' && currentView !== 'builder') {
+            setLastView(currentView);
+        }
+        // Always collapse library cards on entry
+        if (currentView === 'library') {
+            setSelectedDay(null);
+        }
+    }, [currentView, setLastView, setSelectedDay]);
 
     // 5. Handlers
     const handleAbandonSession = () => { resetStore(); setShowAbandonModal(false); onNavigate(null); };
@@ -127,10 +142,14 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
         catch (e) { alert("Delete failed: " + e.message); } 
         finally { setIsDeleting(false); }
     };
-    const handleInstantRetroactive = (dayId) => {
-        setSelectedDay(dayId);
-        startSession(dayId, selectedCalendarDate.toISOString()).then(() => onNavigate('session'));
+    
+    // Updated to navigate to library with context
+    const handlePrepareActivity = () => {
+        const isToday = selectedCalendarDate.toDateString() === new Date().toDateString();
+        useProgramStore.setState({ retroactiveDate: isToday ? null : selectedCalendarDate.toISOString() });
+        onNavigate('library');
     };
+
     const handleToggleActivityExpansion = (sessionId) => {
         if (expandedActivityId === sessionId) setExpandedActivityId(null);
         else { setExpandedActivityId(sessionId); fetchSessionDetails(sessionId); }
@@ -191,6 +210,8 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
 
     // 6. Navigation Router
     const renderView = () => {
+        const effectiveView = currentView || lastView;
+
         if (currentView === 'session' && activeSession) {
             return (
                 <SessionView 
@@ -202,11 +223,21 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     globalPercent={globalPercent}
                     setShowAbandonModal={setShowAbandonModal}
                     setShowFinishModal={setShowFinishModal}
+                    lastView={lastView}
                 />
             );
         }
 
-        if (currentView === 'master-agenda') {
+        if (currentView === 'builder') {
+            return (
+                <ProgramEditorView 
+                    onNavigate={onNavigate}
+                    navState={navState}
+                />
+            );
+        }
+
+        if (effectiveView === 'master-agenda') {
             return (
                 <MasterAgendaView 
                     onExit={onExit}
@@ -223,17 +254,19 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                     scrollerDates={scrollerDates}
                     scrollHandlers={scrollHandlers}
                     activitiesOnSelectedDate={activitiesOnSelectedDate}
-                    isLoggingActivity={isLoggingActivity}
-                    setIsLoggingActivity={setIsLoggingActivity}
                     handleToggleActivityExpansion={handleToggleActivityExpansion}
                     handleExportJson={handleExportJson}
                     setConfirmDeleteId={setConfirmDeleteId}
                     programDays={programDays}
-                    handleInstantRetroactive={handleInstantRetroactive}
+                    handlePrepareActivity={handlePrepareActivity}
                     isLoading={isLoading}
                     activeHistorySession={activeHistorySession}
                     getDateStyle={getDateStyle}
                     expandedActivityId={expandedActivityId}
+                    activeSession={activeSession}
+                    workoutLabel={workoutLabel}
+                    elapsed={elapsed}
+                    setShowAbandonModal={setShowAbandonModal}
                 />
             );
         }
@@ -251,6 +284,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate }) => {
                 setSelectedDay={setSelectedDay}
                 startSession={startSession}
                 setShowAbandonModal={setShowAbandonModal}
+                retroactiveDate={retroactiveDate}
             />
         );
     };

@@ -8,7 +8,8 @@ export const ProgramDayCard = ({
     selectedDayId,
     setSelectedDay,
     startSession,
-    onNavigate
+    onNavigate,
+    retroactiveDate
 }) => {
     const isRecommended = day.id === recommendedDayId;
     const isSelected = day.id === selectedDayId;
@@ -42,7 +43,7 @@ export const ProgramDayCard = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {isSelected ? (
                         <button 
-                            onClick={(e) => { e.stopPropagation(); startSession(day.id).then(() => onNavigate('session')); }} 
+                            onClick={(e) => { e.stopPropagation(); startSession(day.id, retroactiveDate).then(() => onNavigate('session')); }} 
                             style={{ all: 'unset', backgroundColor: '#f29b11', color: '#000', padding: '6px 15px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}
                         >
                             Start <Play size={10} fill="currentColor" />

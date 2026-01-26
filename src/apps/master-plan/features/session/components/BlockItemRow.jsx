@@ -7,7 +7,7 @@ import '../../../../shared-premium.css';
 export const BlockItemRow = ({
     item,
     blockId,
-    onLog
+    isCircuit = false
 }) => {
     const {
         systemStep,
@@ -48,7 +48,7 @@ export const BlockItemRow = ({
             targetWeight,
             targetReps,
             targetRpe
-        }, true);
+        }, isCircuit);
     };
 
     const getAccentColor = () => {

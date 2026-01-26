@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const FEATURES_DIR = './features';
+const FEATURES_DIR = '_project-system/GH-Issues';
 
 // Professional taxonomy categories
 const WORK_TYPES = ['Feature', 'Bug', 'Enhancement', 'Refactor', 'Chore', 'Compatibility', 'Documentation', 'Security', 'Performance'];

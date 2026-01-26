@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Save, Plus, Trash2, ChevronDown, ChevronRight, RefreshCcw, Dumbbell, X, Search, Loader2 } from 'lucide-react';
 import { useProgramStore } from '../../stores/useProgramStore';
+import { getActiveSchema } from '../../../../supabaseClient';
 
 /**
  * Program Editor: Nested accordion builder for training programs.
@@ -186,11 +187,18 @@ export const ProgramEditorView = ({ onNavigate, navState = null }) => {
                     <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }}>
                         <ArrowLeft size={20} color="#f29b11" />
                     </button>
-                    <input 
-                        value={programName}
-                        onChange={(e) => setProgramName(e.target.value.toUpperCase())}
-                        style={{ all: 'unset', fontSize: '14px', fontWeight: '900', color: '#fff', width: '180px', borderBottom: '1px dashed #444' }}
-                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                        <input 
+                            value={programName}
+                            onChange={(e) => setProgramName(e.target.value.toUpperCase())}
+                            style={{ all: 'unset', fontSize: '14px', fontWeight: '900', color: '#fff', width: '180px', borderBottom: '1px dashed #444' }}
+                        />
+                        {getActiveSchema() === 'v3_dev' && (
+                            <span style={{ position: 'absolute', bottom: '-12px', left: '0', fontSize: '7px', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                                Sandbox Mode
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <button 
                     onClick={handleSave}

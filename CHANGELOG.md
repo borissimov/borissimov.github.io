@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-01-26
+
+### Added
+- **Sandbox Mode (v3_dev):** Fully isolated database playground mirrored from production for safe experimentation.
+- **Environment Switcher:** Hub-level control to toggle between **PROD** and **SANDBOX** schemas with automatic reload.
+- **Relational Integrity Restore:** Custom scripts to re-establish Foreign Keys and permissions within the cloned dev schema.
+- **App-wide Environment HUD:** Standardized "Sandbox Mode" visual indicators across all headers for constant context awareness.
+- **Safe Archiving:** Soft-delete "Graveyard" functionality implemented for program templates to preserve historical logs.
+
+### Fixed
+- **Relationship Errors (PGRST200):** Resolved missing PostgREST relationship cache in dev schema by restoring FKs.
+- **Permission Denied (42501):** Granted explicit schema usage and table privileges to `anon` and `authenticated` roles in v3_dev.
+- **Session Header Regression:** Restored the Timer, Progress Bar, and Abandon button in the Session Logger while integrating the Sandbox indicator.
+- **Navigation Persistence:** Hardened `navState` propagation to ensure program editing context survives page refreshes.
+
 ## [1.3.0] - 2026-01-25
 
 ### Added

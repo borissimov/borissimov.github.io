@@ -59,3 +59,24 @@ Once a session is active, you enter **Focus Mode**. The app acts as an intellige
 - **Inputs:** Enter your actual Weight and Reps (or Time/Distance depending on the exercise).
 - **Save:** Tap the checkmark to record the set. Progress bars will update instantly.
 - **Finalize:** Tap **"END ACTIVITY"** once all blocks are complete to sync your performance to the Master Agenda.
+
+---
+
+## 5. Program Management
+
+Master Plan allows you to author and manage multiple training programs simultaneously.
+
+### **Switching Programs**
+1.  Tap the **Program Name** in the Library header.
+2.  Select a different program from your list. The Library will instantly refresh to show the training days for that specific plan.
+
+### **Creating & Editing Programs**
+- **New Program:** Tap the **"Create New Program"** card at the top of the Library.
+- **Edit Program:** Open the Program Switcher and tap the **Pencil Icon** next to any program name.
+- **The Builder:** You can add days, create specific training blocks (Standard or Circuit), and search the exercise library to prescribe targets (Rx).
+
+### **Safe Archiving (The Graveyard)**
+To keep your Library clean, you can archive old programs.
+1.  Open the Program Switcher and tap the **Red Archive Icon**.
+2.  **Restore:** If you need an archived program back, tap **"Show Archived Programs"** at the bottom of the switcher list and tap the **Green Restore Icon**.
+3.  **History:** Archiving a program **does not delete your data**. All your past workouts in the Master Agenda will still show the correct program and exercise names.

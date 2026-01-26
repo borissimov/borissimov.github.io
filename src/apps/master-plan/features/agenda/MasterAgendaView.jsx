@@ -3,6 +3,7 @@ import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import CompletedSessionCard from './components/CompletedSessionCard';
 import { AgendaStats } from './components/AgendaStats';
+import { getActiveSchema } from '../../../../supabaseClient';
 
 /**
  * Master Agenda: The formal chronological timeline and performance vault.
@@ -38,8 +39,9 @@ export const MasterAgendaView = ({
 }) => {
     return (
         <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50 }}>
+            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50, position: 'relative' }}>
                 <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Back to Portal"><LayoutGrid size={24} color="#f29b11" /></button>
+                
                 <div style={{ display: 'flex', backgroundColor: '#0a0a0a', borderRadius: '8px', padding: '4px', border: '1px solid #222', flex: 1.5 }}>
                     <button 
                         onClick={() => { if (historyTab === 'timeline') setIsGridExpanded(!isGridExpanded); else setHistoryTab('timeline'); }} 
@@ -54,6 +56,13 @@ export const MasterAgendaView = ({
                         Vault
                     </button>
                 </div>
+
+                {getActiveSchema() === 'v3_dev' && (
+                    <span style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', fontSize: '7px', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                        Sandbox Mode
+                    </span>
+                )}
+
                 <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
             </header>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LayoutGrid, History, X, PlusCircle, ChevronDown, Check, Edit2, Archive, AlertTriangle, RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { ProgramDayCard } from './components/ProgramDayCard';
 import { useProgramStore } from '../../stores/useProgramStore';
+import { getActiveSchema } from '../../../../supabaseClient';
 
 /**
  * Library View: The "Program Library" activity selector.
@@ -40,12 +41,18 @@ export const LibraryView = ({
                 
                 <div 
                     onClick={() => setShowSwitcher(!showSwitcher)}
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer' }}
+                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', position: 'relative' }}
                 >
                     <h1 style={{ fontSize: '16px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {activeProgram?.name || 'SELECT PROGRAM'}
                     </h1>
                     <ChevronDown size={16} color="#f29b11" style={{ transform: showSwitcher ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                    
+                    {getActiveSchema() === 'v3_dev' && (
+                        <span style={{ position: 'absolute', bottom: '-12px', left: '50%', transform: 'translateX(-50%)', fontSize: '7px', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                            Sandbox Mode
+                        </span>
+                    )}
                 </div>
 
                 <button onClick={() => onNavigate('master-agenda')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Master Agenda"><History size={24} color="#f29b11" /></button>

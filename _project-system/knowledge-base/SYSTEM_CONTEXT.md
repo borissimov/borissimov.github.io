@@ -1,82 +1,82 @@
-# SYSTEM CONTEXT: Master Plan & Regimen Pro
+# SYSTEM CONTEXT: Master Plan
 
-**Last Updated:** January 25, 2026
-**Version:** 1.3.0 (React App) / Legacy Prototype (HTML)
+**Last Updated:** January 26, 2026
+**Version:** 1.6.0 (Sandbox Hardening)
 
 ## 1. Project Identity & Goal
-This repository hosts two distinct but related applications aimed at rigorous fitness tracking and schedule management:
-1.  **Master Plan (v1.3.0):** A modern, industrial-styled React PWA serving as the primary dashboard and future platform.
-2.  **Regimen Pro (Legacy):** A standalone, single-file HTML/JS prototype (`public/regimen.html`) used for rapid feature testing and offline-first usage.
+**Master Plan** is a high-performance athletic platform built for rigorous training management. 
+It has transitioned from a static prototype to a **Native V3 Relational Architecture**, enabling sophisticated multi-program management and granular performance tracking.
 
-**Core Philosophy:** "Offline-First," "Industrial High-Density UI," and "System Image Synchronization."
+**Core Philosophy:** "Relational Integrity," "Industrial High-Density UI," and "Preservation of History."
 
 ---
 
 ## 2. Technology Stack
-*   **Frontend (Main):** React 18, Vite, Lucide React, Framer Motion.
-*   **Frontend (Legacy):** Vanilla HTML5/CSS3/ES6 (Single File).
-*   **Backend:** Supabase (Auth & Database).
-    *   **Table:** `REGI_daily_logs` (Composite Key: `user_id` + `date`).
-    *   **Data Type:** JSONB blobs for flexibility.
-*   **State Management:**
-    *   React: `zustand` (stores: `useTrainingStore`, `useProgramStore`).
-    *   Legacy: Global window objects (`masterLogs`, `dailyLog`) persisted to `localStorage`.
+*   **Frontend:** React 18, Vite, Lucide React, Zustand (Store-based state).
+*   **Backend:** Supabase (PostgreSQL).
+*   **Environments:** 
+    *   `v3`: Production environment.
+    *   `v3_dev`: Sandbox environment (Perfect mirror for risk-free testing).
+*   **Schema (v3/v3_dev):**
+    *   `programs`: Master training plans (Columns: `id`, `name`, `user_id`, `cycle_length`, `archived_at`).
+    *   `program_days`: The sequence of days within a program.
+    *   `sessions`: The specific workout prescribed for a day.
+    *   `blocks`: Groups of exercises (Standard or Metabolic Circuit).
+    *   `block_items`: Specific exercise prescriptions (Rx: sets, reps, weight, RPE, tempo).
+    *   `completed_sessions`: Historical logs of executed workouts.
+    *   `performance_logs`: The granular set-by-set data linked to `completed_sessions`.
+    *   `health_metrics`: User vital signs and health tracking.
 
 ---
 
 ## 3. Architecture & Data Logic
 
-### A. The "Three Layers of Truth"
-Used to resolve what should be displayed for any given date:
-1.  **Layer 1 (Daily Exception):** Specific overrides for a calendar date (e.g., "Sick day"). Highest priority.
-2.  **Layer 2 (User Template):** Recurring weekly schedule (e.g., "Custom Leg Day on Tuesdays").
-3.  **Layer 3 (System Default):** Hardcoded factory settings (`DEFAULT_PLAN`). Lowest priority.
+### A. The "Relational Hierarchy"
+Training data is resolved through a strict hierarchical chain:
+`Program -> Program Day -> Session -> Block -> Block Item (Exercise Rx)`.
 
-### B. Synchronization Strategy ("System Image")
-We do not sync individual changes. We sync the **entire state** for a day.
-*   **Push (Sync):** Bundles the daily log *plus* the current User Template into the JSON payload.
-*   **Pull (Fetch):** Overwrites local daily logs with cloud data and restores the User Template from the most recent entry.
-*   **UUIDs:** Strict UUID v4 enforcement for User IDs to ensure database compatibility.
+### B. Multi-Program Management
+The app supports multiple active and archived programs.
+*   **Library Context:** The UI filters training days based on an `activeProgramId`.
+*   **Safe Archiving:** Programs are never hard-deleted. An `archived_at` timestamp hides them from the active Library while keeping all historical `completed_sessions` linked and valid.
+
+### C. Navigation & State Persistence
+A unified `navState` object is passed through the root `App.jsx` to all sub-apps. This ensures that deep-links (like a specific `programId` for editing) survive page refreshes and browser navigation.
 
 ---
 
 ## 4. Key Conventions & Rules
 
-### UI/UX
-*   **Style:** "Industrial High-Density." Dark mode, monospace numbers, high contrast (`#f29b11` Orange, `#2ecc71` Green).
-*   **Navigation:** Context-aware. The "Back" button in a session should return to where the user started (Agenda or Library).
-*   **Feedback:** Explicit confirmation for saves (e.g., "Save Today Only" vs. "Save All").
+### UI/UX ("Industrial High-Density")
+*   **Aesthetic:** Dark mode, high contrast (`#f29b11` Orange, `#2ecc71` Green), monospace numbers.
+*   **Density:** Compact displays (Pills, nested accordions) to maximize data visibility on small screens.
+*   **Environment Awareness:** A global, absolutely-positioned "Sandbox Mode" HUD is mandatory when `getActiveSchema() === 'v3_dev'`.
 
 ### Code Standards
-*   **Legacy (`regimen.html`):**
-    *   All interactive functions must be explicitly attached to `window` (e.g., `window.toggleSession = ...`).
-    *   No external build steps. Must run by double-clicking.
-*   **React (`src/`):**
-    *   **Isolation:** `RegimenProApp.jsx` handles the workout engine. `MasterPlanApp.jsx` handles the shell/dashboard.
-    *   **Stores:** Logic lives in `zustand` stores, not components.
-
-### Maintenance
-*   **Weekly Updates:** Use `scripts/apply_weekly_plan.py` to surgically update the System Default plan (Layer 3). Do not edit the large JSON block manually.
+*   **Logic Isolation:** Components are "thin"; all database mutations and complex filtering live in `useProgramStore.js`.
+*   **Schema Switching:** The app is designed to support switching between `v3` (production) and `v3_dev` (sandbox) schemas via HubApp.
 
 ---
 
-## 5. Current State Snapshot (Jan 25, 2026)
+## 5. Current State Snapshot (Jan 26, 2026)
 
 ### Recently Completed
-*   **Active Session Visibility:** The Master Agenda now shows a banner if a workout is in progress.
-*   **Navigation Fixes:** Barbell icon now correctly routes to the Library. Back button persistence implemented.
-*   **Cleanup:** Removed unused dependencies (`date-fns`, `pg`, etc.).
+*   **Sandbox Environment:** Creation, exposure, and population of the `v3_dev` playground.
+*   **Relational Hardening:** Full Foreign Key restoration and permission granting for the sandbox.
+*   **App-wide HUD:** Standardized "Sandbox Mode" indicators in all headers.
+*   **Program Archiving:** Soft-delete "Graveyard" for template management.
 
 ### Immediate Roadmap
-*   **FEATURE-007 (Planned):** Transition to "Dashboard-First" architecture, making the React app the primary entry point.
-*   **Optimization:** Implement data redundancy checks (FEATURE-002) to stop saving default plans as overrides.
+*   **Structural Sync:** Implementation of SQL migrations to maintain schema parity.
+*   **On-demand Data Mirroring:** UI-triggered "Sync Prod to Dev" functionality.
+*   **Exercise Library Extension:** Expansion of Rx templates.
 
 ---
 
 ## 6. Critical File Map
-*   `index.html`: The Portal entry point (handles auth & auto-redirect).
-*   `public/regimen.html`: The legacy standalone app (fully functional).
-*   `src/apps/master-plan/MasterPlanApp.jsx`: Main React Shell.
-*   `src/apps/master-plan/features/agenda/MasterAgendaView.jsx`: The timeline/dashboard view.
-*   `src/apps/regimen-pro/stores/useTrainingStore.js`: The brain of the workout engine.
-*   `_project-system/knowledge-base/docs/history/handoffs/`: Archive of detailed session logs and context handoffs.
+*   `src/App.jsx`: Root orchestrator and navigation authority.
+*   `src/supabaseClient.js`: Dynamic schema resolution engine.
+*   `src/apps/master-plan/MasterPlanApp.jsx`: Feature-level router and modal manager.
+*   `src/apps/master-plan/stores/useProgramStore.js`: The central "brain" for Native V3 data.
+*   `src/apps/master-plan/features/builder/ProgramEditorView.jsx`: The hierarchical program authoring engine.
+*   `CHANGELOG.md`: The mandatory audit log of all system changes.

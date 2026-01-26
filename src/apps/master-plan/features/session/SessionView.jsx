@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, X } from 'lucide-react';
 import { SessionBlock } from './components/SessionBlock';
 import { getProgressColor } from '../../shared/utils/formatting.jsx';
+import { getActiveSchema } from '../../../../supabaseClient';
 
 /**
  * Session View: The active training logger.
@@ -32,7 +33,8 @@ export const SessionView = ({
                             {workoutLabel}
                         </h2>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, position: 'relative' }}>
                         {retroactiveDate ? (
                             <span style={{ fontSize: '12px', fontWeight: '900', color: '#f29b11', textTransform: 'uppercase' }}>
                                 {new Date(retroactiveDate).toLocaleDateString()}
@@ -42,7 +44,14 @@ export const SessionView = ({
                                 {elapsed}
                             </span>
                         )}
+                        
+                        {getActiveSchema() === 'v3_dev' && (
+                            <span style={{ position: 'absolute', bottom: '-12px', left: '50%', transform: 'translateX(-50%)', fontSize: '7px', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                                Sandbox Mode
+                            </span>
+                        )}
                     </div>
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'flex-end' }}>
                         <span style={{ fontSize: '12px', fontWeight: '900', color: getProgressColor(globalPercent), transition: 'color 0.5s ease' }}>
                             {Math.round(globalPercent)}%

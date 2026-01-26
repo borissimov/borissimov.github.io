@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase } from '../../../supabaseClient';
+import { supabase, getActiveSchema } from '../../../supabaseClient';
 
 /**
  * NATIVE V3 STORE
- * Directly communicates with V3 Schema.
+ * Directly communicates with the active schema (v3 or v3_dev).
  */
 export const useProgramStore = create(
     persist(
@@ -40,13 +40,14 @@ export const useProgramStore = create(
             },
 
             fetchProgramManifest: async () => {
-                console.log("[Store] fetchProgramManifest V3 starting...");
+                const activeSchema = getActiveSchema();
+                console.log(`[Store] fetchProgramManifest starting (${activeSchema})...`);
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     
-                    // 1. FETCH PROGRAMS (Conditional filter)
-                    let query = supabase.schema('v3').from('programs').select('*');
+                    // 1. FETCH PROGRAMS
+                    let query = supabase.schema(activeSchema).from('programs').select('*');
                     if (!get().showArchivedPrograms) {
                         query = query.is('archived_at', null);
                     }
@@ -57,22 +58,20 @@ export const useProgramStore = create(
                     // Determine active program ID
                     let currentActiveId = get().activeProgramId;
                     if (!currentActiveId && progs.length > 0) {
-                        // Prefer non-archived for default
                         const activeOnes = progs.filter(p => !p.archived_at);
                         currentActiveId = activeOnes.length > 0 ? activeOnes[0].id : progs[0].id;
                     }
 
-                    // If current active is archived and we are NOT showing archived, reset
                     if (currentActiveId && !get().showArchivedPrograms) {
                         const activeMatch = progs.find(p => p.id === currentActiveId);
                         if (!activeMatch && progs.length > 0) currentActiveId = progs[0].id;
                     }
 
-                    // 2. FETCH V3 NATIVE DAYS (Filtered by active program)
+                    // 2. FETCH DAYS
                     let days = [];
                     if (currentActiveId) {
                         const { data: d, error: daysErr } = await supabase
-                            .schema('v3')
+                            .schema(activeSchema)
                             .from('program_days')
                             .select('*')
                             .eq('program_id', currentActiveId)
@@ -81,14 +80,14 @@ export const useProgramStore = create(
                         days = d;
                     }
 
-                    const { data: sessions, error: sessErr } = await supabase.schema('v3').from('sessions').select('id, program_day_id');
-                    const { data: blocks, error: blockErr } = await supabase.schema('v3').from('blocks').select('id, session_id, label, block_type, sort_order');
-                    const { data: items, error: itemErr } = await supabase.schema('v3').from('block_items').select('id, session_block_id, target_sets, target_reps, target_weight, target_rpe, tempo, metric_type, sort_order, exercise_library(name, technique_cues)');
+                    const { data: sessions, error: sessErr } = await supabase.schema(activeSchema).from('sessions').select('id, program_day_id');
+                    const { data: blocks, error: blockErr } = await supabase.schema(activeSchema).from('blocks').select('id, session_id, label, block_type, sort_order');
+                    const { data: items, error: itemErr } = await supabase.schema(activeSchema).from('block_items').select('id, session_block_id, target_sets, target_reps, target_weight, target_rpe, tempo, metric_type, sort_order, exercise_library(name, technique_cues)');
 
                     if (sessErr || blockErr || itemErr) throw (sessErr || blockErr || itemErr);
 
                     const { data: history, error: histErr } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('completed_sessions')
                         .select('id, program_day_id, start_time, end_time') 
                         .eq('user_id', user?.id)
@@ -107,7 +106,7 @@ export const useProgramStore = create(
                     let snapshots = [];
                     if (sessionIdsToFetch.length > 0) {
                         const { data: sData } = await supabase
-                            .schema('v3')
+                            .schema(activeSchema)
                             .from('performance_logs')
                             .select('completed_session_id, block_item_id, weight, reps')
                             .in('completed_session_id', sessionIdsToFetch);
@@ -157,14 +156,15 @@ export const useProgramStore = create(
             },
 
             fetchProgramDetails: async (programId) => {
-                console.log("[Store] Deep loading program details for ID:", programId);
+                const activeSchema = getActiveSchema();
+                console.log(`[Store] Deep loading program details from ${activeSchema} for ID:`, programId);
                 set({ isLoading: true });
                 try {
-                    const { data: program, error: pErr } = await supabase.schema('v3').from('programs').select('*').eq('id', programId).single();
+                    const { data: program, error: pErr } = await supabase.schema(activeSchema).from('programs').select('*').eq('id', programId).single();
                     if (pErr) throw pErr;
 
                     const { data: days, error: dErr } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('program_days')
                         .select(`
                             id, label, sequence_number,
@@ -217,10 +217,11 @@ export const useProgramStore = create(
             },
 
             archiveProgram: async (programId) => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true });
                 try {
                     const { error } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('programs')
                         .update({ archived_at: new Date().toISOString() })
                         .eq('id', programId);
@@ -241,10 +242,11 @@ export const useProgramStore = create(
             },
 
             unarchiveProgram: async (programId) => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true });
                 try {
                     const { error } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('programs')
                         .update({ archived_at: null })
                         .eq('id', programId);
@@ -265,9 +267,10 @@ export const useProgramStore = create(
             },
 
             deleteSessionRecord: async (sessionId) => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true });
                 try {
-                    const { error } = await supabase.schema('v3').from('completed_sessions').delete().eq('id', sessionId);
+                    const { error } = await supabase.schema(activeSchema).from('completed_sessions').delete().eq('id', sessionId);
                     if (error) throw error;
                     await get().fetchGlobalHistory();
                     await get().fetchProgramManifest();
@@ -276,11 +279,12 @@ export const useProgramStore = create(
             },
 
             fetchGlobalHistory: async () => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     const { data, error } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('completed_sessions')
                         .select('*, program_days(label), performance_logs(weight, reps, rpe)') 
                         .eq('user_id', user?.id)
@@ -311,22 +315,24 @@ export const useProgramStore = create(
             },
 
             fetchUniqueExercises: async () => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true, uniqueExercises: [] });
                 try {
-                    const { data, error } = await supabase.schema('v3').from('exercise_library').select('name').order('name', { ascending: true });
+                    const { data, error } = await supabase.schema(activeSchema).from('exercise_library').select('name').order('name', { ascending: true });
                     if (error) throw error;
                     set({ uniqueExercises: [...new Set(data.map(e => e.name))], isLoading: false });
                 } catch (err) { console.error("Failed to fetch exercises:", err); set({ isLoading: false }); }
             },
 
             fetchSessionDetails: async (sessionId) => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true, activeHistorySession: null });
                 try {
-                    const { data: session, error: sErr } = await supabase.schema('v3').from('completed_sessions').select('*, program_days(label)').eq('id', sessionId).single();
+                    const { data: session, error: sErr } = await supabase.schema(activeSchema).from('completed_sessions').select('*, program_days(label)').eq('id', sessionId).single();
                     if (sErr) throw sErr;
                     
                     const { data: logs, error: lErr } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('performance_logs')
                         .select(`*, block_items!inner ( target_weight, target_reps, target_rpe, tempo, sort_order, exercise_library!inner ( name ) )`)
                         .eq('completed_session_id', sessionId)
@@ -359,9 +365,10 @@ export const useProgramStore = create(
             })),
 
             startSession: async (dayId, customDate = null) => {
+                const activeSchema = getActiveSchema();
                 set({ isLoading: true, retroactiveDate: customDate });
                 try {
-                    const { data: sessionTemplate, error } = await supabase.schema('v3').from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
+                    const { data: sessionTemplate, error } = await supabase.schema(activeSchema).from('sessions').select(`id, name, session_focus, blocks ( id, label, block_type, sort_order, block_items ( id, target_sets, target_reps, target_weight, target_rpe, tempo, set_targets, metric_type, sort_order, exercise_library ( name, technique_cues ) ) )`).eq('program_day_id', dayId).maybeSingle();
                     if (error) throw error;
                     
                     if (!sessionTemplate) {
@@ -416,7 +423,8 @@ export const useProgramStore = create(
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
-                    const { data: sessionData, error: sessionError } = await supabase.schema('v3').from('completed_sessions').insert([{ user_id: user?.id, program_day_id: session.program_day_id, start_time: session.startTime, end_time: get().retroactiveDate ? session.startTime : new Date().toISOString() }]).select().single();
+                    const activeSchema = getActiveSchema();
+                    const { data: sessionData, error: sessionError } = await supabase.schema(activeSchema).from('completed_sessions').insert([{ user_id: user?.id, program_day_id: session.program_day_id, start_time: session.startTime, end_time: get().retroactiveDate ? session.startTime : new Date().toISOString() }]).select().single();
                     if (sessionError) throw sessionError;
                     
                     const logsToInsert = [];
@@ -437,7 +445,7 @@ export const useProgramStore = create(
                     });
                     
                     if (logsToInsert.length > 0) {
-                        const { error: logsError } = await supabase.schema('v3').from('performance_logs').insert(logsToInsert);
+                        const { error: logsError } = await supabase.schema(activeSchema).from('performance_logs').insert(logsToInsert);
                         if (logsError) throw logsError;
                     }
                     set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, retroactiveDate: null, isLoading: false });
@@ -515,7 +523,8 @@ export const useProgramStore = create(
             setLastView: (view) => set({ lastView: view }),
 
             saveProgram: async (programName, days, existingProgramId = null) => {
-                console.log("[Store] Starting V3 Program Save (Edit/Create)...");
+                const activeSchema = getActiveSchema();
+                console.log(`[Store] Starting Program Save (${activeSchema})...`);
                 set({ isLoading: true });
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
@@ -529,22 +538,22 @@ export const useProgramStore = create(
                     if (existingProgramId) programPayload.id = existingProgramId;
 
                     const { data: program, error: progErr } = await supabase
-                        .schema('v3')
+                        .schema(activeSchema)
                         .from('programs')
                         .upsert([programPayload])
                         .select()
                         .single();
                     if (progErr) throw progErr;
 
-                    const { data: library } = await supabase.schema('v3').from('exercise_library').select('id, name');
+                    const { data: library } = await supabase.schema(activeSchema).from('exercise_library').select('id, name');
 
                     if (existingProgramId) {
-                        await supabase.schema('v3').from('program_days').delete().eq('program_id', program.id);
+                        await supabase.schema(activeSchema).from('program_days').delete().eq('program_id', program.id);
                     }
 
                     for (const day of days) {
                         const { data: progDay, error: dayErr } = await supabase
-                            .schema('v3')
+                            .schema(activeSchema)
                             .from('program_days')
                             .insert([{ program_id: program.id, label: day.label, sequence_number: day.sequence_number }])
                             .select()
@@ -552,7 +561,7 @@ export const useProgramStore = create(
                         if (dayErr) throw dayErr;
 
                         const { data: session, error: sessErr } = await supabase
-                            .schema('v3')
+                            .schema(activeSchema)
                             .from('sessions')
                             .insert([{ program_day_id: progDay.id, name: `${day.label} SESSION` }])
                             .select()
@@ -561,7 +570,7 @@ export const useProgramStore = create(
 
                         for (const block of day.blocks) {
                             const { data: v3Block, error: blockErr } = await supabase
-                                .schema('v3')
+                                .schema(activeSchema)
                                 .from('blocks')
                                 .insert([{ session_id: session.id, label: block.label, block_type: block.block_type, sort_order: block.sort_order }])
                                 .select()
@@ -584,7 +593,7 @@ export const useProgramStore = create(
                             }).filter(i => i.exercise_library_id);
 
                             if (itemsToInsert.length > 0) {
-                                const { error: itemErr } = await supabase.schema('v3').from('block_items').insert(itemsToInsert);
+                                const { error: itemErr } = await supabase.schema(activeSchema).from('block_items').insert(itemsToInsert);
                                 if (itemErr) throw itemErr;
                             }
                         }

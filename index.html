@@ -17,18 +17,32 @@
     <meta name="description" content="The ultimate training tracker.">
 
     <title>Master Plan</title>
-    <script type="module" crossorigin src="./assets/main-DrwbRbQk.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/main-BE6n2ieC.css">
+    <script type="module" crossorigin src="./assets/main-BfahggZD.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/main-D_ao2wSG.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port !== '';
+      console.log('SW Setup | Host:', window.location.hostname, 'Port:', window.location.port, 'isLocal:', isLocal);
+      
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('SW registered'))
-            .catch(err => console.log('SW failed', err));
-        });
+        if (isLocal) {
+          // IMMEDIATE UNREGISTER (Fixes Zombie SW blocking Dev Server)
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            for(let registration of registrations) {
+              registration.unregister();
+              console.log('SW Unregistered (Dev Mode - Port/Host Match)');
+            }
+          });
+        } else {
+          // Register SW in production
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(reg => console.log('SW registered'))
+              .catch(err => console.log('SW failed', err));
+          });
+        }
       }
     </script>
   </body>

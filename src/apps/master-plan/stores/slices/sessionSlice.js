@@ -8,6 +8,33 @@ export const createSessionSlice = (set, get) => ({
     activeFocusId: null,
     retroactiveDate: null,
 
+    // Session Progress Analytics
+    getSessionProgress: () => {
+        const session = get().activeSession;
+        if (!session || !session.blocks) return { totalTarget: 0, totalLogged: 0, percent: 0 };
+
+        let totalTarget = 0;
+        let totalLogged = 0;
+
+        session.blocks.forEach(block => {
+            (block.items || []).forEach(item => {
+                const target = parseInt(item.target_sets || 3);
+                const logged = (session.logs[item.id] || []).length;
+                totalTarget += target;
+                totalLogged += Math.min(logged, target);
+            });
+        });
+
+        const percent = totalTarget > 0 ? (totalLogged / totalTarget) * 100 : 0;
+        return { totalTarget, totalLogged, percent };
+    },
+
+    getWorkoutLabel: () => {
+        const session = get().activeSession;
+        if (!session) return 'Activity';
+        return get().programDays.find(d => d.id === session.program_day_id)?.label || 'Activity';
+    },
+
     startSession: async (dayId, customDate = null) => {
         set({ isLoading: true, retroactiveDate: customDate });
         try {

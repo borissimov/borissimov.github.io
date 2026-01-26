@@ -18,91 +18,27 @@ import '../shared-premium.css';
 const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
     const { 
         activeSession, startSession, finishSession, resetStore, fetchProgramManifest, programDays, recommendedDayId, selectedDayId, setSelectedDay, isLoading,
-        sessionHistory, fetchDayHistory, activeHistorySession, fetchSessionDetails,
-        globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises, activeExerciseHistory, fetchExerciseHistory,
-        retroactiveDate, deleteSessionRecord, dailyVolumes,
-        lastView, setLastView
+        activeHistorySession, fetchSessionDetails,
+        globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises,
+        retroactiveDate, deleteSessionRecord,
+        lastView, setLastView,
+        getSessionProgress, getWorkoutLabel, getHistoryStats, getActivitiesForDate
     } = useProgramStore();
 
     // 1. Hooks
     const elapsed = useSessionTimer(activeSession, retroactiveDate);
-    const { scrollerRef, scrollHandlers, dragMoved } = useDraggableScroll();
 
-    // 2. Local UI State
+    // 2. Local UI State (Global Overlays)
     const [showAbandonModal, setShowAbandonModal] = useState(false);
     const [showFinishModal, setShowFinishModal] = useState(false);
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [historyTab, setHistoryTab] = useState('timeline');
-    const [isGridExpanded, setIsGridExpanded] = useState(false);
-    const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
-    const [expandedActivityId, setExpandedActivityId] = useState(null);
 
-    // 3. Derived State
-    const scrollerDates = useMemo(() => {
-        const dates = [];
-        const start = new Date();
-        start.setDate(start.getDate() - 14); 
-        for (let i = 0; i < 28; i++) { 
-            const d = new Date(start);
-            d.setDate(d.getDate() + i);
-            dates.push(d);
-        }
-        return dates;
-    }, []);
-
-    const activitiesOnSelectedDate = useMemo(() => {
-        return globalHistory.filter(s => {
-            // Standardize both to YYYY-MM-DD for comparison
-            const dateStr = new Date(s.end_time).toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD
-            const selectedStr = selectedCalendarDate.toLocaleDateString('en-CA');
-            return dateStr === selectedStr;
-        });
-    }, [globalHistory, selectedCalendarDate]);
-
-    const stats = useMemo(() => {
-        const today = new Date();
-        const last7Days = [...Array(7)].map((_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            return d.toDateString();
-        });
-        
-        const weekCount = globalHistory.filter(s => {
-            const date = new Date(s.end_time).toDateString();
-            return last7Days.includes(date);
-        }).length;
-
-        let streak = 0;
-        let checkDate = new Date();
-        const todayHasLog = globalHistory.some(s => new Date(s.end_time).toDateString() === checkDate.toDateString());
-        if (!todayHasLog) checkDate.setDate(checkDate.getDate() - 1);
-
-        while (true) {
-            const hasActivity = globalHistory.some(s => new Date(s.end_time).toDateString() === checkDate.toDateString());
-            if (hasActivity) {
-                streak++;
-                checkDate.setDate(checkDate.getDate() - 1);
-            } else break;
-        }
-        return { streak, weekCount };
-    }, [globalHistory]);
-
-    const globalStats = useMemo(() => {
-        return activeSession?.blocks?.reduce((acc, block) => {
-            (block.items || []).forEach(item => {
-                const target = parseInt(item.target_sets || 3);
-                const logged = (activeSession?.logs[item.id] || []).length;
-                acc.totalTarget += target;
-                acc.totalLogged += Math.min(logged, target);
-            });
-            return acc;
-        }, { totalTarget: 0, totalLogged: 0 }) || { totalTarget: 0, totalLogged: 0 };
-    }, [activeSession]);
-
-    const globalPercent = globalStats.totalTarget > 0 ? (globalStats.totalLogged / globalStats.totalTarget) * 100 : 0;
-    const workoutLabel = programDays.find(d => d.id === activeSession?.program_day_id)?.label || 'Activity';
+    // 3. Derived State (Moved to Store Modules)
+    const { percent: globalPercent } = getSessionProgress();
+    const workoutLabel = getWorkoutLabel();
+    const stats = getHistoryStats();
 
     // 4. Effects
     useEffect(() => {
@@ -112,10 +48,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
             fetchUniqueExercises(); 
         }
     }, [currentView, lastView, activeSession, fetchProgramManifest, fetchGlobalHistory, fetchUniqueExercises]);
-
-    useEffect(() => {
-        setExpandedActivityId(null);
-    }, [selectedCalendarDate]);
 
     // Track last relevant view
     useEffect(() => {
@@ -143,21 +75,16 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         finally { setIsDeleting(false); }
     };
     
-    // Updated to navigate to library with context
-    const handlePrepareActivity = () => {
-        const isToday = selectedCalendarDate.toDateString() === new Date().toDateString();
-        useProgramStore.setState({ retroactiveDate: isToday ? null : selectedCalendarDate.toISOString() });
+    // Logic for preparing a retroactive log
+    const handlePrepareActivity = (selectedDate) => {
+        const isToday = selectedDate.toDateString() === new Date().toDateString();
+        useProgramStore.setState({ retroactiveDate: isToday ? null : selectedDate.toISOString() });
         onNavigate('library');
     };
 
-    const handleToggleActivityExpansion = (sessionId) => {
-        if (expandedActivityId === sessionId) setExpandedActivityId(null);
-        else { setExpandedActivityId(sessionId); fetchSessionDetails(sessionId); }
-    };
-
-    const handleExportJson = (sessionId) => {
+    const handleExportJson = (logId) => {
         const session = activeHistorySession;
-        if (!session || session.id !== sessionId) return;
+        if (!session || session.id !== logId) return;
 
         const durationMinutes = session.start_time 
             ? Math.round((new Date(session.end_time) - new Date(session.start_time)) / 60000)
@@ -201,13 +128,6 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         document.body.removeChild(link);
     };
 
-    const getDateStyle = (dateObj) => {
-        if (!dateObj) return {};
-        const isToday = dateObj.toDateString() === new Date().toDateString();
-        const hasActivity = globalHistory.some(s => new Date(s.end_time).toDateString() === dateObj.toDateString());
-        return { color: isToday ? '#2ecc71' : hasActivity ? '#f29b11' : '#666', fontWeight: isToday ? '900' : '800' };
-    };
-
     // 6. Navigation Router
     const renderView = () => {
         const effectiveView = currentView || lastView;
@@ -242,27 +162,9 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                 <MasterAgendaView 
                     onExit={onExit}
                     onNavigate={onNavigate}
-                    globalHistory={globalHistory}
-                    stats={stats}
-                    selectedCalendarDate={selectedCalendarDate}
-                    setSelectedCalendarDate={setSelectedCalendarDate}
-                    isGridExpanded={isGridExpanded}
-                    setIsGridExpanded={setIsGridExpanded}
-                    historyTab={historyTab}
-                    setHistoryTab={setHistoryTab}
-                    scrollerRef={scrollerRef}
-                    scrollerDates={scrollerDates}
-                    scrollHandlers={scrollHandlers}
-                    activitiesOnSelectedDate={activitiesOnSelectedDate}
-                    handleToggleActivityExpansion={handleToggleActivityExpansion}
+                    onLogActivity={handlePrepareActivity}
                     handleExportJson={handleExportJson}
                     setConfirmDeleteId={setConfirmDeleteId}
-                    programDays={programDays}
-                    handlePrepareActivity={handlePrepareActivity}
-                    isLoading={isLoading}
-                    activeHistorySession={activeHistorySession}
-                    getDateStyle={getDateStyle}
-                    expandedActivityId={expandedActivityId}
                     activeSession={activeSession}
                     workoutLabel={workoutLabel}
                     elapsed={elapsed}

@@ -1,42 +1,76 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
+import { useProgramStore } from '../../stores/useProgramStore';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import CompletedSessionCard from './components/CompletedSessionCard';
 import { AgendaStats } from './components/AgendaStats';
 import { getActiveSchema } from '../../../../supabaseClient';
+import { useDraggableScroll } from '../../shared/hooks/useDraggableScroll';
 
 /**
  * Master Agenda: The formal chronological timeline and performance vault.
+ * Now acts as its own Feature Orchestrator.
  */
 export const MasterAgendaView = ({
     onExit,
     onNavigate,
-    globalHistory,
-    stats,
-    selectedCalendarDate,
-    setSelectedCalendarDate,
-    isGridExpanded,
-    setIsGridExpanded,
-    historyTab,
-    setHistoryTab,
-    scrollerRef,
-    scrollerDates,
-    scrollHandlers,
-    activitiesOnSelectedDate,
-    handleToggleActivityExpansion,
+    onLogActivity,
     handleExportJson,
     setConfirmDeleteId,
-    programDays,
-    handlePrepareActivity,
-    isLoading,
-    activeHistorySession,
-    getDateStyle,
-    expandedActivityId,
     activeSession,
     workoutLabel,
     elapsed,
     setShowAbandonModal
 }) => {
+    // 1. Store Access
+    const { 
+        globalHistory, getHistoryStats, getActivitiesForDate, 
+        fetchGlobalHistory, fetchSessionDetails, activeHistorySession, isLoading 
+    } = useProgramStore();
+
+    // 2. Local Feature State
+    const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
+    const [historyTab, setHistoryTab] = useState('timeline');
+    const [isGridExpanded, setIsGridExpanded] = useState(false);
+    const [expandedActivityId, setExpandedActivityId] = useState(null);
+
+    const { scrollerRef, scrollHandlers } = useDraggableScroll();
+
+    // 3. Derived State
+    const stats = getHistoryStats();
+    const activitiesOnSelectedDate = getActivitiesForDate(selectedCalendarDate);
+
+    const scrollerDates = useMemo(() => {
+        const dates = [];
+        const start = new Date();
+        start.setDate(start.getDate() - 14); 
+        for (let i = 0; i < 28; i++) { 
+            const d = new Date(start);
+            d.setDate(d.getDate() + i);
+            dates.push(d);
+        }
+        return dates;
+    }, []);
+
+    // 4. Effects
+    useEffect(() => {
+        setExpandedActivityId(null);
+    }, [selectedCalendarDate]);
+
+    // 5. Handlers
+    const handleToggleActivityExpansion = (sessionId) => {
+        if (expandedActivityId === sessionId) setExpandedActivityId(null);
+        else { setExpandedActivityId(sessionId); fetchSessionDetails(sessionId); }
+    };
+
+    const getDateStyle = (dateObj) => {
+        if (!dateObj) return {};
+        const isToday = dateObj.toDateString() === new Date().toDateString();
+        const dateStr = dateObj.toLocaleDateString('en-CA');
+        const hasActivity = globalHistory.some(s => new Date(s.end_time).toLocaleDateString('en-CA') === dateStr);
+        return { color: isToday ? '#2ecc71' : hasActivity ? '#f29b11' : '#666', fontWeight: isToday ? '900' : '800' };
+    };
+
     return (
         <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
             <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50, position: 'relative' }}>
@@ -66,7 +100,7 @@ export const MasterAgendaView = ({
                 <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
             </header>
 
-            <AgendaStats stats={stats} onLogActivity={handlePrepareActivity} />
+            <AgendaStats stats={stats} onLogActivity={() => onLogActivity(selectedCalendarDate)} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1, overflowY: 'auto' }}>
                 <AgendaCalendar 
@@ -94,7 +128,7 @@ export const MasterAgendaView = ({
                 <div style={{ flex: 1, paddingBottom: '100px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', marginTop: '5px' }}>
                         <h3 style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: '#444', letterSpacing: '1px', margin: 0 }}>{selectedCalendarDate.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}</h3>
-                        {activitiesOnSelectedDate.length > 0 && <span style={{ fontSize: '9px', fontWeight: '800', color: '#f29b11', backgroundColor: 'rgba(242,155,17,0.1)', padding: '2px 8px', borderRadius: '4px' }}>{activitiesOnSelectedDate.length} LOGS</span>}
+                        {activitiesOnSelectedDate.length > 0 && <span style={{ fontSize: '9px', fontWeight: '800', color: '#f29b11', backgroundColor: 'rgba(242, 155, 17,0.1)', padding: '2px 8px', borderRadius: '4px' }}>{activitiesOnSelectedDate.length} LOGS</span>}
                     </div>
                     {activitiesOnSelectedDate.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>

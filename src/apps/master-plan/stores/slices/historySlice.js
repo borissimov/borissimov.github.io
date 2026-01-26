@@ -6,6 +6,48 @@ export const createHistorySlice = (set, get) => ({
     dailyVolumes: {},
     activeHistorySession: null,
 
+    // Derived Statistics
+    getHistoryStats: () => {
+        const history = get().globalHistory;
+        if (!history || history.length === 0) return { streak: 0, weekCount: 0 };
+
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toLocaleDateString('en-CA');
+        });
+        
+        const weekCount = history.filter(s => {
+            const date = new Date(s.end_time).toLocaleDateString('en-CA');
+            return last7Days.includes(date);
+        }).length;
+
+        let streak = 0;
+        let checkDate = new Date();
+        const todayStr = checkDate.toLocaleDateString('en-CA');
+        const todayHasLog = history.some(s => new Date(s.end_time).toLocaleDateString('en-CA') === todayStr);
+        
+        if (!todayHasLog) checkDate.setDate(checkDate.getDate() - 1);
+
+        while (true) {
+            const dateStr = checkDate.toLocaleDateString('en-CA');
+            const hasActivity = history.some(s => new Date(s.end_time).toLocaleDateString('en-CA') === dateStr);
+            if (hasActivity) {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else break;
+            if (streak > 365) break; // Safety
+        }
+        return { streak, weekCount };
+    },
+
+    getActivitiesForDate: (dateObj) => {
+        const selectedStr = dateObj.toLocaleDateString('en-CA');
+        return get().globalHistory.filter(s => {
+            return new Date(s.end_time).toLocaleDateString('en-CA') === selectedStr;
+        });
+    },
+
     fetchGlobalHistory: async () => {
         set({ isLoading: true });
         try {

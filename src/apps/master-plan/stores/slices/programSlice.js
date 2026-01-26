@@ -195,7 +195,8 @@ export const createProgramSlice = (set, get) => ({
         set({ isLoading: true });
         try {
             const { data: program } = await supabase.schema(get().activeSchema).from('programs').select('*').eq('id', programId).single();
-            const { data: days } = await DB.fetchDeepProgram(programId);
+            const { data: days, error: dErr } = await DB.fetchDeepProgram(programId);
+            if (dErr) throw dErr;
 
             const hydratedDays = days.map(d => {
                 const session = Array.isArray(d.sessions) ? d.sessions[0] : d.sessions;

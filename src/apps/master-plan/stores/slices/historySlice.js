@@ -83,9 +83,6 @@ export const createHistorySlice = (set, get) => ({
         const fkConstraint = get().getFKConstraint();
         set({ isLoading: true, activeHistorySession: null });
         try {
-            const { data: session, error: sErr } = await DB.fetchSessions(sessionId); // This needs careful mapping
-            // Note: DB service needs a .singleSession fetcher
-            
             const { data: logs, error: lErr } = await DB.fetchSessionDetails(sessionId, fkConstraint);
             if (lErr) throw lErr;
 

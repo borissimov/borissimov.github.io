@@ -38,9 +38,8 @@ export const createSessionSlice = (set, get) => ({
     startSession: async (dayId, customDate = null) => {
         set({ isLoading: true, retroactiveDate: customDate });
         try {
-            const { data: days, error } = await DB.fetchDeepProgram(); // This needs dayId filter
             // Refactor: We need a specific fetcher for startSession in DB service
-            const { data: sessionTemplate } = await supabase
+            const { data: sessionTemplate, error } = await supabase
                 .schema(get().activeSchema)
                 .from('sessions')
                 .select(`
@@ -55,6 +54,8 @@ export const createSessionSlice = (set, get) => ({
                 `)
                 .eq('program_day_id', dayId)
                 .maybeSingle();
+
+            if (error) throw error;
 
             if (!sessionTemplate) {
                 console.warn("[SessionSlice] No session template found.");
@@ -162,6 +163,20 @@ export const createSessionSlice = (set, get) => ({
         }
     },
 
+    toggleFocus: (itemId, blockId) => set((state) => {
+        const isClosing = state.activeFocusId === itemId;
+        const newState = { activeFocusId: isClosing ? null : itemId, expandedBlockId: blockId };
+        if (!isClosing && blockId && blockId !== state.systemStep?.blockId) {
+            const block = state.activeSession.blocks.find(b => b.id === blockId);
+            const firstIncomplete = block.items.find(item => {
+                const logs = state.activeSession.logs[item.id] || [];
+                return logs.length < parseInt(item.target_sets || 3);
+            }) || block.items[0];
+            newState.systemStep = { blockId, itemId: firstIncomplete.id, round: state.systemStep?.round || 1 };
+        }
+        return newState;
+    }),
+
     addLogEntry: (itemId, blockId, data, isCircuit) => {
         const session = get().activeSession;
         if (!session) return;
@@ -183,6 +198,13 @@ export const createSessionSlice = (set, get) => ({
         }
 
         if (next) set({ systemStep: next, activeFocusId: next.itemId, expandedBlockId: next.blockId });
+    },
+
+    updateLogEntry: (itemId, logId, field, value) => {
+        const session = get().activeSession;
+        if (!session) return;
+        const updatedLogs = { ...session.logs, [itemId]: (session.logs[itemId] || []).map(l => l.id === logId ? { ...l, [field]: value } : l) };
+        set({ activeSession: { ...session, logs: updatedLogs } });
     },
 
     resetStore: () => set({ activeSession: null, systemStep: null, activeFocusId: null, expandedBlockId: null, retroactiveDate: null }),

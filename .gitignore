@@ -91,3 +91,4 @@ node_modules/
 /home/dev/.gemini/tmp/*
 _project-system/system-config/auth/database_access.txt
 _project-system/archives/db-backups/
+screenshots/

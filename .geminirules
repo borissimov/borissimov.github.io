@@ -70,3 +70,8 @@ All plan-related logic (Training, Nutrition, Supplements) must follow:
 - Always run `npm run sync-tasks` before starting and after finishing a task.
 - Active tickets live in `_project-system/GH-Issues`.
 - Documentation and architectural guides live in `_project-system/knowledge-base/docs`.
+
+## 7. Changelog Management
+- **Maintenance:** You MUST update `CHANGELOG.md` in the project root whenever a new feature is delivered or a significant bug is fixed.
+- **Format:** Use the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
+- **Versioning:** Adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Update the version number in `package.json` and `CHANGELOG.md` accordingly during releases.

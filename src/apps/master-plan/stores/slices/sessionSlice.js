@@ -85,7 +85,8 @@ export const createSessionSlice = (set, get) => ({
                         target_weight: bi.target_weight,
                         target_rpe: bi.target_rpe,
                         tempo: bi.tempo,
-                        metric_type: bi.metric_type
+                        metric_type: bi.metric_type,
+                        set_targets: bi.set_targets
                     }))
                 })),
                 logs: {}

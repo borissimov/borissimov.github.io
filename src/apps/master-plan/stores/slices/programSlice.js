@@ -153,7 +153,8 @@ export const createProgramSlice = (set, get) => ({
                             target_rpe: String(item.target_rpe),
                             tempo: String(item.tempo),
                             metric_type: item.metric_type,
-                            sort_order: item.sort_order
+                            sort_order: item.sort_order,
+                            set_targets: item.set_targets
                         }]);
                     }
                     const itemsToDelete = existingItemIds.filter(id => !incomingItemIds.includes(id));
@@ -207,7 +208,8 @@ export const createProgramSlice = (set, get) => ({
                         id: b.id, label: b.label, block_type: b.block_type, sort_order: b.sort_order,
                         items: (b.block_items || []).sort((a,b) => a.sort_order - b.sort_order).map(i => ({
                             id: i.id, name: i.exercise_library.name, target_sets: i.target_sets, target_reps: i.target_reps,
-                            target_weight: i.target_weight, target_rpe: i.target_rpe, tempo: i.tempo, metric_type: i.metric_type, sort_order: i.sort_order
+                            target_weight: i.target_weight, target_rpe: i.target_rpe, tempo: i.tempo, metric_type: i.metric_type, 
+                            sort_order: i.sort_order, set_targets: i.set_targets
                         }))
                     }))
                 };

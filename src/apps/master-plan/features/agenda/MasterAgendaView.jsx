@@ -43,8 +43,9 @@ export const MasterAgendaView = ({
     const scrollerDates = useMemo(() => {
         const dates = [];
         const start = new Date();
-        start.setDate(start.getDate() - 14); 
-        for (let i = 0; i < 28; i++) { 
+        // Expand range: 180 days back, 180 days forward (approx 1 year total)
+        start.setDate(start.getDate() - 180); 
+        for (let i = 0; i < 361; i++) { 
             const d = new Date(start);
             d.setDate(d.getDate() + i);
             dates.push(d);
@@ -56,6 +57,19 @@ export const MasterAgendaView = ({
     useEffect(() => {
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
+
+    // Center scroller on mount
+    useEffect(() => {
+        if (scrollerRef.current && !isGridExpanded) {
+            const todayIndex = scrollerDates.findIndex(d => d.toDateString() === new Date().toDateString());
+            if (todayIndex !== -1) {
+                const containerWidth = scrollerRef.current.offsetWidth;
+                const itemWidth = 50; // minWidth (44) + gap (6)
+                const scrollPos = (todayIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+                scrollerRef.current.scrollLeft = scrollPos;
+            }
+        }
+    }, [isGridExpanded]); // Re-run if we switch back from grid to date scroller
 
     // 5. Handlers
     const handleToggleActivityExpansion = (sessionId) => {

@@ -133,15 +133,40 @@ export const AgendaCalendar = ({
                 <div ref={scrollerRef} {...scrollHandlers} style={{ display: 'flex', overflowX: 'auto', gap: '6px', padding: '2px 0', scrollbarWidth: 'none', msOverflowStyle: 'none', cursor: 'grab', userSelect: 'none', width: '100%' }}>
                     {scrollerDates.map((date, idx) => { 
                         const isSelected = date.toDateString() === selectedCalendarDate.toDateString(); 
+                        const isToday = date.toDateString() === new Date().toDateString();
                         const customStyle = getDateStyle(date); 
                         return (
                             <div 
                                 key={idx} 
                                 onClick={() => setSelectedCalendarDate(date)} 
-                                style={{ minWidth: '44px', height: '44px', borderRadius: '10px', border: isSelected ? '2px solid #f29b11' : '1px solid #222', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backgroundColor: 'transparent', transition: 'all 0.2s ease', flexShrink: 0 }}
+                                style={{ 
+                                    minWidth: '44px', 
+                                    height: '44px', 
+                                    borderRadius: '10px', 
+                                    border: isSelected ? '2px solid #f29b11' : isToday ? '1px solid #2ecc71' : '1px solid #222', 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    cursor: 'pointer', 
+                                    backgroundColor: 'transparent', 
+                                    transition: 'all 0.2s ease', 
+                                    flexShrink: 0,
+                                    position: 'relative'
+                                }}
                             >
-                                <span style={{ fontSize: '8px', fontWeight: '800', textTransform: 'uppercase', color: '#666', pointerEvents: 'none' }}>{date.toLocaleDateString([], { weekday: 'short' })}</span>
-                                <span style={{ fontSize: '17px', pointerEvents: 'none', ...customStyle }}>{date.getDate()}</span>
+                                {isToday && (
+                                    <span style={{ 
+                                        position: 'absolute', 
+                                        top: '-12px', 
+                                        fontSize: '6px', 
+                                        fontWeight: '900', 
+                                        color: '#2ecc71',
+                                        letterSpacing: '0.5px'
+                                    }}>TODAY</span>
+                                )}
+                                <span style={{ fontSize: '8px', fontWeight: '800', textTransform: 'uppercase', color: isToday ? '#2ecc71' : '#666', pointerEvents: 'none' }}>{date.toLocaleDateString([], { weekday: 'short' })}</span>
+                                <span style={{ fontSize: '17px', pointerEvents: 'none', fontWeight: isToday ? '900' : 'inherit', ...customStyle }}>{date.getDate()}</span>
                             </div>
                         ); 
                     })}

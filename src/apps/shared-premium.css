@@ -22,17 +22,12 @@
 }
 
 .master-plan-orchestrator {
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     background-color: #000;
-}
-
-.master-plan-orchestrator:has(.viewport-constrained) {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
+    overflow: hidden; /* Lock the root container */
 }
 
 /* Viewport Constrained Container */
@@ -46,10 +41,16 @@
     display: flex;
     flex-direction: column;
     background-color: var(--bg-dark);
-    border-left: 1px solid var(--border-dark);
-    border-right: 1px solid var(--border-dark);
-    box-shadow: 0 0 100px rgba(0,0,0,0.5);
     position: relative;
+    padding: 0 !important; /* Edge-to-edge for header */
+}
+
+@media (min-width: 501px) {
+    .viewport-constrained {
+        border-left: 1px solid var(--border-dark);
+        border-right: 1px solid var(--border-dark);
+        box-shadow: 0 0 100px rgba(0,0,0,0.5);
+    }
 }
 
 .scrollable-content {

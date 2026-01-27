@@ -72,8 +72,8 @@ export const MasterAgendaView = ({
     };
 
     return (
-        <div className="app-container-v2 viewport-constrained" style={{ padding: '0 10px' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', zIndex: 50, position: 'relative', flexShrink: 0 }}>
+        <div className="app-container-v2 viewport-constrained">
+            <header style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '54px', padding: '0 10px', zIndex: 50, position: 'relative', flexShrink: 0, borderBottom: '1px solid #222' }}>
                 <button onClick={onExit} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Back to Portal"><LayoutGrid size={24} color="#f29b11" /></button>
                 
                 <div style={{ display: 'flex', backgroundColor: '#0a0a0a', borderRadius: '8px', padding: '4px', border: '1px solid #222', flex: 1.5 }}>
@@ -102,7 +102,7 @@ export const MasterAgendaView = ({
 
             <AgendaStats stats={stats} onLogActivity={() => onLogActivity(selectedCalendarDate)} />
 
-            <div className="scrollable-content">
+            <div className="scrollable-content" style={{ padding: '0 10px' }}>
                 <div style={{ 
                     display: 'grid', 
                     gridTemplateColumns: 'minmax(0, 1fr)', 

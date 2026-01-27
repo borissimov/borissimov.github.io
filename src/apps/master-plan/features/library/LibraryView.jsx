@@ -45,14 +45,16 @@ export const LibraryView = ({
     };
 
     return (
-        <div className="app-container-v2 viewport-constrained" style={{ padding: '0 10px' }}>
-            <LibraryHeader 
-                onExit={onExit}
-                onNavigate={onNavigate}
-                onToggleSwitcher={() => setShowSwitcher(!showSwitcher)}
-                activeProgramName={activeProgram?.name}
-                showSwitcher={showSwitcher}
-            />
+        <div className="app-container-v2 viewport-constrained">
+            <div style={{ padding: '0 10px', borderBottom: '1px solid #222', flexShrink: 0 }}>
+                <LibraryHeader 
+                    onExit={onExit}
+                    onNavigate={onNavigate}
+                    onToggleSwitcher={() => setShowSwitcher(!showSwitcher)}
+                    activeProgramName={activeProgram?.name}
+                    showSwitcher={showSwitcher}
+                />
+            </div>
 
             {showSwitcher && (
                 <ProgramSwitcher 

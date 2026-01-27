@@ -22,15 +22,17 @@ export const SessionView = ({
     lastView
 }) => {
     return (
-        <div className="app-container-v2 viewport-constrained" style={{ padding: '0' }}>
-            <SessionHeader 
-                onBack={() => onNavigate(lastView || 'library')}
-                workoutLabel={workoutLabel}
-                elapsed={elapsed}
-                retroactiveDate={retroactiveDate}
-                globalPercent={globalPercent}
-                onAbandon={() => setShowAbandonModal(true)}
-            />
+        <div className="app-container-v2 viewport-constrained">
+            <div style={{ flexShrink: 0 }}>
+                <SessionHeader 
+                    onBack={() => onNavigate(lastView || 'library')}
+                    workoutLabel={workoutLabel}
+                    elapsed={elapsed}
+                    retroactiveDate={retroactiveDate}
+                    globalPercent={globalPercent}
+                    onAbandon={() => setShowAbandonModal(true)}
+                />
+            </div>
 
             {activeSession.sessionFocus && (
                 <SessionFocusBanner focus={activeSession.sessionFocus} />

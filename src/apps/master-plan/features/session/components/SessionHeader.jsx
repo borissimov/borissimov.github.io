@@ -4,7 +4,7 @@ import { getProgressColor } from '../../../shared/utils/formatting.jsx';
 import { getActiveSchema } from '../../../../../supabaseClient';
 
 export const SessionHeader = ({ onBack, workoutLabel, elapsed, retroactiveDate, globalPercent, onAbandon }) => (
-    <div style={{ position: 'sticky', top: 0, left: 0, zIndex: 100, backgroundColor: '#121212' }}>
+    <div style={{ backgroundColor: '#121212' }}>
         <div style={{ height: '3px', width: '100%', backgroundColor: '#222' }}>
             <div style={{ height: '100%', width: `${globalPercent}%`, backgroundColor: getProgressColor(globalPercent), boxShadow: `0 0 10px ${getProgressColor(globalPercent)}88`, transition: 'all 0.5s ease-out' }} />
         </div>

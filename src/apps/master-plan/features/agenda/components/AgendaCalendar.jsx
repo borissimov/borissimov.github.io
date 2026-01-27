@@ -27,11 +27,16 @@ export const AgendaCalendar = ({
 
     const handleSwipe = (dir) => {
         const nextMonth = new Date(currentMonth);
+        const nextDir = dir === 'left' ? 1 : -1;
+        
         if (dir === 'left') {
             nextMonth.setMonth(nextMonth.getMonth() + 1);
         } else {
             nextMonth.setMonth(nextMonth.getMonth() - 1);
         }
+        
+        // Force state update with direction immediately for gesture
+        setMonthState([nextMonth.toISOString(), nextDir]);
         setCurrentMonth(nextMonth);
     };
 
@@ -82,16 +87,12 @@ export const AgendaCalendar = ({
                                 display: 'flex', 
                                 justifyContent: 'center', 
                                 width: '100%',
-                                touchAction: 'pan-y',
-                                cursor: 'grab'
+                                touchAction: 'pan-y'
                             }}
-                            active={{ cursor: 'grabbing' }}
-                            drag="x"
-                            dragElastic={0.2}
-                            onDragEnd={(e, { offset, velocity }) => {
+                            onPanEnd={(e, info) => {
                                 const swipeThreshold = 50;
-                                if (offset.x < -swipeThreshold) handleSwipe('left');
-                                else if (offset.x > swipeThreshold) handleSwipe('right');
+                                if (info.offset.x < -swipeThreshold) handleSwipe('left');
+                                else if (info.offset.x > swipeThreshold) handleSwipe('right');
                             }}
                         >
                             <style>{`

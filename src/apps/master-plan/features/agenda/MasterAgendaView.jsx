@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Dumbbell, Coffee, Loader2, X } from 'lucide-react';
+import { LayoutGrid, Plus, Coffee, Loader2, X } from 'lucide-react';
 import { useProgramStore } from '../../stores/useProgramStore';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import CompletedSessionCard from './components/CompletedSessionCard';
-import { AgendaStats } from './components/AgendaStats';
 import { getActiveSchema } from '../../../../supabaseClient';
 import { useDraggableScroll } from '../../shared/hooks/useDraggableScroll';
 
@@ -134,10 +133,8 @@ export const MasterAgendaView = ({
                     </span>
                 )}
 
-                <button onClick={() => onNavigate('library')} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Switch to Program Library"><Dumbbell size={26} color="#f29b11" /></button>
+                <button onClick={() => onLogActivity(selectedCalendarDate)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Plan or Log Activity"><Plus size={28} color="#f29b11" strokeWidth={3} /></button>
             </header>
-
-            <AgendaStats stats={stats} onLogActivity={() => onLogActivity(selectedCalendarDate)} />
 
             <div className="scrollable-content" style={{ padding: '0 10px' }}>
                 <div style={{ 

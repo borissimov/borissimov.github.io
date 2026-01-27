@@ -1,84 +1,74 @@
 # SYSTEM CONTEXT: Master Plan
 
 **Last Updated:** January 26, 2026
-**Version:** 1.7.0 (Surgical Backups)
+**Version:** 1.7.1 (Modular Architecture)
 
 ## 1. Project Identity & Goal
 **Master Plan** is a high-performance athletic platform built for rigorous training management. 
-It has transitioned from a static prototype to a **Native V3 Relational Architecture**, enabling sophisticated multi-program management and granular performance tracking.
+It has transitioned to a **Modular Domain-Driven Architecture**, enabling indestructible performance history and sophisticated multi-program management.
 
-**Core Philosophy:** "Relational Integrity," "Industrial High-Density UI," and "Preservation of History."
+**Core Philosophy:** "Relational Integrity," "Industrial High-Density UI," and "Immutable History."
 
 ---
 
 ## 2. Technology Stack
-*   **Frontend:** React 18, Vite, Lucide React, Zustand (Store-based state).
+*   **Frontend:** React 18, Vite, Lucide React, Zustand (Modular Slices).
 *   **Backend:** Supabase (PostgreSQL).
 *   **Environments:** 
-    *   `v3`: Production environment.
-    *   `v3_dev`: Sandbox environment (Perfect mirror for risk-free testing).
-*   **Schema (v3/v3_dev):**
-    *   `programs`: Master training plans (Columns: `id`, `name`, `user_id`, `cycle_length`, `archived_at`).
-    *   `program_days`: The sequence of days within a program.
-    *   `sessions`: The specific workout prescribed for a day.
-    *   `blocks`: Groups of exercises (Standard or Metabolic Circuit).
-    *   `block_items`: Specific exercise prescriptions (Rx: sets, reps, weight, RPE, tempo).
-    *   `completed_sessions`: Historical logs of executed workouts.
-    *   `performance_logs`: The granular set-by-set data linked to `completed_sessions`.
-    *   `health_metrics`: User vital signs and health tracking.
+    *   `v3`: Production.
+    *   `v3_dev`: Sandbox (Hardened mirror).
+*   **Schema (Hardened):**
+    *   `performance_logs`: Includes `exercise_name_snapshot` for immutable history.
+    *   `sessions`: Enforces `UNIQUE(program_day_id)` for surgical upserts.
 
 ---
 
 ## 3. Architecture & Data Logic
 
-### A. The "Relational Hierarchy"
-Training data is resolved through a strict hierarchical chain:
-`Program -> Program Day -> Session -> Block -> Block Item (Exercise Rx)`.
+### A. The "Modular Slice" Brain
+The store is decomposed into specialized domain slices:
+`UI (Context) + Program (CRUD) + Session (Logger) + History (Analytics)`.
 
-### B. Multi-Program Management
-The app supports multiple active and archived programs.
-*   **Library Context:** The UI filters training days based on an `activeProgramId`.
-*   **Safe Archiving:** Programs are never hard-deleted. An `archived_at` timestamp hides them from the active Library while keeping all historical `completed_sessions` linked and valid.
+### B. Decentralized Orchestration
+Major UI views act as independent orchestrators, consuming specific slices directly to reduce root component complexity.
 
-### C. Navigation & State Persistence
-A unified `navState` object is passed through the root `App.jsx` to all sub-apps. This ensures that deep-links (like a specific `programId` for editing) survive page refreshes and browser navigation.
+### C. The History Shield
+History is preserved via two layers:
+1.  **DB Level:** `ON DELETE SET NULL` on template links.
+2.  **Logic Level:** Mandatory text snapshots of movement names in logs.
 
 ---
 
 ## 4. Key Conventions & Rules
 
 ### UI/UX ("Industrial High-Density")
-*   **Aesthetic:** Dark mode, high contrast (`#f29b11` Orange, `#2ecc71` Green), monospace numbers.
-*   **Density:** Compact displays (Pills, nested accordions) to maximize data visibility on small screens.
-*   **Environment Awareness:** A global, absolutely-positioned "Sandbox Mode" HUD is mandatory when `getActiveSchema() === 'v3_dev'`.
+*   **Aesthetic:** Dark mode, high contrast Orange/Green, Monospace numbers.
+*   **Timezone Safety:** Standardized `en-CA` date comparisons for Sofia compatibility.
 
 ### Code Standards
-*   **Logic Isolation:** Components are "thin"; all database mutations and complex filtering live in `useProgramStore.js`.
-*   **Schema Switching:** The app is designed to support switching between `v3` (production) and `v3_dev` (sandbox) schemas via HubApp.
+*   **Surgical Repositories:** All DB calls live in `src/apps/master-plan/services/database.service.js`.
+*   **Explicit Joins:** Relationship hints are mandatory for PostgREST clarity.
 
 ---
 
 ## 5. Current State Snapshot (Jan 26, 2026)
 
 ### Recently Completed
-*   **Surgical Backups:** Implementation of `npm run backup-db` for multi-schema JSON snapshots.
-*   **Sandbox Environment:** Creation, exposure, and population of the `v3_dev` playground.
-*   **Program Archiving:** Soft-delete "Graveyard" for template management.
-*   **Relational Hardening:** Full Foreign Key restoration and permission granting for the sandbox.
-*   **App-wide HUD:** Standardized "Sandbox Mode" indicators in all headers.
+*   **Modular Store Refactor:** Transitioned to domain slices and service layer.
+*   **Immutable History:** Snapshots implemented across both schemas.
+*   **Security Audit:** Rotated all credentials and hardened `.env`.
+*   **Mobile Fix:** Responsive wrapping for builder inputs.
 
 ### Immediate Roadmap
-*   **Structural Sync:** Implementation of SQL migrations to maintain schema parity.
-*   **On-demand Data Mirroring:** UI-triggered "Sync Prod to Dev" functionality.
-*   **Exercise Library Extension:** Expansion of Rx templates.
+*   **Structural Sync:** Implementation of automated schema migration scripts.
+*   **Data Mirroring:** UI-triggered "Prod -> Dev" cloning utility.
+*   **Performance Analytics:** Real-time volume tracking.
 
 ---
 
 ## 6. Critical File Map
-*   `src/App.jsx`: Root orchestrator and navigation authority.
-*   `src/supabaseClient.js`: Dynamic schema resolution engine.
-*   `src/apps/master-plan/MasterPlanApp.jsx`: Feature-level router and modal manager.
-*   `src/apps/master-plan/stores/useProgramStore.js`: The central "brain" for Native V3 data.
-*   `src/apps/master-plan/features/builder/ProgramEditorView.jsx`: The hierarchical program authoring engine.
-*   `_project-system/tooling/db/backup_db.js`: The surgical multi-schema backup engine.
-*   `CHANGELOG.md`: The mandatory audit log of all system changes.
+*   `src/App.jsx`: Root router.
+*   `src/apps/master-plan/stores/useProgramStore.js`: Modular store orchestrator.
+*   `src/apps/master-plan/services/database.service.js`: The Unified V3 Repository.
+*   `src/apps/master-plan/features/`: Granular feature orchestrators.
+*   `CHANGELOG.md`: Mandatory audit log.

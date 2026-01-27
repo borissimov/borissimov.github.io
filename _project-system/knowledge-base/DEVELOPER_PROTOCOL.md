@@ -8,35 +8,35 @@
 ## 1. Session Startup Routine
 *When starting a new session, you MUST:*
 1.  **Read Context:** Read `_project-system/SYSTEM_CONTEXT.md` to understand the current architecture and state.
-2.  **Read Wisdom:** Read `_project-system/PROJECT_WISDOM.md` to avoid repeating past mistakes (e.g., `sed` issues, UUID formatting).
-3.  **Sync Workspace:** Run `npm run sync-tasks` to align local ticket state with GitHub.
+2.  **Read Wisdom:** Read `_project-system/PROJECT_WISDOM.md` to avoid repeating past mistakes (e.g., `PGRST201`, History Deletion).
+3.  **Validate Repository:** Ensure `src/apps/master-plan/services/database.service.js` is used for all DB interactions.
+4.  **Sync Workspace:** Run `npm run sync-tasks` to align local ticket state with GitHub.
 
 ---
 
 ## 2. Documentation Maintenance (The "Living Docs" Rule)
 *You are responsible for keeping the documentation accurate. Do not wait for the user to ask.*
 
-### Mandatory Changelog Protocol
-*   **Maintenance:** You MUST update `CHANGELOG.md` in the project root whenever a new feature is delivered or a significant bug is fixed.
-*   **Format:** Use the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
-*   **Versioning:** Adhere to [Semantic Versioning]. Update the version number in `package.json` and `CHANGELOG.md` accordingly during releases.
-
-### Document Updates:
-*   **SYSTEM_CONTEXT.md:** Update if you add a new store, a new DB table, or change the relational hierarchy.
-*   **PROJECT_WISDOM.md:** Update if you learn a new constraint or if the user corrects your style.
+### Mandatory Protocols:
+*   **Changelog:** Update `CHANGELOG.md` for every release or significant fix.
+*   **Architectural Shifts:** If you change a slice or service method, update `V3_SYSTEM_MAP.md` immediately.
+*   **Project Wisdom:** If you encounter a new "Gotcha" or constraint, document it in `PROJECT_WISDOM.md`.
 
 ---
 
 ## 3. Feature Development Workflow
 1.  **Initiation:** Sync tasks, identify/create a GHI, and branch out (`task-[ID]-description`).
-2.  **Implementation:** Write code sticking to the "Industrial High-Density" style.
-3.  **UAT Gate:** Present changes to the user and wait for "Visual Sign-off".
-4.  **Delivery:** Run `npm run build`, update `CHANGELOG.md`, commit (`fixes #[ID]`), and merge to `main`.
-5.  **Cleanup:** Close the issue and run `npm run sync-tasks`.
+2.  **Modular Implementation:**
+    - Logic changes must go into the relevant `stores/slices/`.
+    - DB calls must go into `services/database.service.js`.
+    - UI state must be localized in Feature Orchestrators.
+3.  **Verification:** Run `npm run build` to ensure import/syntax integrity.
+4.  **UAT Gate:** Present changes to the user and wait for "Visual Sign-off".
+5.  **Delivery:** Merge to `main`, update version, and deploy.
 
 ---
 
 ## 4. End-of-Session Handoff
 *Before ending a major session:*
-1.  **Create Handoff:** Write a new `handoff-[TIMESTAMP].md` in the handoffs directory.
-2.  **Status Check:** Ensure the "Current State Snapshot" in `SYSTEM_CONTEXT.md` reflects reality (dates, versions, next steps).
+1.  **Create Handoff:** Write a new `handoff-[TIMESTAMP].md`.
+2.  **Status Check:** Ensure the "Current State Snapshot" in `SYSTEM_CONTEXT.md` reflects reality.

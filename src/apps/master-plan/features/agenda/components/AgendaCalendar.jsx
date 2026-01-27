@@ -15,7 +15,82 @@ export const AgendaCalendar = ({
             {isGridExpanded ? (
                 <div className="animate-in zoom-in-95 duration-200">
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <style>{`.rdp-root { --rdp-accent-color: #f29b11 !important; --rdp-today-color: #2ecc71 !important; margin: 0; } .rdp-day_selected { background-color: #f29b11 !important; color: #000 !important; border-radius: 50% !important; } .rdp-day_today { color: #2ecc71 !important; font-weight: 900 !important; } .rdp-nav_button, .rdp-caption_label, .rdp-head_cell { color: #f29b11 !important; font-weight: 900 !important; text-transform: uppercase !important; } .rdp-day_outside { color: rgba(242, 155, 17, 0.2) !important; }`}</style>
+                        <style>{`
+                            .rdp-root { 
+                                --rdp-accent-color: #f29b11 !important; 
+                                --rdp-today-color: #2ecc71 !important; 
+                                margin: 0; 
+                            } 
+                            .rdp-months {
+                                position: relative !important;
+                            }
+                            .rdp-month {
+                                position: relative !important;
+                            }
+                            .rdp-month_caption {
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                position: relative !important;
+                                margin-bottom: 10px !important;
+                                height: 40px !important;
+                                width: 100% !important;
+                            }
+                            .rdp-caption_label { 
+                                color: #f29b11 !important; 
+                                font-weight: 900 !important; 
+                                text-transform: uppercase !important; 
+                                font-size: 1rem !important;
+                                z-index: 1;
+                            } 
+                            .rdp-nav {
+                                position: absolute !important;
+                                top: 0 !important;
+                                left: 0 !important;
+                                right: 0 !important;
+                                display: flex !important;
+                                justify-content: space-between !important;
+                                align-items: center !important;
+                                width: 100% !important;
+                                height: 40px !important;
+                                pointer-events: none !important;
+                                z-index: 10 !important;
+                                padding: 0 5px !important;
+                            }
+                            .rdp-button_next, .rdp-button_previous { 
+                                color: #f29b11 !important; 
+                                pointer-events: auto !important;
+                                background: transparent !important;
+                                border: none !important;
+                                cursor: pointer !important;
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                width: 32px !important;
+                                height: 32px !important;
+                            } 
+                            .rdp-button_next svg, .rdp-button_previous svg, .rdp-chevron {
+                                fill: #f29b11 !important;
+                                stroke: #f29b11 !important;
+                            }
+                            .rdp-day_selected { 
+                                background-color: #f29b11 !important; 
+                                color: #000 !important; 
+                                border-radius: 50% !important; 
+                            } 
+                            .rdp-day_today { 
+                                color: #2ecc71 !important; 
+                                font-weight: 900 !important; 
+                            } 
+                            .rdp-head_cell { 
+                                color: #f29b11 !important; 
+                                font-weight: 900 !important; 
+                                text-transform: uppercase !important; 
+                            } 
+                            .rdp-day_outside { 
+                                color: rgba(242, 155, 17, 0.2) !important; 
+                            }
+                        `}</style>
                         <DayPicker 
                             mode="single" 
                             selected={selectedCalendarDate} 

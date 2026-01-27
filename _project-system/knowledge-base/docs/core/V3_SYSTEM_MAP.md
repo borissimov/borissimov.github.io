@@ -1,77 +1,84 @@
 # V3 System Map (Live Reference)
 
 **Status:** ACTIVE
-**Version:** V1.6 (Multi-Program Relational)
+**Version:** V1.7.1 (Modular Slice Architecture)
 
 ---
 
-## 1. Store State (`useProgramStore`)
+## 1. Store Architecture (`useProgramStore`)
 
-The store handles relational data across multiple training plans.
+The store has been refactored into a **Modular Domain-Driven Slice** architecture to improve maintainability and state isolation.
 
-### **A. Global Context**
+### **A. Global Context (`uiSlice`)**
 ```javascript
 {
-  programs: [], // Fetched non-archived programs
-  activeProgramId: "uuid", // Current selection
-  showArchivedPrograms: boolean, // Graveyard visibility toggle
-  programDays: [], // Days filtered by activeProgramId
+  activeSchema: "v3" | "v3_dev",
+  lastView: string,
+  isLoading: boolean,
+  getFKConstraint: () => string // Resolves PostgREST ambiguity hints
 }
 ```
 
-### **B. `activeSession`**
+### **B. Program Management (`programSlice`)**
 ```javascript
 {
-  id: "uuid",
-  startTime: "ISO Date String",
-  program_day_id: "uuid", // Foreign Key to v3.program_days
-  isRestDay: boolean,
-  sessionFocus: string, // Mapped from v3.sessions.session_focus
-  
-  logs: {
-    [itemId]: [
-      {
-        id: number, // timestamp
-        weight: string,
-        reps: number,
-        rpe: number,
-        duration_seconds: number,
-        distance_meters: number,
-        set: number 
-      }
-    ]
+  programs: [], 
+  activeProgramId: "uuid",
+  showArchivedPrograms: boolean,
+  programDays: [], // Fully hydrated with previews
+  saveProgram: (name, days, id) => Promise<boolean> // Surgical Upsert logic
+}
+```
+
+### **C. Active Session (`sessionSlice`)**
+```javascript
+{
+  activeSession: {
+    id: "uuid",
+    startTime: "ISO Date String",
+    program_day_id: "uuid",
+    blocks: [], // Prescribed items
+    logs: {} // Active performance data
   },
+  getSessionProgress: () => { totalTarget, totalLogged, percent }
+}
+```
 
-  blocks: [] // Prescribed structure
+### **D. Performance Vault (`historySlice`)**
+```javascript
+{
+  globalHistory: [], // V3 completed_sessions + performance_logs
+  dailyVolumes: {},
+  getHistoryStats: () => { streak, weekCount },
+  getActivitiesForDate: (date) => []
 }
 ```
 
 ---
 
-## 2. Database Schema (`v3` Schema)
+## 2. Database Schema (`v3` / `v3_dev`)
 
-| Entity | V3 Table | Relation | Logic |
+| Entity | V3 Table | Primary Relation | Logic |
 | :--- | :--- | :--- | :--- |
-| **Program** | `v3.programs` | Top Level | `user_id` owner, `archived_at` soft-delete |
-| **Day Slot** | `v3.program_days` | `program_id` | Sequence of days |
-| **Session** | `v3.sessions` | `program_day_id` | Workout definition |
-| **Block** | `v3.blocks` | `session_id` | `STANDARD` or `CIRCUIT` types |
-| **Item (Rx)** | `v3.block_items` | `session_block_id` | Granular exercise prescription |
-| **Library** | `v3.exercise_library`| Reference | Exercise metadata and cues |
-| **Session (Log)**| `v3.completed_sessions`| `program_day_id` | Historical execution link |
-| **Log Entry** | `v3.performance_logs` | `completed_session_id` | Set-granular data |
+| **Program** | `programs` | `user_id` | Master plans with `archived_at` |
+| **Day Slot** | `program_days` | `program_id` | Sequence of slots |
+| **Session** | `sessions` | `program_day_id` | **Unique Constraint** on `program_day_id` |
+| **Block** | `blocks` | `session_id` | STANDARD or CIRCUIT |
+| **Item (Rx)** | `block_items` | `session_block_id` | Prescribed target metrics |
+| **History** | `completed_sessions`| `program_day_id` | execution header |
+| **Logs** | `performance_logs` | `completed_session_id` | **Snapshotted** (Includes `exercise_name_snapshot`) |
 
 ---
 
-## 3. Key Rules & Filters
+## 3. Key Architectural Rules
 
-1.  **The "Archive" Principle:**
-    *   Template deletion is prohibited to prevent data corruption.
-    *   Query `v3.programs` with `is('archived_at', null)` for active view.
-2.  **Deep Hydration Pattern:**
-    *   The Builder loads nested data via multi-level join fetching (`program_days -> sessions -> blocks -> block_items`).
-3.  **Metric Polymorphism:**
-    *   UI inputs adapt dynamically based on `item.metric_type` ('LOAD_REP', 'DURATION', 'DISTANCE').
-4.  **Relational Stability:**
-    *   Program edits use `upsert` for the master record.
-    *   Child records are replaced/updated while maintaining parent IDs.
+1.  **The Snapshot Principle:**
+    *   Performance logs MUST store the `exercise_name_snapshot` as plain text.
+    *   This ensures history is readable even if the template item is deleted.
+2.  **Surgical Persistence:**
+    *   Persistence keys are namespaced by environment: `mp-v3-storage-${schema}`.
+    *   Only `lastView`, `activeProgramId`, and `activeSession` are persisted to avoid cache pollution.
+3.  **Unique Sessions:**
+    *   The `sessions` table enforces a `UNIQUE(program_day_id)` constraint to enable reliable surgical upserts during program edits.
+4.  **Relationship Hinting:**
+    *   PostgREST queries use explicit `!fk_name` hints to resolve ambiguity between multiple foreign keys to the same table.

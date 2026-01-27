@@ -13,65 +13,47 @@ Every request must follow these phases strictly:
 
 ### Phase 1: Initiation (The Anchor)
 1. **Sync Workspace:** Run `npm run sync-tasks` to ensure local `_project-system/GH-Issues` match GitHub.
-2. **Identify Task:** Use an existing GitHub Issue ID (e.g., #4) or create a new one (`gh issue create`).
+2. **Identify Task:** Use an existing GitHub Issue ID or create a new one.
 3. **Move to In Progress:** Update the project item status to "In Progress".
-4. **Branch Out:** Create a task-specific branch: `git checkout -b task-[ID]-short-description`.
+4. **Branch Out:** Create a task-specific branch: `task-[ID]-short-description`.
 
 ### Phase 2: Implementation (The Build)
-1. **Code:** Implement changes following project patterns.
-2. **Update Docs:** Update the local `_project-system/GH-Issues/GHI-[ID]_...md` file with technical implementation details.
-3. **Lint:** Ensure code matches project style.
+1. **Code:** Implement changes following project patterns (see Section 3).
+2. **Update Docs:** Update technical implementation details in GHI files.
+3. **Lint & Build:** Run `npm run build` to verify no syntax or import errors.
 
 ### Phase 3: UAT (User Acceptance Testing)
-1. **Local Test:** Run the app locally and verify the specific logic/UI changes.
-2. **User Review:** Present the changes to the user.
-3. **Status Update:** Move the project item status to "UAT".
-4. **Visual Sign-off:** Wait for the user to provide "Visual Sign-off".
+1. **Local Test:** Verify logic/UI changes locally.
+2. **User Review:** Present changes to the user and wait for "Visual Sign-off".
 
 ### Phase 4: Delivery (The Pull Request)
-1. **Compile:** Run `npm run build` to verify no syntax/import errors.
-2. **Commit:** Use Conventional Commits: `feat: ...`, `fix: ...`, `refactor: ...`, `ui: ...`.
-3. **PR:** Create a Pull Request (`gh pr create`) linked to the issue ("Closes #[ID]").
-4. **Merge:** Merge the PR into `source` and delete the task branch.
-5. **Status Update:** Move the project item status to "Testing".
-
-### Phase 5: Cleanup & Batching
-1. **Clean Sync:** Run `npm run sync-tasks` to remove the local task file.
-2. **Close Issue:** Close the GitHub Issue with a summary.
-3. **Batching:** Verified features accumulate in `source`. Release/Deployment is now a separate, explicit action.
+1. **Commit:** Use Conventional Commits: `feat: ... (fixes #[ID])`.
+2. **PR & Merge:** Create a PR, merge into `main`, and delete the task branch.
 
 ---
 
-## 2. Release Lifecycle (Decoupled)
-Deployment to production is NOT automatic.
-1. **Release Task:** When a batch of features is ready, a specific "Release" task is initiated.
-2. **Deploy:** Run `npm run deploy` to push the accumulated verified state of `source` to production.
+## 2. Core Architecture Mandates (V1.7.1+)
+
+### A. State Management: The Slice Pattern
+- **Modular Stores:** Never add logic to the root `useProgramStore.js`. Decompose logic into specialized slices in `stores/slices/`.
+- **Schema Isolation:** Centralize all database queries in `services/database.service.js`. Never call `supabase` directly from components.
+- **Dynamic Persistence:** Use dynamic keys for localStorage (`mp-v3-storage-${schema}`) to prevent data leakage between Production and Sandbox.
+
+### B. UI Pattern: Decentralized Orchestrators
+- **Feature Sovereignty:** Major views (Agenda, Library, Session, Builder) MUST act as their own orchestrators, managing internal UI state (tabs, local filters).
+- **Direct Store Access:** Orchestrators should consume specific store slices directly to minimize prop-drilling from the root.
+
+### C. Data Integrity: The Snapshot Rule
+- **Immutable History:** Performance logs MUST store exercise names (`exercise_name_snapshot`) as plain text. History must NEVER depend solely on mutable template IDs.
+- **Surgical Updates:** Program saves MUST use ID-based diffing. Never use "Delete-All" patterns for relational structures.
+
+### D. Tactical Logic Standards
+- **Timezone Safety:** Always use `.toLocaleDateString('en-CA')` (YYYY-MM-DD) for logic-level date comparisons to ensure reliability in Sofia (UTC+2).
+- **PostgREST Clarity:** Use explicit relationship hints (e.g., `!fk_name`) in joins to prevent ambiguity errors (`PGRST201`).
 
 ---
 
-## 3. Core Architecture: The 3-Layers of Truth
-All plan-related logic (Training, Nutrition, Supplements) must follow:
-- **Layer 1 (Daily Overrides):** `masterLogs[dateKey].plan_overrides`.
-- **Layer 2 (User Templates):** `localStorage.regimen_user_template`.
-- **Layer 3 (System Defaults):** The immutable `DEFAULT_PLAN` object.
-- **CRITICAL:** Never modify `DEFAULT_PLAN` directly without user approval.
-
-## 4. GitHub & Project Standards
+## 3. GitHub & Project Standards
 - **Branching:** `task-[ID]-description`.
 - **Conventional Commits:** `type: description (fixes #[ID])`.
-- **Project Board:** Every issue must have a Tier (1-3) and Work Type assigned.
-
-## 5. UI/UX Style Guide ("Industrial High-Density")
-- **Aesthetic:** Dark mode, high contrast (`#f29b11` Orange, `#2ecc71` Green), monospace numbers.
-- **Density:** Prefer informative, compact displays over sparse layouts.
-- **Buttons:** Prefer small, right-aligned header buttons for primary actions.
-
-## 6. Two-Way Task Mirroring
-- Always run `npm run sync-tasks` before starting and after finishing a task.
-- Active tickets live in `_project-system/GH-Issues`.
-- Documentation and architectural guides live in `_project-system/knowledge-base/docs`.
-
-## 7. Changelog Management
-- **Maintenance:** You MUST update `CHANGELOG.md` in the project root whenever a new feature is delivered or a significant bug is fixed.
-- **Format:** Use the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
-- **Versioning:** Adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Update the version number in `package.json` and `CHANGELOG.md` accordingly during releases.
+- **Changelog:** You MUST update `CHANGELOG.md` for every release or significant fix.

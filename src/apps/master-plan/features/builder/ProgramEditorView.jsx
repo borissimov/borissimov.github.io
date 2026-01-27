@@ -142,7 +142,12 @@ export const ProgramEditorView = ({ onNavigate, navState = null }) => {
             />
 
             <div style={{ padding: '15px', paddingBottom: '100px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', 
+                    gap: '12px',
+                    alignItems: 'start'
+                }}>
                     {days.map((day) => (
                         <EditorDay 
                             key={day.id}
@@ -165,7 +170,20 @@ export const ProgramEditorView = ({ onNavigate, navState = null }) => {
                         />
                     ))}
 
-                    <button onClick={handleAddDay} className="premium-btn-secondary" style={{ borderStyle: 'dashed', height: '60px', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <button 
+                        onClick={handleAddDay} 
+                        className="premium-btn-secondary" 
+                        style={{ 
+                            borderStyle: 'dashed', 
+                            height: '60px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            gap: '8px',
+                            width: '100%',
+                            margin: 0
+                        }}
+                    >
                         <Plus size={18} /> ADD TRAINING DAY
                     </button>
                 </div>

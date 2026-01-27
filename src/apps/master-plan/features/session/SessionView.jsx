@@ -22,7 +22,7 @@ export const SessionView = ({
     lastView
 }) => {
     return (
-        <div className="app-container-v2" style={{ padding: '0' }}>
+        <div className="app-container-v2 viewport-constrained" style={{ padding: '0' }}>
             <SessionHeader 
                 onBack={() => onNavigate(lastView || 'library')}
                 workoutLabel={workoutLabel}
@@ -36,20 +36,29 @@ export const SessionView = ({
                 <SessionFocusBanner focus={activeSession.sessionFocus} />
             )}
 
-            <div style={{ paddingBottom: '100px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            <div className="scrollable-content" style={{ paddingBottom: '100px' }}>
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr', 
+                    gap: '0',
+                    borderTop: '1px solid #222'
+                }}>
                     {activeSession.blocks.map((block, idx) => (
-                        <div key={block.id} className="premium-card" style={{ padding: '8px 10px', borderRadius: '0', border: 'none', borderBottom: '1px solid #222', marginBottom: 0, backgroundColor: 'transparent' }}>
+                        <div key={block.id} style={{ 
+                            padding: '8px 10px', 
+                            borderBottom: '1px solid #222', 
+                            borderRight: '1px solid #222'
+                        }}>
                             <SessionBlock block={block} index={idx} totalBlocks={activeSession.blocks.length} />
                         </div>
                     ))}
                 </div>
-                
-                <SessionFooter 
-                    globalPercent={globalPercent}
-                    onFinish={() => setShowFinishModal(true)}
-                />
             </div>
+            
+            <SessionFooter 
+                globalPercent={globalPercent}
+                onFinish={() => setShowFinishModal(true)}
+            />
         </div>
     );
 };

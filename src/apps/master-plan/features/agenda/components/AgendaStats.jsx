@@ -9,7 +9,7 @@ export const AgendaStats = ({ stats, onLogActivity }) => {
             dragMomentum={false} 
             dragConstraints={{ left: -300, right: 0, top: -600, bottom: 0 }}
             dragElastic={0.05}
-            style={{ position: 'fixed', bottom: '30px', right: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', zIndex: 1000, touchAction: 'none' }}
+            style={{ position: 'absolute', bottom: '30px', right: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', zIndex: 1000, touchAction: 'none' }}
         >
             <div style={{ backgroundColor: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(10px)', border: '1px solid #222', borderRadius: '20px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>

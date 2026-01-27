@@ -19,51 +19,77 @@ export const ProgramDayCard = ({
     return (
         <div 
             onClick={() => setSelectedDay(day.id)} 
-            className={isRecommended && !isSelected ? 'animate-breathe-orange' : ''} 
+            className={`premium-card ${isRecommended && !isSelected ? 'animate-breathe-orange' : ''}`} 
             style={{ 
-                backgroundColor: 'transparent', 
-                border: '1px solid #222', 
-                padding: '10px 15px', 
-                display: 'flex', 
-                flexDirection: 'column', 
+                padding: '0', 
+                overflow: 'hidden',
                 cursor: 'pointer', 
-                transition: 'all 0.2s ease', 
-                borderLeft: isSelected ? '4px solid #f29b11' : isRecommended ? '4px solid #f29b1188' : '4px solid transparent' 
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
+                borderColor: isSelected ? '#f29b11' : isRecommended ? '#f29b1144' : '#222',
+                backgroundColor: isSelected ? 'rgba(242, 155, 17, 0.05)' : '#1a1a1a',
+                height: 'fit-content'
             }}
         >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '10px' }}>
+            <div style={{ padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '15px' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ fontSize: '10px', fontWeight: '900', color: '#666', textTransform: 'uppercase' }}>Day {day.sequence_number}</span>
-                    <h3 style={{ fontSize: '16px', fontWeight: '900', margin: '1px 0', color: isSelected ? '#f29b11' : '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{day.label}</h3>
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '1px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: '800', color: day.last_session ? '#2ecc71' : '#444' }}>LAST: {lastDone}</span>
-                        {preview.length > 0 && <span style={{ fontSize: '11px', color: '#444', fontWeight: '800' }}>| {preview.length} EX</span>}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '9px', fontWeight: '900', color: isSelected ? '#f29b11' : '#666', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            DAY {day.sequence_number}
+                        </span>
+                        {isRecommended && <span style={{ fontSize: '8px', fontWeight: '900', backgroundColor: '#f29b11', color: '#000', padding: '1px 5px', borderRadius: '3px' }}>REC</span>}
+                    </div>
+                    <h3 style={{ fontSize: '18px', fontWeight: '900', margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-0.5px' }}>
+                        {day.label}
+                    </h3>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                            <span style={{ fontSize: '8px', fontWeight: '900', color: '#444' }}>LAST</span>
+                            <span style={{ fontSize: '11px', fontWeight: '900', color: day.last_session ? '#2ecc71' : '#444' }}>{lastDone}</span>
+                        </div>
+                        {preview.length > 0 && (
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                <span style={{ fontSize: '8px', fontWeight: '900', color: '#444' }}>SCOPE</span>
+                                <span style={{ fontSize: '11px', color: '#888', fontWeight: '900' }}>{preview.length} EX</span>
+                            </div>
+                        )}
                     </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {isSelected ? (
                         <button 
                             onClick={(e) => { e.stopPropagation(); startSession(day.id, retroactiveDate).then(() => onNavigate('session')); }} 
-                            style={{ all: 'unset', backgroundColor: '#f29b11', color: '#000', padding: '6px 15px', borderRadius: '6px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            style={{ all: 'unset', backgroundColor: '#f29b11', color: '#000', width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}
+                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.9)'}
+                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                         >
-                            Start <Play size={10} fill="currentColor" />
+                            <Play size={20} fill="currentColor" style={{ marginLeft: '2px' }} />
                         </button>
                     ) : (
-                        <>{isRecommended && <span style={{ fontSize: '9px', fontWeight: '900', backgroundColor: '#f29b1122', color: '#f29b11', padding: '2px 6px', borderRadius: '4px' }}>REC</span>}<ChevronRight size={18} color="#333" /></>
+                        <ChevronRight size={20} color={isRecommended ? '#f29b1188' : '#333'} />
                     )}
                 </div>
             </div>
 
             {isSelected && (
-                <div className="animate-in fade-in slide-in-from-top-2 duration-200" style={{ marginTop: '15px' }}>
-                    <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                        {preview.length === 0 ? <p style={{ fontSize: '11px', color: '#666', margin: 0 }}>NO EXERCISES IN MAIN PHASE</p> :
-                            preview.map((ex, i) => (
-                            <div key={i} style={{ padding: '8px 0', borderBottom: i < preview.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                                <div style={{ fontSize: '13px', color: '#fff', fontWeight: '900', textTransform: 'uppercase' }}>{ex.name}</div>
-                                {ex.snapshot && <div>{formatSnapshot(ex.snapshot)}</div>}
+                <div className="animate-in fade-in slide-in-from-top-4 duration-300" style={{ padding: '0 15px 15px 15px' }}>
+                    <div style={{ borderTop: '1px solid #222', paddingTop: '15px' }}>
+                        {preview.length === 0 ? (
+                            <p style={{ fontSize: '10px', color: '#444', fontWeight: '900', textAlign: 'center', letterSpacing: '1px' }}>
+                                NO TARGETS PRESCRIBED
+                            </p>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {preview.map((ex, i) => (
+                                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontSize: '12px', color: '#fff', fontWeight: '900', textTransform: 'uppercase' }}>{ex.name}</div>
+                                            {ex.snapshot && <div style={{ opacity: 0.6 }}>{formatSnapshot(ex.snapshot)}</div>}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            ))}
+                        )}
                     </div>
                 </div>
             )}

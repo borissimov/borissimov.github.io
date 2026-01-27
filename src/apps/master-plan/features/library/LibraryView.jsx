@@ -45,7 +45,7 @@ export const LibraryView = ({
     };
 
     return (
-        <div className="app-container-v2" style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
+        <div className="app-container-v2 viewport-constrained" style={{ padding: '0 10px' }}>
             <LibraryHeader 
                 onExit={onExit}
                 onNavigate={onNavigate}
@@ -86,10 +86,14 @@ export const LibraryView = ({
                 />
             )}
 
-            <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '20px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div className="scrollable-content" style={{ paddingBottom: '20px' }}>
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr', 
+                    gap: '8px'
+                }}>
                     {programDays.length === 0 ? (
-                        <div style={{ padding: '40px 20px', textAlign: 'center', opacity: 0.5 }}>
+                        <div style={{ padding: '40px 20px', textAlign: 'center', opacity: 0.5, gridColumn: '1 / -1' }}>
                             <p style={{ fontSize: '12px', fontWeight: '800' }}>NO TRAINING DAYS DEFINED FOR THIS PROGRAM</p>
                         </div>
                     ) : programDays.map((day) => (

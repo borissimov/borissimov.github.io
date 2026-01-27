@@ -11,7 +11,17 @@ export const AgendaCalendar = ({
     getDateStyle
 }) => {
     return (
-        <div style={{ backgroundColor: 'transparent', borderRadius: '15px', padding: isGridExpanded ? '10px' : '0', border: isGridExpanded ? '1px solid #222' : 'none', transition: 'all 0.3s ease' }}>
+        <div style={{ 
+            backgroundColor: 'transparent', 
+            borderRadius: '15px', 
+            padding: isGridExpanded ? '10px' : '0', 
+            border: isGridExpanded ? '1px solid #222' : 'none', 
+            transition: 'all 0.3s ease',
+            width: '100%',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            overflow: 'hidden'
+        }}>
             {isGridExpanded ? (
                 <div className="animate-in zoom-in-95 duration-200">
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -120,7 +130,7 @@ export const AgendaCalendar = ({
                     </div>
                 </div>
             ) : (
-                <div ref={scrollerRef} {...scrollHandlers} style={{ display: 'flex', overflowX: 'auto', gap: '6px', padding: '2px 0', scrollbarWidth: 'none', msOverflowStyle: 'none', cursor: 'grab', userSelect: 'none' }}>
+                <div ref={scrollerRef} {...scrollHandlers} style={{ display: 'flex', overflowX: 'auto', gap: '6px', padding: '2px 0', scrollbarWidth: 'none', msOverflowStyle: 'none', cursor: 'grab', userSelect: 'none', width: '100%' }}>
                     {scrollerDates.map((date, idx) => { 
                         const isSelected = date.toDateString() === selectedCalendarDate.toDateString(); 
                         const customStyle = getDateStyle(date); 

@@ -158,29 +158,32 @@ export const SessionLogger = ({ item, blockId }) => {
                     )}
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {logs.map((log, i) => (
-                            <div key={log.id} style={gridStyle}>
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetWeight || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(item.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                        {[...logs].reverse().map((log, i) => {
+                            const actualIndex = logs.length - i;
+                            return (
+                                <div key={log.id} style={gridStyle}>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetWeight || '-'}</div>
+                                        <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                            <input type="text" inputMode="decimal" value={log.weight} onChange={(e) => updateLogEntry(item.id, log.id, 'weight', e.target.value)} style={logInputStyle} />
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetReps || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(item.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetReps || '-'}</div>
+                                        <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                            <input type="text" inputMode="decimal" value={log.reps} onChange={(e) => updateLogEntry(item.id, log.id, 'reps', e.target.value)} style={logInputStyle} />
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetRpe || '-'}</div>
-                                    <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                                        <input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(item.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', marginBottom: '2px', opacity: 0.5 }}>T: {log.targetRpe || '-'}</div>
+                                        <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                            <input type="text" inputMode="decimal" value={log.rpe} onChange={(e) => updateLogEntry(item.id, log.id, 'rpe', e.target.value)} style={{ ...logInputStyle, color: '#2ecc71' }} />
+                                        </div>
                                     </div>
+                                    <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{actualIndex}</div>
                                 </div>
-                                <div style={{ width: '52px', textAlign: 'center', fontSize: '16px', fontWeight: '900', color: '#2ecc71', opacity: 0.6, marginTop: '12px' }}>{i+1}</div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             )}

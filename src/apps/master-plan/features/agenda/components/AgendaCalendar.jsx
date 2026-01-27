@@ -37,7 +37,7 @@ export const AgendaCalendar = ({
 
     const variants = {
         enter: (direction) => ({
-            x: direction > 0 ? 100 : -100,
+            x: direction > 0 ? 300 : -300,
             opacity: 0
         }),
         center: {
@@ -47,7 +47,7 @@ export const AgendaCalendar = ({
         },
         exit: (direction) => ({
             zIndex: 0,
-            x: direction < 0 ? 100 : -100,
+            x: direction < 0 ? 300 : -300,
             opacity: 0
         })
     };
@@ -65,7 +65,7 @@ export const AgendaCalendar = ({
             overflow: 'hidden'
         }}>
             {isGridExpanded ? (
-                <div className="animate-in zoom-in-95 duration-200" style={{ position: 'relative' }}>
+                <div className="animate-in zoom-in-95 duration-200" style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
                     <AnimatePresence initial={false} custom={direction} mode="popLayout">
                         <motion.div 
                             key={monthKey}
@@ -78,10 +78,16 @@ export const AgendaCalendar = ({
                                 x: { type: "spring", stiffness: 300, damping: 30 },
                                 opacity: { duration: 0.2 }
                             }}
-                            style={{ display: 'flex', justifyContent: 'center', touchAction: 'pan-y' }}
+                            style={{ 
+                                display: 'flex', 
+                                justifyContent: 'center', 
+                                width: '100%',
+                                touchAction: 'pan-y',
+                                cursor: 'grab'
+                            }}
+                            active={{ cursor: 'grabbing' }}
                             drag="x"
-                            dragConstraints={{ left: 0, right: 0 }}
-                            dragElastic={0.5}
+                            dragElastic={0.2}
                             onDragEnd={(e, { offset, velocity }) => {
                                 const swipeThreshold = 50;
                                 if (offset.x < -swipeThreshold) handleSwipe('left');

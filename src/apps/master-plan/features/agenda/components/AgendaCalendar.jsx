@@ -134,6 +134,7 @@ export const AgendaCalendar = ({
                     {scrollerDates.map((date, idx) => { 
                         const isSelected = date.toDateString() === selectedCalendarDate.toDateString(); 
                         const isToday = date.toDateString() === new Date().toDateString();
+                        const isFirstOfMonth = date.getDate() === 1;
                         const customStyle = getDateStyle(date); 
                         return (
                             <div 
@@ -143,13 +144,13 @@ export const AgendaCalendar = ({
                                     minWidth: '44px', 
                                     height: '44px', 
                                     borderRadius: '10px', 
-                                    border: isSelected ? '2px solid #f29b11' : isToday ? '1px solid #2ecc71' : '1px solid #222', 
+                                    border: isSelected ? '2px solid #f29b11' : isToday ? '1px solid #2ecc71' : isFirstOfMonth ? '1px solid #444' : '1px solid #222', 
                                     display: 'flex', 
                                     flexDirection: 'column', 
                                     alignItems: 'center', 
                                     justifyContent: 'center', 
                                     cursor: 'pointer', 
-                                    backgroundColor: 'transparent', 
+                                    backgroundColor: isFirstOfMonth && !isSelected && !isToday ? 'rgba(255,255,255,0.02)' : 'transparent', 
                                     transition: 'all 0.2s ease', 
                                     flexShrink: 0,
                                     position: 'relative'
@@ -165,8 +166,18 @@ export const AgendaCalendar = ({
                                         letterSpacing: '0.5px'
                                     }}>TODAY</span>
                                 )}
-                                <span style={{ fontSize: '8px', fontWeight: '800', textTransform: 'uppercase', color: isToday ? '#2ecc71' : '#666', pointerEvents: 'none' }}>{date.toLocaleDateString([], { weekday: 'short' })}</span>
-                                <span style={{ fontSize: '17px', pointerEvents: 'none', fontWeight: isToday ? '900' : 'inherit', ...customStyle }}>{date.getDate()}</span>
+                                {isFirstOfMonth && !isToday && (
+                                    <span style={{ 
+                                        position: 'absolute', 
+                                        top: '-12px', 
+                                        fontSize: '6px', 
+                                        fontWeight: '900', 
+                                        color: '#f29b11',
+                                        letterSpacing: '0.5px'
+                                    }}>{date.toLocaleDateString([], { month: 'short' }).toUpperCase()}</span>
+                                )}
+                                <span style={{ fontSize: '8px', fontWeight: '800', textTransform: 'uppercase', color: isToday ? '#2ecc71' : isFirstOfMonth ? '#f29b11' : '#666', pointerEvents: 'none' }}>{date.toLocaleDateString([], { weekday: 'short' })}</span>
+                                <span style={{ fontSize: '17px', pointerEvents: 'none', fontWeight: isToday || isFirstOfMonth ? '900' : 'inherit', ...customStyle }}>{date.getDate()}</span>
                             </div>
                         ); 
                     })}

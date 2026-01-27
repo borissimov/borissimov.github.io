@@ -33,6 +33,7 @@ export const MasterAgendaView = ({
     const [historyTab, setHistoryTab] = useState('timeline');
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [expandedActivityId, setExpandedActivityId] = useState(null);
+    const [scrollMonth, setScrollMonth] = useState("");
 
     const { scrollerRef, scrollHandlers } = useDraggableScroll();
 
@@ -58,6 +59,27 @@ export const MasterAgendaView = ({
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
 
+    // Track visible month on scroll
+    useEffect(() => {
+        const el = scrollerRef.current;
+        if (!el || isGridExpanded) return;
+
+        const handleScroll = () => {
+            const itemWidth = 50; // minWidth (44) + gap (6)
+            const index = Math.round(el.scrollLeft / itemWidth);
+            const visibleDate = scrollerDates[index];
+            if (visibleDate) {
+                const label = visibleDate.toLocaleDateString([], { month: 'long', year: 'numeric' });
+                setScrollMonth(label.toUpperCase());
+            }
+        };
+
+        el.addEventListener('scroll', handleScroll);
+        // Initial call
+        handleScroll();
+        return () => el.removeEventListener('scroll', handleScroll);
+    }, [scrollerDates, isGridExpanded]);
+
     // Center scroller on mount
     useEffect(() => {
         if (scrollerRef.current && !isGridExpanded) {
@@ -69,7 +91,7 @@ export const MasterAgendaView = ({
                 scrollerRef.current.scrollLeft = scrollPos;
             }
         }
-    }, [isGridExpanded]); // Re-run if we switch back from grid to date scroller
+    }, [isGridExpanded, scrollerDates]); // Re-run if we switch back from grid to date scroller
 
     // 5. Handlers
     const handleToggleActivityExpansion = (sessionId) => {
@@ -125,6 +147,11 @@ export const MasterAgendaView = ({
                     overflow: 'hidden'
                 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        {!isGridExpanded && (
+                            <div style={{ fontSize: '9px', fontWeight: '900', color: '#f29b11', letterSpacing: '2px', marginBottom: '4px', opacity: 0.8 }}>
+                                {scrollMonth}
+                            </div>
+                        )}
                         <AgendaCalendar 
                             isGridExpanded={isGridExpanded}
                             selectedCalendarDate={selectedCalendarDate}

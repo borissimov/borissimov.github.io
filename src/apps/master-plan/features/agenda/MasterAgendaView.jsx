@@ -34,6 +34,7 @@ export const MasterAgendaView = ({
     const [isGridExpanded, setIsGridExpanded] = useState(false);
     const [expandedActivityId, setExpandedActivityId] = useState(null);
     const [scrollMonth, setScrollMonth] = useState("");
+    const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const { scrollerRef, scrollHandlers } = useDraggableScroll();
 
@@ -156,6 +157,8 @@ export const MasterAgendaView = ({
                             isGridExpanded={isGridExpanded}
                             selectedCalendarDate={selectedCalendarDate}
                             setSelectedCalendarDate={setSelectedCalendarDate}
+                            currentMonth={currentMonth}
+                            setCurrentMonth={setCurrentMonth}
                             scrollerRef={scrollerRef}
                             scrollerDates={scrollerDates}
                             scrollHandlers={scrollHandlers}

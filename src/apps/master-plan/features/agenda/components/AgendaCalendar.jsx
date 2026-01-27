@@ -1,15 +1,28 @@
 import React from 'react';
 import { DayPicker } from 'react-day-picker';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const AgendaCalendar = ({
     isGridExpanded,
     selectedCalendarDate,
     setSelectedCalendarDate,
+    currentMonth,
+    setCurrentMonth,
     scrollerRef,
     scrollerDates,
     scrollHandlers,
     getDateStyle
 }) => {
+    const handleSwipe = (direction) => {
+        const nextMonth = new Date(currentMonth);
+        if (direction === 'left') {
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+        } else {
+            nextMonth.setMonth(nextMonth.getMonth() - 1);
+        }
+        setCurrentMonth(nextMonth);
+    };
+
     return (
         <div style={{ 
             backgroundColor: 'transparent', 
@@ -24,7 +37,16 @@ export const AgendaCalendar = ({
         }}>
             {isGridExpanded ? (
                 <div className="animate-in zoom-in-95 duration-200">
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <motion.div 
+                        style={{ display: 'flex', justifyContent: 'center', touchAction: 'pan-y' }}
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        onDragEnd={(e, { offset, velocity }) => {
+                            const swipeThreshold = 50;
+                            if (offset.x < -swipeThreshold) handleSwipe('left');
+                            else if (offset.x > swipeThreshold) handleSwipe('right');
+                        }}
+                    >
                         <style>{`
                             .rdp-root { 
                                 --rdp-accent-color: #f29b11 !important; 
@@ -103,6 +125,8 @@ export const AgendaCalendar = ({
                         `}</style>
                         <DayPicker 
                             mode="single" 
+                            month={currentMonth}
+                            onMonthChange={setCurrentMonth}
                             selected={selectedCalendarDate} 
                             onSelect={(d) => d && setSelectedCalendarDate(d)} 
                             weekStartsOn={1} 
@@ -127,7 +151,7 @@ export const AgendaCalendar = ({
                                 } 
                             }} 
                         />
-                    </div>
+                    </motion.div>
                 </div>
             ) : (
                 <div ref={scrollerRef} {...scrollHandlers} style={{ display: 'flex', overflowX: 'auto', gap: '6px', padding: '2px 0', scrollbarWidth: 'none', msOverflowStyle: 'none', cursor: 'grab', userSelect: 'none', width: '100%' }}>

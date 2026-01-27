@@ -24,7 +24,7 @@ export const SessionHeader = ({ onBack, workoutLabel, elapsed, retroactiveDate, 
                         {new Date(retroactiveDate).toLocaleDateString()}
                     </span>
                 ) : (
-                    <span style={{ fontSize: '18px', fontWeight: '900', color: '#f29b11', fontVariantNumeric: 'tabular-nums' }}>
+                    <span style={{ fontSize: '18px', fontWeight: '900', color: '#f29b11', fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>
                         {elapsed}
                     </span>
                 )}

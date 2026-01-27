@@ -82,9 +82,9 @@ export const createProgramSlice = (set, get) => ({
             }
 
             let recommendedId = processedDays[0]?.id;
-            const history = await DB.fetchGlobalHistory(user?.id);
-            if (history.data?.length > 0) {
-                const lastGlobalSession = history.data[0];
+            const historyData = await DB.fetchGlobalHistory(user?.id);
+            if (historyData.data?.length > 0) {
+                const lastGlobalSession = historyData.data[0];
                 const lastDayIdx = processedDays.findIndex(d => d.id === lastGlobalSession.program_day_id);
                 if (lastDayIdx !== -1) recommendedId = processedDays[(lastDayIdx + 1) % processedDays.length].id;
             }

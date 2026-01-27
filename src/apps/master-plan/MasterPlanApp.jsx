@@ -42,7 +42,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
 
     // 4. Effects
     useEffect(() => {
-        if (!activeSession && programDays.length === 0) fetchProgramManifest();
+        if (!activeSession && (programDays.length === 0 || currentView === 'library')) fetchProgramManifest();
         if (currentView === 'master-agenda' || (currentView === null && lastView === 'master-agenda')) { 
             fetchGlobalHistory(); 
             fetchUniqueExercises(); 

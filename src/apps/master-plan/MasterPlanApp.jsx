@@ -34,7 +34,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
     // 2. Local UI State (Global Overlays)
     const [showAbandonModal, setShowAbandonModal] = useState(false);
     const [showFinishModal, setShowFinishModal] = useState(false);
-    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+    const [confirmDeleteLog, setConfirmDeleteLog] = useState(null); // { id, type: 'WORKOUT' | 'SLEEP' }
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -78,8 +78,16 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         finally { setIsSaving(false); }
     };
     const handleDeleteLog = async () => {
+        if (!confirmDeleteLog) return;
         setIsDeleting(true);
-        try { await deleteSessionRecord(confirmDeleteId); setConfirmDeleteId(null); } 
+        try { 
+            if (confirmDeleteLog.type === 'SLEEP') {
+                await deleteSleepLog(confirmDeleteLog.id);
+            } else {
+                await deleteSessionRecord(confirmDeleteLog.id); 
+            }
+            setConfirmDeleteLog(null); 
+        } 
         catch (e) { alert("Delete failed: " + e.message); } 
         finally { setIsDeleting(false); }
     };
@@ -216,6 +224,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                     sleepElapsed={sleepElapsed}
                     onToggleSleep={handleToggleSleep}
                     onOpenSleepMode={() => setIsSleepModeVisible(true)}
+                    onUpdateSleepLog={updateSleepLog}
                 />
             );
         }
@@ -258,8 +267,8 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                 handleFinalizeSession={handleFinalizeSession}
                 isSaving={isSaving}
                 globalPercent={globalPercent}
-                confirmDeleteId={confirmDeleteId}
-                setConfirmDeleteId={setConfirmDeleteId}
+                confirmDeleteLog={confirmDeleteLog}
+                setConfirmDeleteLog={setConfirmDeleteLog}
                 handleDeleteLog={handleDeleteLog}
                 isDeleting={isDeleting}
                 showSleepConfirm={showSleepConfirm}

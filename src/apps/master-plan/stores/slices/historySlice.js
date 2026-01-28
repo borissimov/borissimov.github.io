@@ -43,9 +43,18 @@ export const createHistorySlice = (set, get) => ({
 
     getActivitiesForDate: (dateObj) => {
         const selectedStr = dateObj.toLocaleDateString('en-CA');
-        return get().globalHistory.filter(s => {
+        const workouts = get().globalHistory.filter(s => {
             return new Date(s.end_time).toLocaleDateString('en-CA') === selectedStr;
         });
+        const sleep = get().sleepHistory.filter(s => {
+            return new Date(s.end_time || s.start_time).toLocaleDateString('en-CA') === selectedStr;
+        });
+        
+        // Return a combined sorted list (workouts first for now, or by time)
+        return [
+            ...workouts.map(w => ({ ...w, type: 'WORKOUT' })),
+            ...sleep.map(s => ({ ...s, type: 'SLEEP' }))
+        ].sort((a, b) => new Date(b.end_time || b.start_time) - new Date(a.end_time || a.start_time));
     },
 
     fetchGlobalHistory: async () => {
@@ -54,6 +63,8 @@ export const createHistorySlice = (set, get) => ({
             const { data: { user } } = await supabase.auth.getUser();
             const { data, error } = await DB.fetchGlobalHistory(user?.id);
             if (error) throw error;
+
+            await get().fetchSleepHistory(); // Fetch sleep history in parallel
 
             const volumeMap = {};
             data.forEach(session => {

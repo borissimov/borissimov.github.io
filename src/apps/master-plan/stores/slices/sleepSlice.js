@@ -40,5 +40,29 @@ export const createSleepSlice = (set, get) => ({
         } catch (err) {
             console.error("[SleepSlice] fetchSleepHistory FAILED:", err);
         }
+    },
+
+    deleteSleepLog: async (logId) => {
+        set({ isLoading: true });
+        try {
+            await DB.deleteSleepLog(logId);
+            await get().fetchSleepHistory();
+        } catch (err) {
+            console.error("[SleepSlice] deleteSleepLog FAILED:", err);
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    updateSleepLog: async (logId, payload) => {
+        set({ isLoading: true });
+        try {
+            await DB.updateSleepLog(logId, payload);
+            await get().fetchSleepHistory();
+        } catch (err) {
+            console.error("[SleepSlice] updateSleepLog FAILED:", err);
+        } finally {
+            set({ isLoading: false });
+        }
     }
 });

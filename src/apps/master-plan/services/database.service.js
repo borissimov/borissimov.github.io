@@ -113,6 +113,14 @@ export const DB = {
         return await getClient().from('sleep_logs').insert([payload]).select().single();
     },
 
+    async deleteSleepLog(logId) {
+        return await getClient().from('sleep_logs').delete().eq('id', logId);
+    },
+
+    async updateSleepLog(logId, payload) {
+        return await getClient().from('sleep_logs').update(payload).eq('id', logId);
+    },
+
     // --- LIBRARY ---
     async fetchExerciseLibrary() {
         return await getClient().from('exercise_library').select('id, name').order('name', { ascending: true });

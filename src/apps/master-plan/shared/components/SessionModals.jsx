@@ -13,8 +13,8 @@ export const SessionModals = ({
     handleFinalizeSession,
     isSaving,
     globalPercent,
-    confirmDeleteId,
-    setConfirmDeleteId,
+    confirmDeleteLog,
+    setConfirmDeleteLog,
     handleDeleteLog,
     isDeleting,
     showSleepConfirm,
@@ -57,15 +57,15 @@ export const SessionModals = ({
                 </div>
             )}
 
-            {confirmDeleteId && (
+            {confirmDeleteLog && (
                 <div style={modalOverlayStyle}>
                     <div style={{ ...modalContentStyle, borderColor: '#ef4444' }}>
                         <Trash2 size={48} color="#ef4444" style={{ margin: '0 auto 20px' }} />
-                        <h2 style={{ fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', color: '#fff', marginBottom: '10px' }}>Delete Activity?</h2>
-                        <p style={{ fontSize: '12px', color: '#666', marginBottom: '25px' }}>This action is permanent and will remove all logged sets for this workout.</p>
+                        <h2 style={{ fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', color: '#fff', marginBottom: '10px' }}>Delete {confirmDeleteLog.type === 'SLEEP' ? 'Sleep Log' : 'Activity'}?</h2>
+                        <p style={{ fontSize: '12px', color: '#666', marginBottom: '25px' }}>This action is permanent and will remove all logged data for this session.</p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             <button className="premium-btn-primary" style={{ backgroundColor: '#ef4444', color: '#fff' }} onClick={handleDeleteLog} disabled={isDeleting}>{isDeleting ? 'DELETING...' : 'YES, DELETE PERMANENTLY'}</button>
-                            <button className="premium-btn-secondary" onClick={() => setConfirmDeleteId(null)}>CANCEL</button>
+                            <button className="premium-btn-secondary" onClick={() => setConfirmDeleteLog(null)}>CANCEL</button>
                         </div>
                     </div>
                 </div>

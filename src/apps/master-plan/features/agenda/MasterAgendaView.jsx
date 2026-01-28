@@ -1,22 +1,22 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Plus, Coffee, Loader2, X, Moon } from 'lucide-react';
+import { LayoutGrid, Plus, Coffee, Loader2, X, Moon, Trash2, Edit2 } from 'lucide-react';
 import { useProgramStore } from '../../stores/useProgramStore';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import CompletedSessionCard from './components/CompletedSessionCard';
 import { getActiveSchema } from '../../../../supabaseClient';
 import { useDraggableScroll } from '../../shared/hooks/useDraggableScroll';
 import { ActiveSleepBanner } from '../../shared/components/ActiveSleepBanner';
+import { SleepEditModal } from './components/SleepEditModal';
 
 /**
  * Master Agenda: The formal chronological timeline and performance vault.
- * Now acts as its own Feature Orchestrator.
  */
 export const MasterAgendaView = ({
     onExit,
     onNavigate,
     onLogActivity,
     handleExportJson,
-    setConfirmDeleteId,
+    setConfirmDeleteLog,
     activeSession,
     workoutLabel,
     elapsed,
@@ -24,7 +24,8 @@ export const MasterAgendaView = ({
     activeSleepSession,
     sleepElapsed,
     onToggleSleep,
-    onOpenSleepMode
+    onOpenSleepMode,
+    onUpdateSleepLog
 }) => {
     // 1. Store Access
     const { 
@@ -39,6 +40,7 @@ export const MasterAgendaView = ({
     const [expandedActivityId, setExpandedActivityId] = useState(null);
     const [scrollMonth, setScrollMonth] = useState("");
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [editingSleepLog, setEditingSleepLog] = useState(null);
 
     const { scrollerRef, scrollHandlers } = useDraggableScroll();
 
@@ -49,7 +51,6 @@ export const MasterAgendaView = ({
     const scrollerDates = useMemo(() => {
         const dates = [];
         const start = new Date();
-        // Expand range: 180 days back, 180 days forward (approx 1 year total)
         start.setDate(start.getDate() - 180); 
         for (let i = 0; i < 361; i++) { 
             const d = new Date(start);
@@ -64,13 +65,12 @@ export const MasterAgendaView = ({
         setExpandedActivityId(null);
     }, [selectedCalendarDate]);
 
-    // Track visible month on scroll
     useEffect(() => {
         const el = scrollerRef.current;
         if (!el || isGridExpanded) return;
 
         const handleScroll = () => {
-            const itemWidth = 50; // minWidth (44) + gap (6)
+            const itemWidth = 50; 
             const index = Math.round(el.scrollLeft / itemWidth);
             const visibleDate = scrollerDates[index];
             if (visibleDate) {
@@ -80,23 +80,21 @@ export const MasterAgendaView = ({
         };
 
         el.addEventListener('scroll', handleScroll);
-        // Initial call
         handleScroll();
         return () => el.removeEventListener('scroll', handleScroll);
     }, [scrollerDates, isGridExpanded]);
 
-    // Center scroller on mount
     useEffect(() => {
         if (scrollerRef.current && !isGridExpanded) {
             const todayIndex = scrollerDates.findIndex(d => d.toDateString() === new Date().toDateString());
             if (todayIndex !== -1) {
                 const containerWidth = scrollerRef.current.offsetWidth;
-                const itemWidth = 50; // minWidth (44) + gap (6)
+                const itemWidth = 50; 
                 const scrollPos = (todayIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
                 scrollerRef.current.scrollLeft = scrollPos;
             }
         }
-    }, [isGridExpanded, scrollerDates]); // Re-run if we switch back from grid to date scroller
+    }, [isGridExpanded, scrollerDates]);
 
     // 5. Handlers
     const handleToggleActivityExpansion = (sessionId) => {
@@ -180,11 +178,10 @@ export const MasterAgendaView = ({
 
                         {activeSession && (
                             <div style={{ backgroundColor: 'transparent', border: '1px solid #2ecc71', padding: '12px', borderRadius: '8px', marginTop: '10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                        <div onClick={() => onNavigate('session')} style={{ flex: 1, cursor: 'pointer' }}>
-                                                            <p style={{ fontSize: '10px', fontWeight: '900', color: '#2ecc71', textTransform: 'uppercase', margin: 0 }}>Active Session in Progress</p>
-                                                            <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>{workoutLabel} • <span style={{ fontFamily: 'monospace' }}>{elapsed}</span></p>
-                                                        </div>
-                                
+                                <div onClick={() => onNavigate('session')} style={{ flex: 1, cursor: 'pointer' }}>
+                                    <p style={{ fontSize: '10px', fontWeight: '900', color: '#2ecc71', textTransform: 'uppercase', margin: 0 }}>Active Session in Progress</p>
+                                    <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>{workoutLabel} • <span style={{ fontFamily: 'monospace' }}>{elapsed}</span></p>
+                                </div>
                                 <button onClick={() => setShowAbandonModal(true)} style={{ all: 'unset', padding: '10px', cursor: 'pointer', opacity: 0.6 }}>
                                     <X size={20} color="#ef4444" />
                                 </button>
@@ -197,30 +194,74 @@ export const MasterAgendaView = ({
                             <h3 style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: '#444', letterSpacing: '1px', margin: 0 }}>{selectedCalendarDate.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}</h3>
                             {activitiesOnSelectedDate.length > 0 && <span style={{ fontSize: '9px', fontWeight: '800', color: '#f29b11', backgroundColor: 'rgba(242, 155, 17,0.1)', padding: '2px 8px', borderRadius: '4px' }}>{activitiesOnSelectedDate.length} LOGS</span>}
                         </div>
-                        {activitiesOnSelectedDate.length > 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                {activitiesOnSelectedDate.map(log => (
-                                    <CompletedSessionCard 
-                                        key={log.id}
-                                        log={log}
-                                        expandedActivityId={expandedActivityId}
-                                        handleToggleActivityExpansion={handleToggleActivityExpansion}
-                                        isLoading={isLoading}
-                                        activeHistorySession={activeHistorySession}
-                                        handleExportJson={handleExportJson}
-                                        setConfirmDeleteId={setConfirmDeleteId}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <div style={{ padding: '50px 20px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px dashed #222', borderRadius: '15px' }}>
-                                <Coffee size={32} color="#222" style={{ margin: '0 auto 15px' }} />
-                                <p style={{ fontSize: '11px', color: '#444', fontWeight: '800', textTransform: 'uppercase', margin: 0, letterSpacing: '1px' }}>No Activity Logged</p>
-                            </div>
-                        )}
+                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            {activitiesOnSelectedDate.length > 0 ? (
+                                activitiesOnSelectedDate.map(log => {
+                                    if (log.type === 'SLEEP') {
+                                        const durationMs = new Date(log.end_time) - new Date(log.start_time);
+                                        const h = Math.floor(durationMs / 3600000);
+                                        const m = Math.floor((durationMs % 3600000) / 60000);
+                                        return (
+                                            <div key={log.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'rgba(59, 130, 246, 0.05)', border: '1px solid #3b82f633', padding: '12px 15px', borderRadius: '8px' }}>
+                                                <div style={{ padding: '8px', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderRadius: '50%' }}>
+                                                    <Moon size={16} color="#3b82f6" fill="#3b82f6" />
+                                                </div>
+                                                <div style={{ flex: 1 }}>
+                                                    <h3 style={{ fontSize: '13px', fontWeight: '900', color: '#fff', textTransform: 'uppercase', margin: 0 }}>Sleep Protocol</h3>
+                                                    <p style={{ fontSize: '10px', color: '#3b82f6', fontWeight: '800', margin: '2px 0 0' }}>RECOVERY • {h}H {m}M</p>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); setEditingSleepLog(log); }}
+                                                        style={{ all: 'unset', padding: '10px', cursor: 'pointer', opacity: 0.4 }}
+                                                    >
+                                                        <Edit2 size={16} color="#3b82f6" />
+                                                    </button>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteLog({ id: log.id, type: 'SLEEP' }); }}
+                                                        style={{ all: 'unset', padding: '10px', cursor: 'pointer', opacity: 0.4 }}
+                                                    >
+                                                        <Trash2 size={16} color="#ef4444" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <CompletedSessionCard 
+                                            key={log.id}
+                                            log={log}
+                                            expandedActivityId={expandedActivityId}
+                                            handleToggleActivityExpansion={handleToggleActivityExpansion}
+                                            isLoading={isLoading}
+                                            activeHistorySession={activeHistorySession}
+                                            handleExportJson={handleExportJson}
+                                            setConfirmDeleteLog={setConfirmDeleteLog}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <div style={{ padding: '50px 20px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px dashed #222', borderRadius: '15px' }}>
+                                    <Coffee size={32} color="#222" style={{ margin: '0 auto 15px' }} />
+                                    <p style={{ fontSize: '11px', color: '#444', fontWeight: '800', textTransform: 'uppercase', margin: 0, letterSpacing: '1px' }}>No Activity Logged</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {editingSleepLog && (
+                <SleepEditModal 
+                    log={editingSleepLog}
+                    onCancel={() => setEditingSleepLog(null)}
+                    onSave={(id, payload) => {
+                        onUpdateSleepLog(id, payload);
+                        setEditingSleepLog(null);
+                    }}
+                />
+            )}
         </div>
     );
 };

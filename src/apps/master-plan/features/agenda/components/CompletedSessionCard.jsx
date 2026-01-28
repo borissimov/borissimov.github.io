@@ -9,7 +9,7 @@ export const CompletedSessionCard = ({
     isLoading,
     activeHistorySession,
     handleExportJson,
-    setConfirmDeleteId
+    setConfirmDeleteLog
 }) => {
     const isExpanded = expandedActivityId === log.id; 
     const startTimeStr = log.start_time ? new Date(log.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
@@ -77,7 +77,7 @@ export const CompletedSessionCard = ({
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button onClick={(e) => { e.stopPropagation(); handleExportJson(log.id); }} className="premium-btn-secondary" style={{ flex: 1, height: '40px', fontSize: '10px', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Download size={14} /> EXPORT AI</button>
-                        <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(log.id); }} className="premium-btn-secondary" style={{ flex: 1, height: '40px', fontSize: '10px', fontWeight: '800', color: '#ef4444', border: '1px solid #ef444422', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Trash2 size={14} /> DELETE</button>
+                        <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteLog({ id: log.id, type: 'WORKOUT' }); }} className="premium-btn-secondary" style={{ flex: 1, height: '40px', fontSize: '10px', fontWeight: '800', color: '#ef4444', border: '1px solid #ef444422', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Trash2 size={14} /> DELETE</button>
                     </div>
                 </div>
             )}

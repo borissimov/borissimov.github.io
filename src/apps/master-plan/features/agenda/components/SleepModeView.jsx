@@ -24,12 +24,12 @@ export const SleepModeView = ({ elapsed, onWakeUp }) => {
                 <Moon size={120} color="#3b82f6" fill="#3b82f6" />
             </div>
 
-            <div style={{ zIndex: 10 }}>
+            <div style={{ zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p style={{ fontSize: '12px', fontWeight: '900', color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '4px', marginBottom: '20px' }}>
                     RECOVERY ACTIVE
                 </p>
                 
-                <h1 style={{ fontSize: '64px', fontWeight: '900', color: '#fff', fontFamily: 'monospace', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                <h1 style={{ fontSize: '64px', fontWeight: '900', color: '#fff', fontFamily: 'monospace', margin: 0, fontVariantNumeric: 'tabular-nums', textAlign: 'center', width: '100%' }}>
                     {elapsed}
                 </h1>
 

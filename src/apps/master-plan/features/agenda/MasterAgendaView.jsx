@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Plus, Coffee, Loader2, X } from 'lucide-react';
+import { LayoutGrid, Plus, Coffee, Loader2, X, Moon } from 'lucide-react';
 import { useProgramStore } from '../../stores/useProgramStore';
 import { AgendaCalendar } from './components/AgendaCalendar';
 import CompletedSessionCard from './components/CompletedSessionCard';
 import { getActiveSchema } from '../../../../supabaseClient';
 import { useDraggableScroll } from '../../shared/hooks/useDraggableScroll';
+import { ActiveSleepBanner } from '../../shared/components/ActiveSleepBanner';
 
 /**
  * Master Agenda: The formal chronological timeline and performance vault.
@@ -19,7 +20,11 @@ export const MasterAgendaView = ({
     activeSession,
     workoutLabel,
     elapsed,
-    setShowAbandonModal
+    setShowAbandonModal,
+    activeSleepSession,
+    sleepElapsed,
+    onToggleSleep,
+    onOpenSleepMode
 }) => {
     // 1. Store Access
     const { 
@@ -133,6 +138,10 @@ export const MasterAgendaView = ({
                     </span>
                 )}
 
+                <button onClick={onToggleSleep} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Sleep Protocol">
+                    <Moon size={22} color={activeSleepSession ? '#3b82f6' : '#666'} fill={activeSleepSession ? '#3b82f6' : 'transparent'} />
+                </button>
+
                 <button onClick={() => onLogActivity(selectedCalendarDate)} style={{ all: 'unset', cursor: 'pointer', padding: '10px 5px' }} title="Plan or Log Activity"><Plus size={28} color="#f29b11" strokeWidth={3} /></button>
             </header>
 
@@ -161,6 +170,13 @@ export const MasterAgendaView = ({
                             scrollHandlers={scrollHandlers}
                             getDateStyle={getDateStyle}
                         />
+
+                        {activeSleepSession && (
+                            <ActiveSleepBanner 
+                                onClick={onOpenSleepMode}
+                                elapsed={sleepElapsed}
+                            />
+                        )}
 
                         {activeSession && (
                             <div style={{ backgroundColor: 'transparent', border: '1px solid #2ecc71', padding: '12px', borderRadius: '8px', marginTop: '10px', marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

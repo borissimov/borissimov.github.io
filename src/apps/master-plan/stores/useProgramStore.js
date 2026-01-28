@@ -3,31 +3,27 @@ import { persist } from 'zustand/middleware';
 import { getActiveSchema } from '../../../supabaseClient';
 
 // Slices
-import { createUISlice } from './slices/uiSlice';
-import { createProgramSlice } from './slices/programSlice';
-import { createSessionSlice } from './slices/sessionSlice';
 import { createHistorySlice } from './slices/historySlice';
+import { createUISlice } from './slices/uiSlice';
+import { createSleepSlice } from './slices/sleepSlice';
 
-/**
- * MASTER PROGRAM STORE (Native V3 Modular)
- * A unified store composed of specialized domain slices.
- */
 export const useProgramStore = create(
     persist(
-        (set, get, ...a) => ({
-            ...createUISlice(set, get, ...a),
-            ...createProgramSlice(set, get, ...a),
-            ...createSessionSlice(set, get, ...a),
-            ...createHistorySlice(set, get, ...a),
+        (set, get) => ({
+            ...createProgramSlice(set, get),
+            ...createSessionSlice(set, get),
+            ...createHistorySlice(set, get),
+            ...createUISlice(set, get),
+            ...createSleepSlice(set, get)
         }),
-        { 
+        {
             name: `mp-v3-storage-${getActiveSchema()}`,
-            // We only persist the essential navigation and session recovery state
             partialize: (state) => ({
-                lastView: state.lastView,
                 activeProgramId: state.activeProgramId,
+                lastView: state.lastView,
                 activeSession: state.activeSession,
-                retroactiveDate: state.retroactiveDate
+                retroactiveDate: state.retroactiveDate,
+                activeSleepSession: state.activeSleepSession
             })
         }
     )

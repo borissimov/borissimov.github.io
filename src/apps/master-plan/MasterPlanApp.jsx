@@ -12,6 +12,7 @@ import { LibraryView } from './features/library/LibraryView';
 import { SessionView } from './features/session/SessionView';
 import { MasterAgendaView } from './features/agenda/MasterAgendaView';
 import { ProgramEditorView } from './features/builder/ProgramEditorView';
+import { SleepModeView } from './features/agenda/components/SleepModeView';
 
 import '../shared-premium.css';
 
@@ -22,11 +23,13 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         globalHistory, fetchGlobalHistory, uniqueExercises, fetchUniqueExercises,
         retroactiveDate, deleteSessionRecord,
         lastView, setLastView,
-        getSessionProgress, getWorkoutLabel, getHistoryStats, getActivitiesForDate
+        getSessionProgress, getWorkoutLabel, getHistoryStats, getActivitiesForDate,
+        activeSleepSession, startSleep, endSleep
     } = useProgramStore();
 
     // 1. Hooks
     const elapsed = useSessionTimer(activeSession, retroactiveDate);
+    const sleepElapsed = useSessionTimer(activeSleepSession);
 
     // 2. Local UI State (Global Overlays)
     const [showAbandonModal, setShowAbandonModal] = useState(false);
@@ -34,6 +37,12 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // Sleep UI State
+    const [showSleepConfirm, setShowSleepConfirm] = useState(false);
+    const [showWakeUpConfirm, setShowWakeUpConfirm] = useState(false);
+    const [showSessionConflict, setShowSessionConflict] = useState(false);
+    const [isSleepModeVisible, setIsSleepModeVisible] = useState(false);
 
     // 3. Derived State (Moved to Store Modules)
     const { percent: globalPercent } = getSessionProgress();
@@ -74,9 +83,43 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         catch (e) { alert("Delete failed: " + e.message); } 
         finally { setIsDeleting(false); }
     };
+
+    // --- SLEEP HANDLERS ---
+    const handleToggleSleep = () => {
+        if (activeSleepSession) {
+            setShowWakeUpConfirm(true);
+        } else if (activeSession) {
+            setShowSessionConflict(true);
+        } else {
+            setShowSleepConfirm(true);
+        }
+    };
+
+    const handleInitiateSleep = () => {
+        startSleep();
+        setShowSleepConfirm(false);
+        setIsSleepModeVisible(true);
+    };
+
+    const handleConfirmWakeUp = async () => {
+        setIsSaving(true);
+        try {
+            await endSleep();
+            setShowWakeUpConfirm(false);
+            setIsSleepModeVisible(false);
+        } catch (e) {
+            alert("Sync failed: " + e.message);
+        } finally {
+            setIsSaving(false);
+        }
+    };
     
     // Logic for preparing a retroactive log
     const handlePrepareActivity = (selectedDate) => {
+        if (activeSleepSession || activeSession) {
+            setShowSessionConflict(true);
+            return;
+        }
         const isToday = selectedDate.toDateString() === new Date().toDateString();
         useProgramStore.setState({ retroactiveDate: isToday ? null : selectedDate.toISOString() });
         onNavigate('library');
@@ -169,6 +212,10 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                     workoutLabel={workoutLabel}
                     elapsed={elapsed}
                     setShowAbandonModal={setShowAbandonModal}
+                    activeSleepSession={activeSleepSession}
+                    sleepElapsed={sleepElapsed}
+                    onToggleSleep={handleToggleSleep}
+                    onOpenSleepMode={() => setIsSleepModeVisible(true)}
                 />
             );
         }
@@ -184,9 +231,18 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                 recommendedDayId={recommendedDayId}
                 selectedDayId={selectedDayId}
                 setSelectedDay={setSelectedDay}
-                startSession={startSession}
+                startSession={(dayId, date) => {
+                    if (activeSleepSession) {
+                        setShowSessionConflict(true);
+                        return Promise.reject();
+                    }
+                    return startSession(dayId, date);
+                }}
                 setShowAbandonModal={setShowAbandonModal}
                 retroactiveDate={retroactiveDate}
+                activeSleepSession={activeSleepSession}
+                sleepElapsed={sleepElapsed}
+                onOpenSleepMode={() => setIsSleepModeVisible(true)}
             />
         );
     };
@@ -206,8 +262,22 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                 setConfirmDeleteId={setConfirmDeleteId}
                 handleDeleteLog={handleDeleteLog}
                 isDeleting={isDeleting}
+                showSleepConfirm={showSleepConfirm}
+                setShowSleepConfirm={setShowSleepConfirm}
+                handleStartSleep={handleInitiateSleep}
+                showWakeUpConfirm={showWakeUpConfirm}
+                setShowWakeUpConfirm={setShowWakeUpConfirm}
+                handleEndSleep={handleConfirmWakeUp}
+                showSessionConflict={showSessionConflict}
+                setShowSessionConflict={setShowSessionConflict}
             />
             {renderView()}
+            {isSleepModeVisible && activeSleepSession && (
+                <SleepModeView 
+                    elapsed={sleepElapsed} 
+                    onWakeUp={() => setShowWakeUpConfirm(true)} 
+                />
+            )}
         </div>
     );
 };

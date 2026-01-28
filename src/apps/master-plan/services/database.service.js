@@ -100,6 +100,19 @@ export const DB = {
         return await getClient().from('completed_sessions').delete().eq('id', sessionId);
     },
 
+    // --- SLEEP & RECOVERY ---
+    async fetchSleepHistory(userId) {
+        return await getClient()
+            .from('sleep_logs')
+            .select('*')
+            .eq('user_id', userId)
+            .order('start_time', { ascending: false });
+    },
+
+    async insertSleepLog(payload) {
+        return await getClient().from('sleep_logs').insert([payload]).select().single();
+    },
+
     // --- LIBRARY ---
     async fetchExerciseLibrary() {
         return await getClient().from('exercise_library').select('id, name').order('name', { ascending: true });

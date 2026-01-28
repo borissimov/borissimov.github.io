@@ -7,6 +7,7 @@ import { LibraryHeader } from './components/LibraryHeader';
 import { ProgramSwitcher } from './components/ProgramSwitcher';
 import { ArchiveModal } from './components/ArchiveModal';
 import { ActiveSessionBanner } from '../../shared/components/ActiveSessionBanner';
+import { ActiveSleepBanner } from '../../shared/components/ActiveSleepBanner';
 
 /**
  * Library View: The "Program Library" activity selector.
@@ -24,7 +25,10 @@ export const LibraryView = ({
     setSelectedDay,
     startSession,
     setShowAbandonModal,
-    retroactiveDate
+    retroactiveDate,
+    activeSleepSession,
+    sleepElapsed,
+    onOpenSleepMode
 }) => {
     const { 
         programs, activeProgramId, setActiveProgramId, 
@@ -85,6 +89,13 @@ export const LibraryView = ({
                     onAbandon={() => setShowAbandonModal(true)}
                     workoutLabel={workoutLabel}
                     elapsed={elapsed}
+                />
+            )}
+
+            {activeSleepSession && (
+                <ActiveSleepBanner 
+                    onClick={onOpenSleepMode}
+                    elapsed={sleepElapsed}
                 />
             )}
 

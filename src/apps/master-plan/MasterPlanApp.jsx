@@ -24,7 +24,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
         retroactiveDate, deleteSessionRecord,
         lastView, setLastView,
         getSessionProgress, getWorkoutLabel, getHistoryStats, getActivitiesForDate,
-        activeSleepSession, startSleep, endSleep
+        activeSleepSession, startSleep, endSleep, updateSleepLog, deleteSleepLog
     } = useProgramStore();
 
     // 1. Hooks
@@ -215,7 +215,7 @@ const MasterPlanApp = ({ onExit, currentView, onNavigate, navState }) => {
                     onNavigate={onNavigate}
                     onLogActivity={handlePrepareActivity}
                     handleExportJson={handleExportJson}
-                    setConfirmDeleteId={setConfirmDeleteId}
+                    setConfirmDeleteLog={setConfirmDeleteLog}
                     activeSession={activeSession}
                     workoutLabel={workoutLabel}
                     elapsed={elapsed}

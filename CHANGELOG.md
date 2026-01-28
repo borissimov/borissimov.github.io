@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-01-27
+
+### Added
+- **Recovery Engine:** Implemented specialized Sleep Protocol with a dedicated "Sleep Mode" low-light overlay and monospace timer.
+- **Sleep Database:** Created `sleep_logs` relational table with RLS and user-specific policies.
+- **Dynamic Month Context:** Real-time month/year label in Agenda that updates as the user swipes.
+- **Calendar Swipe:** Implemented directional sliding animations for month transitions in the expanded calendar.
+- **Fixed UI Architecture:** Forced edge-to-edge mobile headers and locked viewport height to `100dvh` to prevent title-bar scrolling on devices like Galaxy A41.
+
+### Changed
+- **Responsive Layout:** Transitioned Agenda, Library, and Session views to a centered 500px "Hub Viewport" on desktop, while keeping Program Builder full-width.
+- **Ergonomic Logging:** Reversed the display order of sets in the logger (newest on top) to improve usability during high-volume sessions.
+- **Navigation Refactor:** Replaced the Agenda barbell button with a focus-aware Plus button that contextually handles live vs. retroactive logging.
+- **Timer Format:** Updated active session timers to `HH:MM:SS` format once duration exceeds 60 minutes.
+- **Agenda Scroller:** Expanded default range to +/- 180 days with auto-centering on the current date.
+
+### Fixed
+- **Library Hydration:** Resolved race condition where programs wouldn't appear initially until archived view was toggled.
+- **Data Integrity:** Restored `set_targets` hydration and persistence for progressive loading programs.
+- **Swipe Robustness:** Improved gesture detection using `onPanEnd` to prevent conflicts with date selection.
+- **Modal Z-Index:** Fixed issue where confirmation modals were hidden beneath the Sleep Mode overlay.
+
 ## [1.7.1] - 2026-01-26
 
 ### Fixed

@@ -1,56 +1,25 @@
 # V3 System Map (Live Reference)
 
 **Status:** ACTIVE
-**Version:** V1.7.1 (Modular Slice Architecture)
+**Version:** V1.8.0 (Recovery Module)
 
 ---
 
 ## 1. Store Architecture (`useProgramStore`)
 
-The store has been refactored into a **Modular Domain-Driven Slice** architecture to improve maintainability and state isolation.
+The store is composed of specialized domain slices to ensure state isolation.
 
-### **A. Global Context (`uiSlice`)**
+...
+
+### **E. Recovery Module (`sleepSlice`)**
 ```javascript
 {
-  activeSchema: "v3" | "v3_dev",
-  lastView: string,
-  isLoading: boolean,
-  getFKConstraint: () => string // Resolves PostgREST ambiguity hints
-}
-```
-
-### **B. Program Management (`programSlice`)**
-```javascript
-{
-  programs: [], 
-  activeProgramId: "uuid",
-  showArchivedPrograms: boolean,
-  programDays: [], // Fully hydrated with previews
-  saveProgram: (name, days, id) => Promise<boolean> // Surgical Upsert logic
-}
-```
-
-### **C. Active Session (`sessionSlice`)**
-```javascript
-{
-  activeSession: {
-    id: "uuid",
-    startTime: "ISO Date String",
-    program_day_id: "uuid",
-    blocks: [], // Prescribed items
-    logs: {} // Active performance data
-  },
-  getSessionProgress: () => { totalTarget, totalLogged, percent }
-}
-```
-
-### **D. Performance Vault (`historySlice`)**
-```javascript
-{
-  globalHistory: [], // V3 completed_sessions + performance_logs
-  dailyVolumes: {},
-  getHistoryStats: () => { streak, weekCount },
-  getActivitiesForDate: (date) => []
+  activeSleepSession: { startTime: "ISO String" },
+  sleepHistory: [],
+  startSleep: () => void,
+  endSleep: () => Promise<void>,
+  updateSleepLog: (id, payload) => Promise<void>,
+  deleteSleepLog: (id) => Promise<void>
 }
 ```
 
@@ -65,6 +34,7 @@ The store has been refactored into a **Modular Domain-Driven Slice** architectur
 | **Session** | `sessions` | `program_day_id` | **Unique Constraint** on `program_day_id` |
 | **Block** | `blocks` | `session_id` | STANDARD or CIRCUIT |
 | **Item (Rx)** | `block_items` | `session_block_id` | Prescribed target metrics |
+| **Sleep Log**| `sleep_logs` | `user_id` | **New** recovery tracking table |
 | **History** | `completed_sessions`| `program_day_id` | execution header |
 | **Logs** | `performance_logs` | `completed_session_id` | **Snapshotted** (Includes `exercise_name_snapshot`) |
 

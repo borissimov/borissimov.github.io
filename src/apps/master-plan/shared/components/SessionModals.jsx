@@ -26,7 +26,7 @@ export const SessionModals = ({
     showSessionConflict,
     setShowSessionConflict
 }) => {
-    const modalOverlayStyle = { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' };
+    const modalOverlayStyle = { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' };
     const modalContentStyle = { backgroundColor: '#121212', border: '1px solid #222', borderRadius: '16px', padding: '25px', width: '100%', maxWidth: '400px', textAlign: 'center' };
 
     return (

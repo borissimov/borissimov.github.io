@@ -33,8 +33,12 @@ export const SleepModeView = ({ elapsed, onWakeUp }) => {
                     {elapsed}
                 </h1>
 
-                <button 
-                    onClick={onWakeUp}
+                <motion.button 
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onWakeUp();
+                    }}
                     style={{ 
                         all: 'unset', 
                         marginTop: '60px', 
@@ -50,11 +54,14 @@ export const SleepModeView = ({ elapsed, onWakeUp }) => {
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '10px'
+                        justifyContent: 'center',
+                        gap: '10px',
+                        position: 'relative',
+                        zIndex: 100
                     }}
                 >
                     <Sun size={18} /> WAKE UP
-                </button>
+                </motion.button>
             </div>
 
             <p style={{ position: 'absolute', bottom: '40px', fontSize: '10px', color: '#333', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '2px' }}>

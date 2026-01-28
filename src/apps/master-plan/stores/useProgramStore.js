@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware';
 import { getActiveSchema } from '../../../supabaseClient';
 
 // Slices
+import { createProgramSlice } from './slices/programSlice';
+import { createSessionSlice } from './slices/sessionSlice';
 import { createHistorySlice } from './slices/historySlice';
 import { createUISlice } from './slices/uiSlice';
 import { createSleepSlice } from './slices/sleepSlice';

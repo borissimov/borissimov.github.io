@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -28,9 +28,7 @@
         .next { right: 10px; }
         .zoom-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
         .zoom-button { background-color: rgba(85, 85, 85, 0.8); color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
-        .image-adjust-controls { display: flex; flex-direction: column; gap: 20px; padding: 20px; background-color: #1a1a1a; border-right: 1px solid #444; justify-content: center; } 
-        .control-group { display: flex; flex-direction: column; align-items: center; } 
-        .control-group label { font-size: 12px; margin-top: 5px; }
+        .image-adjust-controls { display: flex; flex-direction: column; gap: 20px; padding: 20px; background-color: #1a1a1a; border-right: 1px solid #444; justify-content: center; } .control-group { display: flex; flex-direction: column; align-items: center; } .control-group label { font-size: 12px; margin-top: 5px; } /* Hidden by default on desktop */
         .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); flex-shrink: 0; }
         .metadata-sidebar p { margin: 15px 0; word-wrap: break-word; }
         .metadata-sidebar strong { color: #00aaff; }
@@ -38,19 +36,73 @@
         @media (max-width: 768px) {
             .header { padding: 5px; }
             .tab-button { display: none; }
-            #mobile-date-select { display: block; width: 100%; padding: 10px; background-color: #333; color: white; border: 1px solid #555; font-size: 16px; }
-            .viewer-container { flex-direction: column; height: calc(100vh - 50px); }
-            .image-display-area { order: 1; flex: 1 1 auto; min-height: 0; }
-            .image-adjust-controls { order: 2; display: flex; flex: 0 0 auto; position: relative; flex-direction: row; justify-content: space-around; background-color: #1a1a1a; padding: 10px; border-top: 1px solid #444; border-radius: 0; width: 100%; }
-            .thumbnail-sidebar { order: 3; flex: 0 0 100px; width: 100%; display: flex; flex-direction: row; overflow-x: auto; border-top: 1px solid #444; border-right: none; }
-            .metadata-sidebar { order: 4; flex: 0 0 auto; width: 100%; height: auto; box-shadow: none; border-top: 1px solid #444; padding: 10px; }
+            #mobile-date-select {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                background-color: #333;
+                color: white;
+                border: 1px solid #555;
+                font-size: 16px;
+            }
+            .viewer-container { 
+                flex-direction: column; 
+                height: calc(100vh - 50px); /* Adjust for header */
+            }
+            .image-display-area {
+                order: 1;
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+            .image-adjust-controls {
+                order: 2;
+                display: flex;
+                flex: 0 0 auto;
+                position: relative;
+                flex-direction: row;
+                justify-content: space-around;
+                background-color: #1a1a1a;
+                padding: 10px;
+                border-top: 1px solid #444;
+                border-radius: 0;
+                width: 100%;
+            }
+            .thumbnail-sidebar {
+                order: 3;
+                flex: 0 0 100px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                border-top: 1px solid #444;
+                border-right: none;
+            }
+            .metadata-sidebar {
+                order: 4;
+                flex: 0 0 auto;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                border-top: 1px solid #444;
+                padding: 10px;
+            }
             .zoom-controls { display: none; }
+            .control-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .control-group label {
+                font-size: 12px;
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="header">
+    <!-- Desktop tabs will be generated here -->
     <select id="mobile-date-select"></select>
 </div>
 <div class="viewer-container">
@@ -80,7 +132,6 @@
         <p><strong>Days since accident:</strong> <span id="meta-days-since"></span></p>
     </div>
 </div>
-
 <div class="summary-container">
     <h2 style="color: #3498db; border-bottom: 1px solid #444; padding-bottom: 10px;">Резюме и Въпросник (2026)</h2>
     <div style="background: #1a1a1a; padding: 25px; border-radius: 8px; border: 1px solid #333; margin-top: 20px;">
@@ -130,48 +181,47 @@
         </ol>
     </div>
 </div>
-
 <div class="history-container">История:
 
 14 Май 2025 ( Ден 0)
 Паднal с колело с протегнати ръце напред.
  ВМА спешно отделение  диагноза – счупена глава на радиусапоставиха гипсова лонгета
 
-5 Юни 2025г. (22 ден)
+5 Юни 2025г. (22 ден) 
 Сваляне на гипсовата лонгета и започва упражнения за:
--       Супинация
--       Пронация
--       Сгъване и разгъване в рамките на възможният обем на движение
--       Гравитационно разгъване  на лакътя от легнало положение
+-	Супинация
+-	Пронация
+-	Сгъване и разгъване в рамките на възможният обем на движ��ние
+-	Гравитационно разгъване  на лакътя от легнало положение
 
 16 Май  - 24 Май 2025г.  (33 – 41 ден)
 Физиотерапия и рехабилитация  включваща
 Сгъване на лакътя с машина артромот
-Мануално разгъване с  рехабилитатор.
-Упражнения за
--       бицепс, трицепс с до 1.5кг,
--       пръчка  - гребане, опъване и сгъване зад гръб
--       Висене на  лост с подпряни крака
+Мануално разгъване с  рехабилитатор. 
+Упражнения за  
+-	бицепс, трицепс с до 1.5кг,
+-	пръчка  - гребане, опъване и сгъване зад гръб
+-	Висене на  лост с подпряни крака
  Плуване
-
+ 
 11 Юли 2025г.  (58 Ден)
 Преглед При Бахрам Фирузи.
-Установява нестабилност в лакътната става, назначава ЯМР, и ме праща за консултация при Д-р. Борислав Тасев.   
+Установява нестабилност в лакътната става, назначава ЯМР, и ме праща за консултация при Д-р. Борислав Тасев. 
 24 Юли 2025г. (71 Ден) 10та седмица
-ЯМР Спектър
+ЯМР Спектър 
 приложено.</div>
 <div class="pdf-container">
     <a href="20250724_MRI_Boris_Simov.pdf" download>Download PDF</a>
     <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
 </div>
-<div class="questions-container">1. Имам ли зарастване на радиуса и изграден костен мост, калус, какво значи това за мен?
+<div class="questions-container">1. Имам ли зарастване на ради��са и изграден костен мост, калус, какво значи това за мен?
 2. Вижда ли се на снимките сублуксация на ставата или някоя кост?
 3. Имам ли скъсани лигаменти и на какво се дължи нестабилността“
 4. Какво пречи на разгъването на лакътя ми“
 5. Имам прихрупващ звук при няколко движения?
 6. Имам изпукващ звук при  разгъване на лакътя след продължително сгъване?
-7. Имам Болки на няколко места
-- вътрешната страна на над лакътя.
+7. Имам Болки на няколко места 
+- вътрешната страна на над лакътя. 
 - над главичката на радиуса и по продължението на брахиорадиалиса
 8. Да коментираме находките от ЯМР. ?</div>
 
@@ -179,7 +229,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof metadata === 'undefined') {
-        document.querySelector('.viewer-container').innerHTML = '<div style="padding: 20px; text-align: center; width: 100%;"><h1>Error: Metadata Not Found</h1></div>';
+        console.error("Error: metadata.js could not be loaded or is empty. Please ensure the file exists and is correctly formatted.");
+        document.querySelector('.viewer-container').innerHTML = '<div style="padding: 20px; text-align: center; width: 100%;"><h1>Error: Metadata Not Found</h1><p>Could not load image metadata. Please run the <code>update_metadata.py</code> script to generate it.</p></div>';
         return;
     }
 
@@ -191,11 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const allImages = Object.keys(imagesByDate).sort().flatMap(date => imagesByDate[date]);
+    
     const header = document.querySelector('.header');
     const mobileDateSelect = document.getElementById('mobile-date-select');
     const viewerContainer = document.querySelector('.viewer-container');
     const historyContainer = document.querySelector('.history-container');
-    const summaryContainer = document.querySelector('.summary-container');
     const pdfContainer = document.querySelector('.pdf-container');
     const questionsContainer = document.querySelector('.questions-container');
     const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
@@ -206,26 +257,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentGlobalIndex = 0;
     let scale = 1, isPanning = false, pointX = 0, pointY = 0, start = { x: 0, y: 0 };
+    let initialDistance = -1;
 
-    const applyTransform = () => { mainImage.style.transform = 	ranslate( + pointX + px,  + pointY + px) scale( + scale + ); };
-    const applyImageFilters = () => { mainImage.style.filter = rightness( + brightnessSlider.value + %) contrast( + contrastSlider.value + %); };
+    const applyTransform = () => {
+        mainImage.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    };
+
+    const clampPan = () => {
+        const areaWidth = displayArea.clientWidth;
+        const areaHeight = displayArea.clientHeight;
+        const imgWidth = mainImage.naturalWidth * scale;
+        const imgHeight = mainImage.naturalHeight * scale;
+
+        const minX = areaWidth - imgWidth;
+        const minY = areaHeight - imgHeight;
+
+        if (imgWidth <= areaWidth) {
+            pointX = (areaWidth - imgWidth) / 2;
+        } else {
+            pointX = Math.max(minX, Math.min(0, pointX));
+        }
+
+        if (imgHeight <= areaHeight) {
+            pointY = (areaHeight - imgHeight) / 2;
+        } else {
+            pointY = Math.max(minY, Math.min(0, pointY));
+        }
+    };
+
+    const applyImageFilters = () => {
+        const brightness = brightnessSlider.value;
+        const contrast = contrastSlider.value;
+        mainImage.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    };
+
+    const centerAndFitImage = () => {
+        const areaWidth = displayArea.clientWidth;
+        const areaHeight = displayArea.clientHeight;
+        const imgWidth = mainImage.naturalWidth;
+        const imgHeight = mainImage.naturalHeight;
+
+        if (imgWidth && imgHeight) {
+            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight);
+            pointX = 0;
+            pointY = 0;
+            clampPan();
+            applyTransform();
+        }
+    };
+
+    brightnessSlider.oninput = applyImageFilters;
+    contrastSlider.oninput = applyImageFilters;
 
     const openTab = (tabName) => {
         document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
-        const activeButton = document.querySelector(.tab-button[data-tab=" + tabName + "]);
-        if (activeButton) activeButton.classList.add('active');
+        const activeButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
 
         viewerContainer.style.display = 'none';
+        const sumCont = document.querySelector('.summary-container'); if(sumCont) sumCont.style.display = 'none';
         historyContainer.style.display = 'none';
-        summaryContainer.style.display = 'none';
         pdfContainer.style.display = 'none';
         questionsContainer.style.display = 'none';
 
-        if (tabName === 'Summary 2026') { summaryContainer.style.display = 'block'; }
-        else if (tabName === 'History') { historyContainer.style.display = 'block'; }
-        else if (tabName === 'MRI Report') { pdfContainer.style.display = 'flex'; }
-        else if (tabName === 'Questions') { questionsContainer.style.display = 'block'; }
-        else {
+        if (tabName === 'Summary 2026') {
+            document.querySelector('.summary-container').style.display = 'block';
+        } else if (tabName === 'History') {
+            historyContainer.style.display = 'block';
+        } else if (tabName === 'MRI Report') {
+            pdfContainer.style.display = 'flex';
+        } else if (tabName === 'Questions') {
+            questionsContainer.style.display = 'block';
+        } else {
             viewerContainer.style.display = 'flex';
             const firstImageOfDate = imagesByDate[tabName][0];
             currentGlobalIndex = allImages.indexOf(firstImageOfDate);
@@ -236,60 +341,240 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateUIForCurrentImage = () => {
         const imageFile = allImages[currentGlobalIndex];
         const datePart = imageFile.substring(0, 6);
-        if (mobileDateSelect.value !== datePart) mobileDateSelect.value = datePart;
+
+        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.tab === datePart));
+        if (mobileDateSelect.value !== datePart) {
+            mobileDateSelect.value = datePart;
+        }
 
         const currentImageList = imagesByDate[datePart];
         thumbnailSidebar.innerHTML = '';
-        currentImageList.forEach(file => {
+        currentImageList.forEach((file, index) => {
             const thumbContainer = document.createElement('div');
             thumbContainer.className = 'thumbnail-container';
-            thumbContainer.onclick = () => { currentGlobalIndex = allImages.indexOf(file); updateUIForCurrentImage(); };
+            thumbContainer.onclick = () => {
+                currentGlobalIndex = allImages.indexOf(file);
+                updateUIForCurrentImage();
+            };
             const thumbImg = document.createElement('img');
             thumbImg.src = file;
             thumbContainer.appendChild(thumbImg);
             thumbnailSidebar.appendChild(thumbContainer);
         });
-
+        
         const localIndex = currentImageList.indexOf(imageFile);
-        document.querySelectorAll('.thumbnail-container').forEach((thumb, idx) => { thumb.classList.toggle('active', idx === localIndex); });
+        document.querySelectorAll('.thumbnail-container').forEach((thumb, idx) => {
+            thumb.classList.toggle('active', idx === localIndex);
+            if (idx === localIndex) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
         mainImage.src = imageFile;
-        document.getElementById('image-counter').textContent = (localIndex + 1) +  of  + currentImageList.length;
+        const meta = metadata[imageFile];
+        document.getElementById('image-counter').textContent = `${localIndex + 1} of ${currentImageList.length}`;
+
+        const birthDate = new Date('1984-01-10');
+        const studyDate = new Date(meta.study_date);
+        const firstXrayDate = new Date('2025-05-14');
+
+        let age = studyDate.getFullYear() - birthDate.getFullYear();
+        const m = studyDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && studyDate.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        const diffTime = Math.abs(studyDate - firstXrayDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        document.getElementById('meta-dob-age').textContent = `10 Jan 1984 (Age: ${age})`;
+        document.getElementById('meta-days-since').textContent = diffDays;
+
+        brightnessSlider.value = 100;
+        contrastSlider.value = 100;
+        applyImageFilters();
+
+        mainImage.onload = () => {
+            centerAndFitImage();
+            mainImage.onload = null;
+        };
     };
 
     const sortedDates = Object.keys(imagesByDate).sort();
-    const addTab = (name) => {
-        const btn = document.createElement('button');
-        btn.className = 'tab-button';
-        btn.textContent = name;
-        btn.dataset.tab = name;
-        btn.onclick = () => openTab(name);
-        header.appendChild(btn);
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        mobileDateSelect.appendChild(opt);
+    if (sortedDates.length > 0) {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+                // Summary 2026 Tab
+        const summaryButton = document.createElement('button');
+        summaryButton.className = 'tab-button';
+        summaryButton.textContent = 'Summary 2026';
+        summaryButton.dataset.tab = 'Summary 2026';
+        summaryButton.onclick = () => openTab('Summary 2026');
+        header.appendChild(summaryButton);
+
+        const summaryOption = document.createElement('option');
+        summaryOption.value = 'Summary 2026';
+        summaryOption.textContent = 'Summary 2026';
+        mobileDateSelect.appendChild(summaryOption);
+        // History Tab
+        const historyButton = document.createElement('button');
+        historyButton.className = 'tab-button';
+        historyButton.textContent = 'History';
+        historyButton.dataset.tab = 'History';
+        historyButton.onclick = () => openTab('History');
+        header.appendChild(historyButton);
+
+        const historyOption = document.createElement('option');
+        historyOption.value = 'History';
+        historyOption.textContent = 'History';
+        mobileDateSelect.appendChild(historyOption);
+
+        // MRI Tab
+        const mriButton = document.createElement('button');
+        mriButton.className = 'tab-button';
+        mriButton.textContent = 'MRI Report';
+        mriButton.dataset.tab = 'MRI Report';
+        mriButton.onclick = () => openTab('MRI Report');
+        header.appendChild(mriButton);
+
+        const mriOption = document.createElement('option');
+        mriOption.value = 'MRI Report';
+        mriOption.textContent = 'MRI Report';
+        mobileDateSelect.appendChild(mriOption);
+
+        // Questions Tab
+        const questionsButton = document.createElement('button');
+        questionsButton.className = 'tab-button';
+        questionsButton.textContent = 'Questions';
+        questionsButton.dataset.tab = 'Questions';
+        questionsButton.onclick = () => openTab('Questions');
+        header.appendChild(questionsButton);
+
+        const questionsOption = document.createElement('option');
+        questionsOption.value = 'Questions';
+        questionsOption.textContent = 'Questions';
+        mobileDateSelect.appendChild(questionsOption);
+
+        sortedDates.forEach((datePart) => {
+            const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
+            const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+            
+            const tabButton = document.createElement('button');
+            tabButton.className = 'tab-button';
+            tabButton.textContent = formattedDate;
+            tabButton.dataset.tab = datePart;
+            tabButton.onclick = () => openTab(datePart);
+            header.appendChild(tabButton);
+
+            const option = document.createElement('option');
+            option.value = datePart;
+            option.textContent = formattedDate;
+            mobileDateSelect.appendChild(option);
+        });
+
+        mobileDateSelect.onchange = () => {
+            openTab(mobileDateSelect.value);
+        };
+
+        openTab('Summary 2026'); // Open the first date tab by default
+    } else {
+        document.querySelector('.viewer-container').innerHTML = '<p style="margin: 20px;">No images found.</p>';
+    }
+
+    const changeImage = (direction) => {
+        currentGlobalIndex = (currentGlobalIndex + direction + allImages.length) % allImages.length;
+        updateUIForCurrentImage();
     };
 
-    addTab('Summary 2026');
-    addTab('History');
-    addTab('MRI Report');
-    addTab('Questions');
-
-    sortedDates.forEach(datePart => {
-        const dateObj = new Date(20 + datePart.substring(0,2) + - + datePart.substring(2,4) + - + datePart.substring(4,6));
-        const formattedDate = isNaN(dateObj.getTime()) ? datePart : dateObj.toLocaleDateString('bg-BG');
-        addTab(datePart);
-        const lastBtn = header.lastChild;
-        lastBtn.textContent = formattedDate;
-        mobileDateSelect.lastChild.textContent = formattedDate;
+    displayArea.addEventListener('touchstart', (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            start = { x: touch.clientX - pointX, y: touch.clientY - pointY };
+            isPanning = true;
+        } else if (e.touches.length === 2) {
+            isPanning = false;
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            initialDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
     });
 
-    brightnessSlider.oninput = applyImageFilters;
-    contrastSlider.oninput = applyImageFilters;
-    document.querySelector('.prev').onclick = () => { currentGlobalIndex = (currentGlobalIndex - 1 + allImages.length) % allImages.length; updateUIForCurrentImage(); };
-    document.querySelector('.next').onclick = () => { currentGlobalIndex = (currentGlobalIndex + 1) % allImages.length; updateUIForCurrentImage(); };
+    displayArea.addEventListener('touchend', (e) => {
+        isPanning = false;
+        initialDistance = -1;
+    });
 
-    openTab('Summary 2026');
+    displayArea.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (isPanning && e.touches.length === 1) {
+            const touch = e.touches[0];
+            pointX = touch.clientX - start.x;
+            pointY = touch.clientY - start.y;
+            clampPan();
+            applyTransform();
+        } else if (e.touches.length === 2 && initialDistance > 0) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+            const factor = currentDistance / initialDistance;
+            zoom(factor, {x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2});
+            initialDistance = currentDistance;
+        }
+    });
+
+    displayArea.onmousedown = (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault();
+        start = { x: e.clientX - pointX, y: e.clientY - pointY };
+        isPanning = true;
+        displayArea.style.cursor = 'grabbing';
+    };
+    window.onmouseup = () => { isPanning = false; displayArea.style.cursor = 'grab'; };
+    window.onmousemove = (e) => { 
+        if (isPanning) { 
+            pointX = e.clientX - start.x; 
+            pointY = e.clientY - start.y; 
+            clampPan();
+            applyTransform();
+        } 
+    };
+    displayArea.onwheel = (e) => {
+        e.preventDefault();
+        const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+        const factor = delta > 0 ? 1.1 : 0.9;
+        zoom(factor, {x: e.clientX, y: e.clientY});
+    };
+    
+    const zoom = (factor, center) => {
+        const rect = displayArea.getBoundingClientRect();
+        const mouseX = center.x - rect.left;
+        const mouseY = center.y - rect.top;
+
+        const xs = (mouseX - pointX) / scale;
+        const ys = (mouseY - pointY) / scale;
+        
+        const oldScale = scale;
+        let newScale = scale * factor;
+        
+        const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight);
+        newScale = Math.max(minScale, Math.min(newScale, 20));
+
+        if (newScale === oldScale) return;
+
+        pointX = mouseX - xs * newScale;
+        pointY = mouseY - ys * newScale;
+        scale = newScale;
+
+        clampPan();
+        applyTransform();
+    };
+
+    window.onresize = centerAndFitImage;
+
+    document.getElementById("zoomInBtn").onclick = () => zoom(1.2, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+    document.getElementById("zoomOutBtn").onclick = () => zoom(0.8, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+    document.querySelector('.prev').onclick = () => changeImage(-1);
+    document.querySelector('.next').onclick = () => changeImage(1);
 });
 </script>
 </body>

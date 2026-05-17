@@ -465,6 +465,18 @@ document.addEventListener('DOMContentLoaded', () => {
         questionsOption.textContent = 'Questions';
         mobileDateSelect.appendChild(questionsOption);
 
+        // CT Scan Tab
+        const ctScanButton = document.createElement('button');
+        ctScanButton.className = 'tab-button';
+        ctScanButton.textContent = 'CT Scan (External)';
+        ctScanButton.onclick = () => window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
+        header.appendChild(ctScanButton);
+
+        const ctScanOption = document.createElement('option');
+        ctScanOption.value = 'CT Scan';
+        ctScanOption.textContent = 'CT Scan (External)';
+        mobileDateSelect.appendChild(ctScanOption);
+
         sortedDates.forEach((datePart) => {
             const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
             const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;

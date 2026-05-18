@@ -10,9 +10,21 @@
         .tab-button { padding: 14px 20px; cursor: pointer; border: none; background-color: #333; color: white; font-size: 16px; transition: background-color 0.3s; }
         .tab-button:hover { background-color: #555; }
         .tab-button.active { background-color: #007bff; }
+        .tab-button.primary-tab { background-color: #e67e22; font-weight: bold; }
+        .tab-button.primary-tab:hover { background-color: #d35400; }
+        .tab-button.archive-tab { background-color: #444; font-size: 14px; opacity: 0.8; }
         #mobile-date-select { display: none; }
         .viewer-container, .history-container, .summary-container, .pdf-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
         .history-container, .summary-container, .pdf-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
+        
+        /* Dashboard Styles */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .dashboard-card { background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff; cursor: pointer; transition: 0.3s; }
+        .dashboard-card:hover { background: #333; transform: scale(1.02); }
+        .dashboard-card h3 { margin: 0 0 10px 0; color: #00aaff; }
+        .dashboard-card p { margin: 0; color: #ccc; font-size: 14px; }
+        .dashboard-card.ct { border-left-color: #e67e22; }
+
         .pdf-container embed { flex-grow: 1; border: none; }
         .pdf-container a { color: #00aaff; text-decoration: none; padding: 10px; background-color: #333; border-radius: 5px; text-align: center; margin-top: 10px; }
         .history-container, .summary-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
@@ -138,6 +150,25 @@
     <div style="background: #222; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid #3498db;">
         <p><strong>Пациент:</strong> Борис Симеонов Симов, 42 г.</p>
         <p><strong>Основна цел на лечението:</strong> Завръщане към силови тренировки с големи тежести (30+ кг) и агресивно планинско колоездене</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card ct" onclick="window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank')">
+            <h3>CT Scan 2026</h3>
+            <p>View 3D CT reconstruction (External Viewer)</p>
+        </div>
+        <div class="dashboard-card" onclick="openTab('Questions')">
+            <h3>Consultation Questions</h3>
+            <p>8 specific questions for the surgical review</p>
+        </div>
+        <div class="dashboard-card" onclick="openTab('MRI Report')">
+            <h3>MRI Report 2025</h3>
+            <p>Original diagnostic report (PDF)</p>
+        </div>
+        <div class="dashboard-card" onclick="openTab('History')">
+            <h3>Full Medical History</h3>
+            <p>Timeline from first injury to present</p>
+        </div>
     </div>
 
     <h2 style="color: #eee;">1. Хронология на травмите и проведено лечение</h2>
@@ -414,75 +445,88 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sortedDates.length > 0) {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         
-                // Summary 2026 Tab
+        // --- PRIMARY TABS ---
+        
+        // Summary 2026 Tab
         const summaryButton = document.createElement('button');
-        summaryButton.className = 'tab-button';
-        summaryButton.textContent = 'Summary 2026';
+        summaryButton.className = 'tab-button primary-tab';
+        summaryButton.textContent = '📋 Summary 2026';
         summaryButton.dataset.tab = 'Summary 2026';
         summaryButton.onclick = () => openTab('Summary 2026');
         header.appendChild(summaryButton);
 
         const summaryOption = document.createElement('option');
         summaryOption.value = 'Summary 2026';
-        summaryOption.textContent = 'Summary 2026';
+        summaryOption.textContent = '📋 Summary 2026';
         mobileDateSelect.appendChild(summaryOption);
-        // History Tab
-        const historyButton = document.createElement('button');
-        historyButton.className = 'tab-button';
-        historyButton.textContent = 'History';
-        historyButton.dataset.tab = 'History';
-        historyButton.onclick = () => openTab('History');
-        header.appendChild(historyButton);
 
-        const historyOption = document.createElement('option');
-        historyOption.value = 'History';
-        historyOption.textContent = 'History';
-        mobileDateSelect.appendChild(historyOption);
+        // CT Scan Tab
+        const ctScanButton = document.createElement('button');
+        ctScanButton.className = 'tab-button primary-tab';
+        ctScanButton.textContent = '☢️ CT Scan 2026';
+        ctScanButton.onclick = () => window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
+        header.appendChild(ctScanButton);
 
-        // MRI Tab
-        const mriButton = document.createElement('button');
-        mriButton.className = 'tab-button';
-        mriButton.textContent = 'MRI Report';
-        mriButton.dataset.tab = 'MRI Report';
-        mriButton.onclick = () => openTab('MRI Report');
-        header.appendChild(mriButton);
-
-        const mriOption = document.createElement('option');
-        mriOption.value = 'MRI Report';
-        mriOption.textContent = 'MRI Report';
-        mobileDateSelect.appendChild(mriOption);
+        const ctScanOption = document.createElement('option');
+        ctScanOption.value = 'CT Scan';
+        ctScanOption.textContent = '☢️ CT Scan 2026 (External)';
+        mobileDateSelect.appendChild(ctScanOption);
 
         // Questions Tab
         const questionsButton = document.createElement('button');
-        questionsButton.className = 'tab-button';
-        questionsButton.textContent = 'Questions';
+        questionsButton.className = 'tab-button primary-tab';
+        questionsButton.textContent = '❓ Questions';
         questionsButton.dataset.tab = 'Questions';
         questionsButton.onclick = () => openTab('Questions');
         header.appendChild(questionsButton);
 
         const questionsOption = document.createElement('option');
         questionsOption.value = 'Questions';
-        questionsOption.textContent = 'Questions';
+        questionsOption.textContent = '❓ Questions';
         mobileDateSelect.appendChild(questionsOption);
 
-        // CT Scan Tab
-        const ctScanButton = document.createElement('button');
-        ctScanButton.className = 'tab-button';
-        ctScanButton.textContent = 'CT Scan (External)';
-        ctScanButton.onclick = () => window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
-        header.appendChild(ctScanButton);
+        // MRI Tab
+        const mriButton = document.createElement('button');
+        mriButton.className = 'tab-button';
+        mriButton.textContent = '📄 MRI Report';
+        mriButton.dataset.tab = 'MRI Report';
+        mriButton.onclick = () => openTab('MRI Report');
+        header.appendChild(mriButton);
 
-        const ctScanOption = document.createElement('option');
-        ctScanOption.value = 'CT Scan';
-        ctScanOption.textContent = 'CT Scan (External)';
-        mobileDateSelect.appendChild(ctScanOption);
+        const mriOption = document.createElement('option');
+        mriOption.value = 'MRI Report';
+        mriOption.textContent = '📄 MRI Report';
+        mobileDateSelect.appendChild(mriOption);
+
+        // History Tab
+        const historyButton = document.createElement('button');
+        historyButton.className = 'tab-button';
+        historyButton.textContent = '📜 History';
+        historyButton.dataset.tab = 'History';
+        historyButton.onclick = () => openTab('History');
+        header.appendChild(historyButton);
+
+        const historyOption = document.createElement('option');
+        historyOption.value = 'History';
+        historyOption.textContent = '📜 History';
+        mobileDateSelect.appendChild(historyOption);
+
+        // --- ARCHIVE TABS ---
+        
+        const archiveLabel = document.createElement('div');
+        archiveLabel.textContent = 'Archive 2025:';
+        archiveLabel.style.padding = '14px 10px';
+        archiveLabel.style.fontSize = '12px';
+        archiveLabel.style.color = '#888';
+        archiveLabel.style.alignSelf = 'center';
+        header.appendChild(archiveLabel);
 
         sortedDates.forEach((datePart) => {
             const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
             const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
             
             const tabButton = document.createElement('button');
-            tabButton.className = 'tab-button';
+            tabButton.className = 'tab-button archive-tab';
             tabButton.textContent = formattedDate;
             tabButton.dataset.tab = datePart;
             tabButton.onclick = () => openTab(datePart);
@@ -490,12 +534,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const option = document.createElement('option');
             option.value = datePart;
-            option.textContent = formattedDate;
+            option.textContent = `📁 Archive: ${formattedDate}`;
             mobileDateSelect.appendChild(option);
         });
 
         mobileDateSelect.onchange = () => {
-            openTab(mobileDateSelect.value);
+            if (mobileDateSelect.value === 'CT Scan') {
+                 window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
+            } else {
+                 openTab(mobileDateSelect.value);
+            }
         };
 
         openTab('Summary 2026'); // Open the first date tab by default

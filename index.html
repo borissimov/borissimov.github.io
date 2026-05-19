@@ -19,14 +19,20 @@
         
         /* Dashboard Styles */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .dashboard-card { background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff; cursor: pointer; transition: 0.3s; }
+        .dashboard-card { background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .dashboard-card:hover { background: #333; transform: scale(1.02); }
         .dashboard-card h3 { margin: 0 0 10px 0; color: #00aaff; }
         .dashboard-card p { margin: 0; color: #ccc; font-size: 14px; }
         .dashboard-card.ct { border-left-color: #e67e22; }
+        .dashboard-card.mri { border-left-color: #2ecc71; }
 
         .pdf-container embed { flex-grow: 1; border: none; }
-        .pdf-container a { color: #00aaff; text-decoration: none; padding: 10px; background-color: #333; border-radius: 5px; text-align: center; margin-top: 10px; }
+        .pdf-container .pdf-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .action-button { padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
+        .action-button:hover { background-color: #0056b3; }
+        .action-button.mri-btn { background-color: #2ecc71; }
+        .action-button.mri-btn:hover { background-color: #27ae60; }
+        
         .history-container, .summary-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
         .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; flex-shrink: 0; }
         .thumbnail-container { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; position: relative; }
@@ -154,20 +160,20 @@
 
     <div class="dashboard-grid">
         <div class="dashboard-card ct" onclick="window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank')">
-            <h3>CT Scan 2026</h3>
+            <h3>☢️ CT Scan 2026</h3>
             <p>View 3D CT reconstruction (External Viewer)</p>
         </div>
+        <div class="dashboard-card mri" onclick="window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244', '_blank')">
+            <h3>🩻 MRI Study 2025</h3>
+            <p>View original MRI imaging series (External Viewer)</p>
+        </div>
         <div class="dashboard-card" onclick="openTab('Questions')">
-            <h3>Consultation Questions</h3>
+            <h3>❓ Consultation Questions</h3>
             <p>8 specific questions for the surgical review</p>
         </div>
         <div class="dashboard-card" onclick="openTab('MRI Report')">
-            <h3>MRI Report 2025</h3>
-            <p>Original diagnostic report (PDF)</p>
-        </div>
-        <div class="dashboard-card" onclick="openTab('History')">
-            <h3>Full Medical History</h3>
-            <p>Timeline from first injury to present</p>
+            <h3>📄 MRI Report (PDF)</h3>
+            <p>Diagnostic text report from 24.07.2025</p>
         </div>
     </div>
 
@@ -203,70 +209,112 @@
             <td style="border:1px solid #444; padding:12px;">Малки узури (ерозии) и субхондрални кисти до 4 мм.</td>
         </tr>
     </table>
+</div>
 
-    <h2 style="color: #eee;">3. Въпросник за обсъждане</h2>
-    <div style="white-space: pre-wrap; line-height: 1.8; font-size: 16px;">
-1. Псевдоартроза: Имайки предвид изгладените повърхности на КТ и 11-те месеца давност, категорично ли е оформена псевдоартроза, която вече няма биологичен потенциал да се затвори сама?
+<div class="history-container" style="padding: 30px; line-height: 1.6; color: #eee; background: #1a1a1a; overflow-y: auto;">
+    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Пълна история на заболяването</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">14 май 2025 г. (Ден 0)</h3>
+        <p>Падане от велосипед с протегнати напред ръце. В Спешно отделение на ВМА е поставена диагноза "счупена глава на радиуса". Поставена е гипсова лонгета.</p>
+    </div>
 
-2. Механичен блок и хрущял: Двата нови свободни фрагмента и узурите ли причиняват дефицита в пълното разгъване и вътреставното триене при натоварване? Ще бъдат ли почистени при евентуална интервенция?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">16 май – 24 май 2025 г. (Ден 2 – Ден 10)</h3>
+        <p>Проведена ранна рехабилитация и физиотерапия, включваща:</p>
+        <ul style="list-style-type: disc; margin-left: 20px;">
+            <li>Раздвижване на лакътя с машина "Артромот".</li>
+            <li>Мануално разгъване от рехабилитатор.</li>
+            <li>Упражнения за бицепс и трицепс с тежести до 1.5 кг.</li>
+            <li>Упражнения с пръчка (гребане, опъване и сгъване зад гръб).</li>
+            <li>Висене на лост с подпряни крака.</li>
+            <li>Плуване.</li>
+        </ul>
+    </div>
 
-3. Остеосинтеза срещу Протеза: Тъй като паданията са част от планинското колоездене, ендопротезирането (изкуствена става) е силно нежелателно за мен поради риск от перипротезна фрактура. Има ли техническа възможност моята кост да се спаси и фиксира стабилно с винтове/планка?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">5 юни 2025 г. (Ден 22)</h3>
+        <p>Сваляне на гипсовата лонгета. Започват активни упражнения за супинация, пронация, сгъване и разгъване в рамките на възможния обем, както и гравитационно разгъване на лакътя от легнало положение.</p>
+    </div>
 
-4. Костна пластика и биология: За да рестартираме биологията на зарастването, ще се наложи ли поставяне на костна присадка (спонгиопластика)?
-* Бележка: Декларирам пълно спиране на цигарите от днес, за да осигуря максимално добро кръвоснабдяване за операцията.
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">11 юли 2025 г. (Ден 58)</h3>
+        <p>Преглед при д-р Бахрам Фирузи. Установена е нестабилност в лакътната става. Назначен е ЯМР и консултация с д-р Борислав Тасев.</p>
+    </div>
 
-5. Срокове за възстановяване: При успешна остеосинтеза, какъв е реалистичният график за връщане към планинското колоездене и сериозните тежести?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">24 юли 2025 г. (Ден 71 / 10-а седмица)</h3>
+        <p>Проведен ЯМР в СМДЛ "Спектър". Резултатите показват фрактурни линии с дехисценция (отваряне) до 2.5 мм и парциална увреда на латералния колатерален комплекс.</p>
+    </div>
 
-6. Хирургична експертиза: Имайки предвид, че случаят е с голяма давност и изисква сложна реконструкция за екстремен спорт, Вие лично поемате ли оперативно такива специфични вътреставни ревизии на лакът, или бихте ме насочили към екип, тясно профилиран в хирургията на горен крайник?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">Септември 2025 г. – Март 2026 г.</h3>
+        <p>Период на прогресивно натоварване според лекарските препоръки ("в рамките на безболезненото"). Достигнати тежести от 25 кг на ръка при бутащи упражнения (лежанка) и завръщане към планинското колоездене. Налице е лек дефицит в пълното разгъване и епизодични болки след интензивни тренировки.</p>
+    </div>
 
-7. Връзки и стабилност: На ЯМР от 2025 г. е описана "парциална увреда на латерален колатерален комплекс". При клиничния преглед днес установявате ли нестабилност, която налага 'натягане' или възстановяване на тези връзки по време на операцията, за да издържи лакътят на вибрациите при колоезденето?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">13 март 2026 г.</h3>
+        <p>Втора травма след падане. Силна болка в ставата. Рентгенографията не показва нова остра фрактура, но симптоматиката налага по-детайлно изследване.</p>
+    </div>
 
-8. Хрущял и превенция на артроза: След като фиксираме костта, каква е стратегията за спиране на развитието на узурите и кистите? Препоръчвате ли инжекции (PRP, хиалуронова киселина и др.) на по-късен етап за съхраняване на ставата за активен спорт?
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">23 април 2026 г.</h3>
+        <p>Проведен КТ скенер, който установява хронична псевдоартроза (незараснала фрактура с изгладени костни краища), два свободни вътреставни фрагмента (около 2 мм) и ставни ерозии (узури) с кисти.</p>
     </div>
 </div>
-<div class="history-container">История:
 
-14 Май 2025 ( Ден 0)
-Паднal с колело с протегнати ръце напред.
- ВМА спешно отделение  диагноза – счупена глава на радиусапоставиха гипсова лонгета
-
-5 Юни 2025г. (22 ден) 
-Сваляне на гипсовата лонгета и започва упражнения за:
--	Супинация
--	Пронация
--	Сгъване и разгъване в рамките на възможният обем на движ��ние
--	Гравитационно разгъване  на лакътя от легнало положение
-
-16 Май  - 24 Май 2025г.  (33 – 41 ден)
-Физиотерапия и рехабилитация  включваща
-Сгъване на лакътя с машина артромот
-Мануално разгъване с  рехабилитатор. 
-Упражнения за  
--	бицепс, трицепс с до 1.5кг,
--	пръчка  - гребане, опъване и сгъване зад гръб
--	Висене на  лост с подпряни крака
- Плуване
- 
-11 Юли 2025г.  (58 Ден)
-Преглед При Бахрам Фирузи.
-Установява нестабилност в лакътната става, назначава ЯМР, и ме праща за консултация при Д-р. Борислав Тасев. 
-24 Юли 2025г. (71 Ден) 10та седмица
-ЯМР Спектър 
-приложено.</div>
 <div class="pdf-container">
-    <a href="20250724_MRI_Boris_Simov.pdf" download>Download PDF</a>
+    <div class="pdf-controls">
+        <a href="20250724_MRI_Boris_Simov.pdf" download class="action-button">⬇️ Download PDF Report</a>
+        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-button mri-btn">🩻 VIEW MRI (Online Viewer)</a>
+    </div>
     <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
 </div>
-<div class="questions-container">1. Имам ли зарастване на радиуса и изграден костен мост, калус, какво значи това за мен?
-2. Вижда ли се на снимките сублуксация на ставата или някоя кост?
-3. Имам ли скъсани лигаменти и на какво се дължи нестабилността“
-4. Какво пречи на разгъването на лакътя ми“
-5. Имам прихрупващ звук при няколко движения?
-6. Имам изпукващ звук при  разгъване на лакътя след продължително сгъване?
-7. Имам Болки на няколко места 
-- вътрешната страна на над лакътя. 
-- над главичката на радиуса и по продължението на брахиорадиалиса
-8. Да коментираме находките от ЯМР. ?</div>
+
+<div class="questions-container" style="padding: 30px; line-height: 1.8; color: #eee; background: #1a1a1a; overflow-y: auto;">
+    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Въпроси за консултацията</h1>
+    
+    <div style="background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #00aaff; margin-top: 20px;">
+        <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">1.</span>
+                Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">2.</span>
+                Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">3.</span>
+                Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">4.</span>
+                Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">5.</span>
+                На какво се дължи прихрупващият звук, който усещам при специфични движения?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">6.</span>
+                Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">7.</span>
+                Каква е причината за локализираните болки:
+                <ul style="list-style-type: disc; margin-top: 10px; margin-left: 20px;">
+                    <li>От вътрешната страна на мишницата (над лакътя)?</li>
+                    <li>Над главичката на радиуса и по протежение на брахиорадиалиса?</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">8.</span>
+                Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?
+            </li>
+        </ul>
+    </div>
+</div>
 
 <script src="metadata.js"></script>
 <script>

@@ -14,8 +14,8 @@
         .tab-button.primary-tab:hover { background-color: #d35400; }
         .tab-button.archive-tab { background-color: #444; font-size: 14px; opacity: 0.8; }
         #mobile-date-select { display: none; }
-        .viewer-container, .history-container, .summary-container, .pdf-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
-        .history-container, .summary-container, .pdf-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
+        .viewer-container, .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
         
         /* Dashboard Styles */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
@@ -26,12 +26,14 @@
         .dashboard-card.ct { border-left-color: #e67e22; }
         .dashboard-card.mri { border-left-color: #2ecc71; }
 
-        .pdf-container embed { flex-grow: 1; border: none; }
-        .pdf-container .pdf-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .pdf-container embed, .ct-report-container embed { flex-grow: 1; border: none; }
+        .pdf-container .pdf-controls, .ct-report-container .pdf-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .action-button { padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
         .action-button:hover { background-color: #0056b3; }
         .action-button.mri-btn { background-color: #2ecc71; }
         .action-button.mri-btn:hover { background-color: #27ae60; }
+        .action-button.ct-btn { background-color: #e67e22; }
+        .action-button.ct-btn:hover { background-color: #d35400; }
         
         .history-container, .summary-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
         .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; flex-shrink: 0; }
@@ -159,21 +161,21 @@
     </div>
 
     <div class="dashboard-grid">
-        <div class="dashboard-card ct" onclick="window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank')">
-            <h3>☢️ CT Scan 2026</h3>
-            <p>View 3D CT reconstruction (External Viewer)</p>
+        <div class="dashboard-card ct" onclick="openTab('CT Report')">
+            <h3>☢️ CT Report 2026</h3>
+            <p>Diagnostic report and 3D CT viewer</p>
         </div>
-        <div class="dashboard-card mri" onclick="window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244', '_blank')">
-            <h3>🩻 MRI Study 2025</h3>
-            <p>View original MRI imaging series (External Viewer)</p>
+        <div class="dashboard-card mri" onclick="openTab('MRI Report')">
+            <h3>🩻 MRI Report 2025</h3>
+            <p>Diagnostic report and MRI viewer</p>
         </div>
         <div class="dashboard-card" onclick="openTab('Questions')">
             <h3>❓ Consultation Questions</h3>
             <p>8 specific questions for the surgical review</p>
         </div>
-        <div class="dashboard-card" onclick="openTab('MRI Report')">
-            <h3>📄 MRI Report (PDF)</h3>
-            <p>Diagnostic text report from 24.07.2025</p>
+        <div class="dashboard-card" onclick="openTab('History')">
+            <h3>📜 Full Medical History</h3>
+            <p>Timeline from first injury to present</p>
         </div>
     </div>
 
@@ -271,6 +273,14 @@
     <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
 </div>
 
+<div class="ct-report-container">
+    <div class="pdf-controls">
+        <a href="20260423_CT_Report.pdf" download class="action-button">⬇️ Download PDF Report</a>
+        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-button ct-btn">☢️ VIEW CT SCAN (Online Viewer)</a>
+    </div>
+    <embed src="20260423_CT_Report.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
 <div class="questions-container" style="padding: 30px; line-height: 1.8; color: #eee; background: #1a1a1a; overflow-y: auto;">
     <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Въпроси за консултацията</h1>
     
@@ -339,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewerContainer = document.querySelector('.viewer-container');
     const historyContainer = document.querySelector('.history-container');
     const pdfContainer = document.querySelector('.pdf-container');
+    const ctReportContainer = document.querySelector('.ct-report-container');
     const questionsContainer = document.querySelector('.questions-container');
     const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
     const mainImage = document.getElementById('mainImage');
@@ -411,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sumCont = document.querySelector('.summary-container'); if(sumCont) sumCont.style.display = 'none';
         historyContainer.style.display = 'none';
         pdfContainer.style.display = 'none';
+        ctReportContainer.style.display = 'none';
         questionsContainer.style.display = 'none';
 
         if (tabName === 'Summary 2026') {
@@ -419,6 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
             historyContainer.style.display = 'block';
         } else if (tabName === 'MRI Report') {
             pdfContainer.style.display = 'flex';
+        } else if (tabName === 'CT Report') {
+            ctReportContainer.style.display = 'flex';
         } else if (tabName === 'Questions') {
             questionsContainer.style.display = 'block';
         } else {
@@ -508,17 +522,31 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryOption.textContent = '📋 Summary 2026';
         mobileDateSelect.appendChild(summaryOption);
 
-        // CT Scan Tab
-        const ctScanButton = document.createElement('button');
-        ctScanButton.className = 'tab-button primary-tab';
-        ctScanButton.textContent = '☢️ CT Scan 2026';
-        ctScanButton.onclick = () => window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
-        header.appendChild(ctScanButton);
+        // CT Report Tab
+        const ctReportButton = document.createElement('button');
+        ctReportButton.className = 'tab-button primary-tab';
+        ctReportButton.textContent = '☢️ CT Report 2026';
+        ctReportButton.dataset.tab = 'CT Report';
+        ctReportButton.onclick = () => openTab('CT Report');
+        header.appendChild(ctReportButton);
 
-        const ctScanOption = document.createElement('option');
-        ctScanOption.value = 'CT Scan';
-        ctScanOption.textContent = '☢️ CT Scan 2026 (External)';
-        mobileDateSelect.appendChild(ctScanOption);
+        const ctReportOption = document.createElement('option');
+        ctReportOption.value = 'CT Report';
+        ctReportOption.textContent = '☢️ CT Report 2026';
+        mobileDateSelect.appendChild(ctReportOption);
+
+        // MRI Report Tab
+        const mriButton = document.createElement('button');
+        mriButton.className = 'tab-button primary-tab';
+        mriButton.textContent = '📄 MRI Report 2025';
+        mriButton.dataset.tab = 'MRI Report';
+        mriButton.onclick = () => openTab('MRI Report');
+        header.appendChild(mriButton);
+
+        const mriOption = document.createElement('option');
+        mriOption.value = 'MRI Report';
+        mriOption.textContent = '📄 MRI Report 2025';
+        mobileDateSelect.appendChild(mriOption);
 
         // Questions Tab
         const questionsButton = document.createElement('button');
@@ -532,19 +560,6 @@ document.addEventListener('DOMContentLoaded', () => {
         questionsOption.value = 'Questions';
         questionsOption.textContent = '❓ Questions';
         mobileDateSelect.appendChild(questionsOption);
-
-        // MRI Tab
-        const mriButton = document.createElement('button');
-        mriButton.className = 'tab-button';
-        mriButton.textContent = '📄 MRI Report';
-        mriButton.dataset.tab = 'MRI Report';
-        mriButton.onclick = () => openTab('MRI Report');
-        header.appendChild(mriButton);
-
-        const mriOption = document.createElement('option');
-        mriOption.value = 'MRI Report';
-        mriOption.textContent = '📄 MRI Report';
-        mobileDateSelect.appendChild(mriOption);
 
         // History Tab
         const historyButton = document.createElement('button');
@@ -587,11 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         mobileDateSelect.onchange = () => {
-            if (mobileDateSelect.value === 'CT Scan') {
-                 window.open('https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070', '_blank');
-            } else {
-                 openTab(mobileDateSelect.value);
-            }
+            openTab(mobileDateSelect.value);
         };
 
         openTab('Summary 2026'); // Open the first date tab by default

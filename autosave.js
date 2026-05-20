@@ -1,13 +1,13 @@
-(function() {
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdaiWKhiORA9zpH-ATt0ypSRmZbgcpk0zEV5zjjtNpW86C92EwXiuWkdColflLBW8/exec';
-    const STORAGE_KEY = 'dossier_session_id';
-    const DEBOUNCE_MS = 1500;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdaiWKhiORA9zpH-ATt0ypSRmZbgcpk0zEV5zjjtNpW86C92EwXiuWkdColflLBW8/exec';
+const AUTOSAVE_STORAGE_KEY = 'dossier_session_id';
+const AUTOSAVE_DEBOUNCE_MS = 1500;
 
+function initAutosave() {
     function getSessionId() {
-        let id = localStorage.getItem(STORAGE_KEY);
+        let id = localStorage.getItem(AUTOSAVE_STORAGE_KEY);
         if (!id) {
             id = 'sess-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
-            localStorage.setItem(STORAGE_KEY, id);
+            localStorage.setItem(AUTOSAVE_STORAGE_KEY, id);
         }
         return id;
     }
@@ -67,8 +67,11 @@
         clearTimeout(saveTimers[fieldName]);
         saveTimers[fieldName] = setTimeout(() => {
             saveField(fieldName, value);
-        }, DEBOUNCE_MS);
+        }, AUTOSAVE_DEBOUNCE_MS);
     }
+
+    const doctorNameEl = document.getElementById('doctor-name');
+    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
 
     document.querySelectorAll('.q-answer').forEach(textarea => {
         const field = textarea.dataset.field;
@@ -79,9 +82,6 @@
             onFieldChange(field, textarea.value);
         });
     });
-
-    const doctorNameEl = document.getElementById('doctor-name');
-    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
 
     if (doctorNameEl) {
         doctorNameEl.addEventListener('input', () => {
@@ -122,5 +122,4 @@
     if (doctorSpecialtyEl) doctorSpecialtyEl.addEventListener('input', () => {
         localStorage.setItem('ans_' + sessionId + '_specialty', doctorSpecialtyEl.value);
     });
-
-})();
+}

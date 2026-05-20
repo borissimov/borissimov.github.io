@@ -110,23 +110,24 @@
     <script src="metadata.js"></script>
     <script src="data.js"></script>
     <script src="render.js"></script>
+    <script src="autosave.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             renderApp();
-            
+            initAutosave();
+
             const w = appData.viewer.welcome;
             document.querySelector('#welcome-viewer h3[data-lang="bg"]').textContent = w.title.bg;
             document.querySelector('#welcome-viewer h3[data-lang="en"]').textContent = w.title.en;
             document.querySelector('#welcome-viewer p[data-lang="bg"]').textContent = w.description.bg;
             document.querySelector('#welcome-viewer p[data-lang="en"]').textContent = w.description.en;
-            
+
             const dt = appData.viewer.defaultTitle;
             document.getElementById('active-viewer-title-bg').textContent = dt.bg;
             document.getElementById('active-viewer-title-en').textContent = dt.en;
         });
     </script>
     <script src="app.js"></script>
-    <script src="autosave.js"></script>
 
 </body>
 </html>

@@ -556,104 +556,6 @@
             gap: 12px;
         }
 
-        /* Doctor identity panel */
-        .doctor-identity-panel {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.05));
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            border-radius: 10px;
-            padding: 16px 18px;
-            margin-bottom: 6px;
-        }
-
-        .doctor-identity-panel h4 {
-            margin: 0 0 12px 0;
-            font-size: 13px;
-            color: var(--accent-blue);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .doctor-identity-fields {
-            display: flex;
-            gap: 10px;
-        }
-
-        .doctor-identity-fields input {
-            flex: 1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            padding: 9px 12px;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-family: inherit;
-            outline: none;
-            transition: border-color 0.2s ease, background 0.2s ease;
-        }
-
-        .doctor-identity-fields input:focus {
-            border-color: var(--accent-blue);
-            background: rgba(59, 130, 246, 0.06);
-        }
-
-        .doctor-identity-fields input::placeholder {
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        /* Save status indicator */
-        .autosave-status {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 11.5px;
-            color: var(--text-muted);
-            margin-top: 10px;
-            padding: 6px 10px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            width: fit-content;
-            transition: all 0.3s ease;
-        }
-
-        .autosave-status.saving {
-            color: #fbbf24;
-            border-color: rgba(251, 191, 36, 0.2);
-            background: rgba(251, 191, 36, 0.05);
-        }
-
-        .autosave-status.saved {
-            color: var(--accent-green);
-            border-color: rgba(16, 185, 129, 0.25);
-            background: rgba(16, 185, 129, 0.06);
-        }
-
-        .autosave-status.error {
-            color: #f87171;
-            border-color: rgba(248, 113, 113, 0.25);
-            background: rgba(248, 113, 113, 0.06);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-            flex-shrink: 0;
-        }
-
-        .status-dot.pulse {
-            animation: pulse-dot 1s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.7); }
-        }
-
         .question-card {
             background-color: var(--bg-tertiary);
             border-radius: 8px;
@@ -676,11 +578,6 @@
             text-align: center;
         }
 
-        .q-body {
-            flex: 1;
-            min-width: 0;
-        }
-
         .q-body p {
             margin: 0;
             font-size: 13.5px;
@@ -693,52 +590,6 @@
             color: var(--text-secondary);
             border-top: 1px dashed rgba(255, 255, 255, 0.05);
             padding-top: 6px;
-        }
-
-        /* Doctor answer textarea */
-        .answer-label {
-            display: block;
-            margin-top: 12px;
-            margin-bottom: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-green);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .q-answer {
-            width: 100%;
-            min-height: 70px;
-            background: rgba(16, 185, 129, 0.04);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 6px;
-            padding: 10px 12px;
-            color: #e5e7eb;
-            font-size: 13px;
-            font-family: inherit;
-            line-height: 1.5;
-            resize: vertical;
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .q-answer:focus {
-            border-color: var(--accent-green);
-            background: rgba(16, 185, 129, 0.07);
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.12);
-        }
-
-        .q-answer::placeholder {
-            color: rgba(255,255,255,0.2);
-            font-style: italic;
-            font-size: 12px;
-        }
-
-        .q-answer.has-content {
-            border-color: rgba(16, 185, 129, 0.4);
-            background: rgba(16, 185, 129, 0.06);
         }
 
         /* Right Panel (Viewer) */
@@ -1606,107 +1457,68 @@
                 <!-- Section 4: Questions -->
                 <div id="sec-questions" class="dossier-section">
                     <div class="questions-list">
-
-                        <!-- Doctor Identity Panel -->
-                        <div class="doctor-identity-panel">
-                            <h4>🩺 <span data-lang="bg">Информация за специалиста (незадължително)</span><span data-lang="en">Clinician Information (optional)</span></h4>
-                            <div class="doctor-identity-fields">
-                                <input type="text" id="doctor-name" placeholder="Д-р Имe / Dr. Name" autocomplete="off">
-                                <input type="text" id="doctor-specialty" placeholder="Специалност / Болница" autocomplete="off">
-                            </div>
-                            <!-- Auto-save status indicator -->
-                            <div class="autosave-status" id="autosave-status">
-                                <div class="status-dot"></div>
-                                <span id="autosave-text" data-lang="bg">Отговорите се записват автоматично</span>
-                                <span id="autosave-text-en" data-lang="en">Answers auto-save as you type</span>
-                            </div>
-                        </div>
-
-                        <!-- Q1 -->
+                        
                         <div class="question-card">
                             <div class="q-num">1</div>
                             <div class="q-body">
                                 <p data-lang="bg">Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?</p>
                                 <p data-lang="en">Is there actual bone union and a formed callus bridge? What does the current status imply for my long-term arm function?</p>
-                                <label class="answer-label" for="ans-q1">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q1" data-field="q1" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q2 -->
                         <div class="question-card">
                             <div class="q-num">2</div>
                             <div class="q-body">
                                 <p data-lang="bg">Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?</p>
                                 <p data-lang="en">Does either the MRI or CT show any joint subluxation or osseous displacement?</p>
-                                <label class="answer-label" for="ans-q2">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q2" data-field="q2" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q3 -->
                         <div class="question-card">
                             <div class="q-num">3</div>
                             <div class="q-body">
                                 <p data-lang="bg">Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?</p>
                                 <p data-lang="en">Are there torn ligaments, and what is the pathological source of the elbow instability?</p>
-                                <label class="answer-label" for="ans-q3">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q3" data-field="q3" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q4 -->
                         <div class="question-card">
                             <div class="q-num">4</div>
                             <div class="q-body">
                                 <p data-lang="bg">Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?</p>
                                 <p data-lang="en">What is the mechanical or biological block preventing full elbow extension?</p>
-                                <label class="answer-label" for="ans-q4">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q4" data-field="q4" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q5 -->
                         <div class="question-card">
                             <div class="q-num">5</div>
                             <div class="q-body">
                                 <p data-lang="bg">На какво се дължи прихрупващият звук, който усещам при специфични движения?</p>
                                 <p data-lang="en">What causes the popping/clicking sound perceived during specific arm movements?</p>
-                                <label class="answer-label" for="ans-q5">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q5" data-field="q5" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q6 -->
                         <div class="question-card">
                             <div class="q-num">6</div>
                             <div class="q-body">
                                 <p data-lang="bg">Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?</p>
                                 <p data-lang="en">Why does a cracking sound occur when extending the elbow after prolonged flexion?</p>
-                                <label class="answer-label" for="ans-q6">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q6" data-field="q6" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q7 -->
                         <div class="question-card">
                             <div class="q-num">7</div>
                             <div class="q-body">
                                 <p data-lang="bg">Каква е причината за локализираните болки: от вътрешната страна на мишницата (над лакътя), над главичката на радиуса и по протежение на брахиорадиалиса?</p>
                                 <p data-lang="en">What causes the focal pain localized on the medial upper arm (above the joint) and superior to the radial head/brachioradialis?</p>
-                                <label class="answer-label" for="ans-q7">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q7" data-field="q7" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Q8 -->
                         <div class="question-card">
                             <div class="q-num">8</div>
                             <div class="q-body">
                                 <p data-lang="bg">Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?</p>
                                 <p data-lang="en">Can we detail the structural differences between the 2025 MRI and the 2026 CT scans and how they evolved?</p>
-                                <label class="answer-label" for="ans-q8">✏️ Отговор / Answer</label>
-                                <textarea class="q-answer" id="ans-q8" data-field="q8" placeholder="Напишете вашия коментар тук..."></textarea>
                             </div>
                         </div>
 
@@ -2262,152 +2074,5 @@
             loadPDF('CT', true);
         });
     </script>
-
-    <!-- ====================================================
-         AUTO-SAVE SYSTEM FOR DOCTOR ANSWERS
-         Saves every field to Google Sheets via Apps Script
-         after 1.5 seconds of inactivity. No submit needed.
-    ==================================================== -->
-    <script>
-    (function() {
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdaiWKhiORA9zpH-ATt0ypSRmZbgcpk0zEV5zjjtNpW86C92EwXiuWkdColflLBW8/exec';
-        const STORAGE_KEY = 'dossier_session_id';
-        const DEBOUNCE_MS = 1500;
-
-        // ── Session ID: auto-generated, persisted in localStorage ──
-        function getSessionId() {
-            let id = localStorage.getItem(STORAGE_KEY);
-            if (!id) {
-                // Generate a UUID-style unique identifier
-                id = 'sess-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
-                localStorage.setItem(STORAGE_KEY, id);
-            }
-            return id;
-        }
-
-        const sessionId = getSessionId();
-        let saveTimers = {};
-
-        // ── Status indicator helper ──
-        const statusEl = document.getElementById('autosave-status');
-        const statusDot = statusEl ? statusEl.querySelector('.status-dot') : null;
-        let statusTimer = null;
-
-        function setStatus(state, textBg, textEn) {
-            if (!statusEl) return;
-            statusEl.className = 'autosave-status ' + state;
-            const bgSpan = document.getElementById('autosave-text');
-            const enSpan = document.getElementById('autosave-text-en');
-            if (bgSpan) bgSpan.textContent = textBg;
-            if (enSpan) enSpan.textContent = textEn;
-            if (statusDot) {
-                statusDot.classList.toggle('pulse', state === 'saving');
-            }
-        }
-
-        function setStatusIdle() {
-            setStatus('', 'Отговорите се записват автоматично', 'Answers auto-save as you type');
-        }
-
-        // ── Core save function ──
-        function saveField(fieldName, value) {
-            setStatus('saving', '⏳ Записване...', '⏳ Saving...');
-
-            const payload = {
-                session_id: sessionId,
-                field: fieldName,
-                value: value
-            };
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Required for Apps Script
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                // no-cors means we can't read the response, but if we got here it sent
-                setStatus('saved', '✅ Записано', '✅ Saved');
-                clearTimeout(statusTimer);
-                statusTimer = setTimeout(setStatusIdle, 3000);
-            })
-            .catch((err) => {
-                setStatus('error', '⚠️ Грешка при записване', '⚠️ Save error');
-                console.warn('AutoSave error:', err);
-                clearTimeout(statusTimer);
-                statusTimer = setTimeout(setStatusIdle, 4000);
-            });
-        }
-
-        // ── Debounced handler for any input change ──
-        function onFieldChange(fieldName, value) {
-            clearTimeout(saveTimers[fieldName]);
-            saveTimers[fieldName] = setTimeout(() => {
-                saveField(fieldName, value);
-            }, DEBOUNCE_MS);
-        }
-
-        // ── Attach listeners to all answer textareas ──
-        document.querySelectorAll('.q-answer').forEach(textarea => {
-            const field = textarea.dataset.field;
-            if (!field) return;
-
-            textarea.addEventListener('input', () => {
-                // Toggle "has-content" class for visual feedback
-                textarea.classList.toggle('has-content', textarea.value.trim().length > 0);
-                onFieldChange(field, textarea.value);
-            });
-        });
-
-        // ── Doctor name & specialty fields ──
-        const doctorNameEl = document.getElementById('doctor-name');
-        const doctorSpecialtyEl = document.getElementById('doctor-specialty');
-
-        if (doctorNameEl) {
-            doctorNameEl.addEventListener('input', () => {
-                onFieldChange('name', doctorNameEl.value);
-            });
-        }
-
-        if (doctorSpecialtyEl) {
-            doctorSpecialtyEl.addEventListener('input', () => {
-                onFieldChange('specialty', doctorSpecialtyEl.value);
-            });
-        }
-
-        // ── Restore previously typed answers from localStorage (offline cache) ──
-        // This means even if the network fails, the user's text stays visible
-        const fields = ['name', 'specialty', 'q1','q2','q3','q4','q5','q6','q7','q8'];
-        fields.forEach(f => {
-            const cached = localStorage.getItem('ans_' + sessionId + '_' + f);
-            if (cached) {
-                const el = f === 'name' ? doctorNameEl
-                         : f === 'specialty' ? doctorSpecialtyEl
-                         : document.getElementById('ans-' + f);
-                if (el) {
-                    el.value = cached;
-                    if (el.classList.contains('q-answer')) {
-                        el.classList.toggle('has-content', cached.trim().length > 0);
-                    }
-                }
-            }
-        });
-
-        // ── Also save to localStorage as instant offline backup ──
-        document.querySelectorAll('.q-answer').forEach(textarea => {
-            textarea.addEventListener('input', () => {
-                localStorage.setItem('ans_' + sessionId + '_' + textarea.dataset.field, textarea.value);
-            });
-        });
-        if (doctorNameEl) doctorNameEl.addEventListener('input', () => {
-            localStorage.setItem('ans_' + sessionId + '_name', doctorNameEl.value);
-        });
-        if (doctorSpecialtyEl) doctorSpecialtyEl.addEventListener('input', () => {
-            localStorage.setItem('ans_' + sessionId + '_specialty', doctorSpecialtyEl.value);
-        });
-
-    })();
-    </script>
-
 </body>
 </html>

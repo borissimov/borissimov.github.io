@@ -158,7 +158,7 @@
             border: none;
             color: var(--text-secondary);
             padding: 10px;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             border-radius: 6px;
@@ -193,7 +193,7 @@
 
         .dossier-card h3 {
             margin: 0 0 15px 0;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--accent-blue);
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
@@ -210,108 +210,6 @@
         
         .summary-text strong {
             color: var(--text-primary);
-        }
-
-        /* Study Cards */
-        .study-card {
-            background-color: var(--bg-tertiary);
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-        }
-
-        .study-card:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-2px);
-        }
-
-        .study-card.ct-card {
-            border-left: 4px solid var(--accent-orange);
-        }
-
-        .study-card.mri-card {
-            border-left: 4px solid var(--accent-green);
-        }
-
-        .study-card-icon {
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .study-card-content {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .study-card-content h4 {
-            margin: 0 0 6px 0;
-            font-size: 14.5px;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .study-card-content p {
-            margin: 0 0 10px 0;
-            font-size: 12.5px;
-            color: var(--text-secondary);
-            line-height: 1.45;
-        }
-
-        .study-card-actions {
-            display: flex;
-            gap: 12px;
-            font-size: 11.5px;
-            font-weight: 700;
-            color: var(--accent-blue);
-        }
-
-        .study-card-actions span.action-link:hover {
-            text-decoration: underline;
-        }
-
-        /* X-Ray Grid */
-        .xray-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .xray-grid-item {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .xray-grid-item:hover {
-            border-color: var(--accent-blue);
-            background-color: var(--bg-tertiary);
-            transform: scale(1.02);
-        }
-
-        .xray-grid-date {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .xray-grid-label {
-            font-size: 10.5px;
-            color: var(--text-secondary);
         }
 
         /* Comparison Table */
@@ -351,7 +249,7 @@
             background-color: rgba(251, 191, 36, 0.06);
         }
 
-        /* Timeline styles (Reversed newest first) */
+        /* Timeline styles */
         .timeline-container {
             position: relative;
             padding-left: 28px;
@@ -693,41 +591,39 @@
             will-change: transform;
         }
 
-        /* Floating Controls Overlay inside X-ray display area */
-        .image-adjust-overlay {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(26, 26, 30, 0.85);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px 20px;
+        .image-adjust-controls {
+            width: 80px;
+            background-color: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 20px 10px;
             display: flex;
-            gap: 20px;
-            z-index: 15;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(4px);
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+            flex-shrink: 0;
+            box-sizing: border-box;
         }
 
         .control-group {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 8px;
         }
 
         .control-group label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
 
         .control-group input[type="range"] {
-            width: 90px;
-            height: 6px;
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 15px;
+            height: 120px;
             cursor: pointer;
             background: var(--bg-tertiary);
             border-radius: 4px;
@@ -837,7 +733,7 @@
             flex-shrink: 0;
         }
 
-        /* Mobile Nav Bar - Root Level (Z-indexed) */
+        /* Mobile Nav Bar - Hidden on Desktop */
         .mobile-nav-bar {
             display: none;
         }
@@ -851,7 +747,7 @@
             .dossier-panel {
                 width: 100%;
                 max-width: none;
-                height: calc(100vh - 50px); /* Leave room for mobile nav bar */
+                height: calc(100vh - 50px); /* Leave room for mobile tab bar */
                 display: flex;
                 flex-direction: column;
             }
@@ -874,11 +770,11 @@
                 display: flex;
                 background-color: var(--bg-secondary);
                 border-top: 1px solid var(--border-color);
-                height: 50px;
-                flex-shrink: 0;
-                box-sizing: border-box;
+                padding: 4px 0;
                 justify-content: space-around;
                 align-items: center;
+                height: 50px;
+                flex-shrink: 0;
                 z-index: 100;
             }
             
@@ -906,7 +802,7 @@
                 font-size: 18px;
             }
             
-            /* X-ray viewer layout on tablet/mobile */
+            /* X-ray viewer on tablet/mobile */
             #xray-viewer {
                 flex-direction: column;
             }
@@ -921,7 +817,6 @@
                 overflow-x: auto;
                 overflow-y: hidden;
                 box-sizing: border-box;
-                gap: 10px;
             }
             
             .thumbnail-container {
@@ -930,22 +825,35 @@
                 flex-shrink: 0;
             }
             
-            /* Compact Adjust overlay on mobile viewport */
-            .image-adjust-overlay {
-                position: absolute;
-                bottom: 10px;
-                width: 85%;
-                padding: 6px 12px;
-                gap: 12px;
+            .image-adjust-controls {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                padding: 10px;
                 justify-content: space-around;
+                gap: 15px;
             }
-
+            
+            .control-group {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
             .control-group input[type="range"] {
-                width: 75px;
+                writing-mode: horizontal-tb;
+                direction: ltr;
+                width: 100px;
+                height: 15px;
+            }
+            
+            .control-group label {
+                font-size: 10px;
             }
             
             .zoom-controls {
-                display: none; /* Multi-touch gestures */
+                display: none; /* Use multi-touch pinch to zoom instead */
             }
             
             .nav-button {
@@ -1005,10 +913,6 @@
                         <span data-lang="bg">Резюме</span>
                         <span data-lang="en">Summary</span>
                     </button>
-                    <button class="nav-tab-btn" data-section="sec-studies">
-                        <span data-lang="bg">Изследвания</span>
-                        <span data-lang="en">Studies</span>
-                    </button>
                     <button class="nav-tab-btn" data-section="sec-timeline">
                         <span data-lang="bg">Хронология</span>
                         <span data-lang="en">Timeline</span>
@@ -1030,7 +934,7 @@
                                 <strong>14 Май 2025 г.</strong> - Първоначална травма след падане от велосипед. Поставена гипсова лонгета с диагноза "счупена глава на радиуса".<br><br>
                                 <strong>Юни 2025 г.</strong> - Сваляне на лонгетата (Ден 22) и започване на рехабилитация (движения за пронация/супинация, Артромот машина, плуване).<br><br>
                                 <strong>Юли 2025 г.</strong> - ЯМР открива 2.5 мм незарастнал разрез. Одобрено е леко безболезнено натоварване.<br><br>
-                                <strong>Септ 2025 - Март 2026 г.</strong> - Постепенно натоварване до 25 кг. Стабилност под товар, но с дефицит в пълното разгъване и лека периодична болка.<br><br>
+                                <strong>Септ 2025 - Март 2026 г.</strong> - Постепенно натоварване до 25 кг. Стабилност под товар, но с дефицит в крайното разгъване и лека периодична болка.<br><br>
                                 <strong>13 Март 2026 г.</strong> - Втора травма (падане). Силен удар и болка, но рентгенът не отчита нова остра фрактура.<br><br>
                                 <strong>23 Април 2026 г.</strong> - КТ скенер потвърждава хронична псевдоартроза и свободни вътреставни частици.
                             </p>
@@ -1114,163 +1018,70 @@
 
                 </div>
 
-                <!-- Section 2: Dedicated Studies Tab -->
-                <div id="sec-studies" class="dossier-section">
-                    
-                    <!-- CT Card -->
-                    <div class="study-card ct-card" onclick="loadPDF('CT')">
-                        <div class="study-card-icon">☢️</div>
-                        <div class="study-card-content">
-                            <h4 data-lang="bg">КТ Скенер (23.04.2026)</h4>
-                            <h4 data-lang="en">CT Scan Report (23.04.2026)</h4>
-                            <p data-lang="bg">Потвърждава хронична псевдоартроза на радиусната глава с 2 мм процеп и два свободни вътреставни фрагмента.</p>
-                            <p data-lang="en">Confirms chronic pseudarthrosis of the radial head with a 2 mm gap and two free intra-articular fragments.</p>
-                            <div class="study-card-actions">
-                                <span class="action-link" data-lang="bg">📄 Преглед на Доклад</span>
-                                <span class="action-link" data-lang="en">📄 View Report PDF</span>
-                                <span class="action-link" data-lang="bg">🩻 Онлайн 3D Скенер</span>
-                                <span class="action-link" data-lang="en">🩻 Online DICOM Scan</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MRI Card -->
-                    <div class="study-card mri-card" onclick="loadPDF('MRI')">
-                        <div class="study-card-icon">🩻</div>
-                        <div class="study-card-content">
-                            <h4 data-lang="bg">ЯМР Изследване (24.07.2025)</h4>
-                            <h4 data-lang="en">MRI Examination (24.07.2025)</h4>
-                            <p data-lang="bg">Най-ранно разкриване на незарастване (2.5 мм дехисценция) и деструкция на външните връзки (лигаменти).</p>
-                            <p data-lang="en">Earliest indication of non-union (2.5 mm cleft) and damage to lateral collateral complex.</p>
-                            <div class="study-card-actions">
-                                <span class="action-link" data-lang="bg">📄 Преглед на Доклад</span>
-                                <span class="action-link" data-lang="en">📄 View Report PDF</span>
-                                <span class="action-link" data-lang="bg">🩻 Онлайн ЯМР</span>
-                                <span class="action-link" data-lang="en">🩻 Online DICOM Scan</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- X-Ray Timeline Card Grid -->
-                    <div class="dossier-card">
-                        <h3 data-lang="bg">Рентгенови снимки (Архив 2025)</h3>
-                        <h3 data-lang="en">X-Ray Image Archives (2025)</h3>
-                        <p style="font-size:12.5px; color:var(--text-secondary); margin:-5px 0 15px 0;" data-lang="bg">
-                            Контролни графии за проследяване на фрактурата и рехабилитацията.
-                        </p>
-                        <p style="font-size:12.5px; color:var(--text-secondary); margin:-5px 0 15px 0;" data-lang="en">
-                            Check-up X-rays tracing bone healing and rehabilitation.
-                        </p>
-                        
-                        <div class="xray-grid">
-                            <div class="xray-grid-item" onclick="loadXrayDate('250711')">
-                                <div class="xray-grid-date">11.07.2025</div>
-                                <div class="xray-grid-label" data-lang="bg">Ден 58 Контрола</div>
-                                <div class="xray-grid-label" data-lang="en">Day 58 Check-up</div>
-                            </div>
-                            <div class="xray-grid-item" onclick="loadXrayDate('250610')">
-                                <div class="xray-grid-date">10.06.2025</div>
-                                <div class="xray-grid-label" data-lang="bg">Ден 27 Контрола</div>
-                                <div class="xray-grid-label" data-lang="en">Day 27 Check-up</div>
-                            </div>
-                            <div class="xray-grid-item" onclick="loadXrayDate('250523')">
-                                <div class="xray-grid-date">23.05.2025</div>
-                                <div class="xray-grid-label" data-lang="bg">Ден 9 Контрола</div>
-                                <div class="xray-grid-label" data-lang="en">Day 9 Check-up</div>
-                            </div>
-                            <div class="xray-grid-item" onclick="loadXrayDate('250515')">
-                                <div class="xray-grid-date">15.05.2025</div>
-                                <div class="xray-grid-label" data-lang="bg">Ден 1 ВМА</div>
-                                <div class="xray-grid-label" data-lang="en">Day 1 VMA Check</div>
-                            </div>
-                            <div class="xray-grid-item" onclick="loadXrayDate('250514')">
-                                <div class="xray-grid-date">14.05.2025</div>
-                                <div class="xray-grid-label" data-lang="bg">Ден 0 (Инцидент)</div>
-                                <div class="xray-grid-label" data-lang="en">Day 0 (Fracture)</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Section 3: Interactive Timeline (Reversed Order - Newest First) -->
+                <!-- Section 2: Interactive Timeline -->
                 <div id="sec-timeline" class="dossier-section">
                     <div class="timeline-container">
                         
-                        <!-- Event 1: 2026 CT Scan -->
-                        <div class="timeline-item clickable" onclick="loadPDF('CT')">
-                            <div class="timeline-badge ct">☢️</div>
-                            <div class="timeline-panel ct-item">
-                                <div class="timeline-date">23 Apr 2026</div>
-                                <h4>
-                                    <span data-lang="bg">КТ Скенер (УМБАЛ "Св. Анна")</span>
-                                    <span data-lang="en">CT Scan (St. Anna Hospital)</span>
-                                    <span class="view-indicator">CT Report</span>
-                                </h4>
-                                <p data-lang="bg"><strong>Потвърдено незарастване:</strong> Хронична псевдоартроза на радиусната глава с 2 мм процеп, изгладени ръбове, узури и два свободни фрагмента (2 мм). <strong>Кликнете за преглед на PDF.</strong></p>
-                                <p data-lang="en"><strong>Confirmed Non-Union:</strong> Chronic pseudarthrosis of the radial head with 2 mm gap, smoothed bone margins, usures, and two free 2 mm fragments. <strong>Click to load PDF.</strong></p>
-                            </div>
-                        </div>
-
-                        <!-- Event 2: Second fall -->
-                        <div class="timeline-item">
-                            <div class="timeline-badge injury">⚠️</div>
-                            <div class="timeline-panel">
-                                <div class="timeline-date">13 Mar 2026</div>
-                                <h4>
-                                    <span data-lang="bg">Втора травма (падане)</span>
-                                    <span data-lang="en">Second Trauma (Fall)</span>
-                                </h4>
-                                <p data-lang="bg">Падане с директен удар и силна болка в лакътя. Стандартната рентгенография изключва нова остра фрактура.</p>
-                                <p data-lang="en">Accidental fall with direct joint strike and acute pain. Standard X-rays rule out new acute fractures.</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 3: Training Period -->
-                        <div class="timeline-item">
-                            <div class="timeline-badge rehab">🏋️‍♂️</div>
-                            <div class="timeline-panel">
-                                <div class="timeline-date">Sep 2025 - Mar 2026</div>
-                                <h4>
-                                    <span data-lang="bg">Прогресивно силово натоварване</span>
-                                    <span data-lang="en">Progressive Weight Training</span>
-                                </h4>
-                                <p data-lang="bg">Следване на лекарските съвети. Достигнати тежести до 25 кг. Стабилност под товар, но с дефицит в разгъването.</p>
-                                <p data-lang="en">Compliance with physician advice. Dumbbell presses up to 25 kg. Joint stable under load, with mild terminal extension blocks.</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 4: 2025 MRI -->
-                        <div class="timeline-item clickable" onclick="loadPDF('MRI')">
-                            <div class="timeline-badge mri">🩻</div>
-                            <div class="timeline-panel mri-item">
-                                <div class="timeline-date">24 Jul 2025</div>
-                                <h4>
-                                    <span data-lang="bg">ЯМР Изследване (СМДЛ "Спектър")</span>
-                                    <span data-lang="en">MRI Study (Spektr Laboratory)</span>
-                                    <span class="view-indicator">MRI Report</span>
-                                </h4>
-                                <p data-lang="bg"><strong>Най-ранен сигнал за незарастване:</strong> Установени фрактурни линии с 2.5 мм дехисценция и частична увреда на латералния колатерален комплекс.</p>
-                                <p data-lang="en"><strong>Earliest evidence of non-union:</strong> Detects fracture lines with 2.5 mm cleft and partial tear of lateral collateral complex.</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 5: Day 58 X-ray -->
-                        <div class="timeline-item clickable" onclick="loadXrayDate('250711')">
+                        <!-- Event 1 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250514')">
                             <div class="timeline-badge x-ray">🩻</div>
                             <div class="timeline-panel">
-                                <div class="timeline-date">11 Jul 2025</div>
+                                <div class="timeline-date">14 May 2025</div>
                                 <h4>
-                                    <span data-lang="bg">Контролен рентген - Ден 58</span>
-                                    <span data-lang="en">Pre-MRI X-ray - Day 58</span>
+                                    <span data-lang="bg">Първоначална травма - Рентгенография</span>
+                                    <span data-lang="en">Initial Trauma - Emergency X-ray</span>
                                     <span class="view-indicator">X-Ray</span>
                                 </h4>
-                                <p data-lang="bg">Преглед при д-р Фирузи. Установена клинична нестабилност в лакътната става и назначаване на ЯМР.</p>
-                                <p data-lang="en">Consultation with Dr. Firuzi. Clinical elbow instability detected, leading to MRI scheduling.</p>
+                                <p data-lang="bg">Падане от велосипед. Диагностицирана фрактура на радиусната глава. Поставена лонгета. <strong>Кликнете за преглед на снимките.</strong></p>
+                                <p data-lang="en">Bicycle fall. Fractured radial head diagnosed. Plaster splint applied. <strong>Click to view X-rays.</strong></p>
                             </div>
                         </div>
 
-                        <!-- Event 6: Day 27 X-ray -->
+                        <!-- Event 2 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250515')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">15 May 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролен рентген - ВМА</span>
+                                    <span data-lang="en">Splint Check-up - VMA Hospital</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Първи ден след инцидента. Контрол на наместването в лонгетата.</p>
+                                <p data-lang="en">Day 1 post-fracture alignment verification in plaster.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 3 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250523')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">23 May 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролни снимки - 9-ти ден</span>
+                                    <span data-lang="en">Follow-up X-ray - Day 9</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Проследяване на фрактурата. Лонгетата все още е поставена.</p>
+                                <p data-lang="en">Monitoring fracture status while splinted.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 4 -->
+                        <div class="timeline-item">
+                            <div class="timeline-badge rehab">💪</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">05 Jun 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Сваляне на лонгета & Рехабилитация</span>
+                                    <span data-lang="en">Splint Removal & Physical Therapy</span>
+                                </h4>
+                                <p data-lang="bg">Ден 22. Започват активни упражнения за пронация, супинация, плуване и леки натоварвания.</p>
+                                <p data-lang="en">Day 22. Starting active rehab movements, stretching, and swimming recommendations.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 5 -->
                         <div class="timeline-item clickable" onclick="loadXrayDate('250610')">
                             <div class="timeline-badge x-ray">🩻</div>
                             <div class="timeline-panel">
@@ -1280,74 +1091,88 @@
                                     <span data-lang="en">Check-up X-ray - Day 27</span>
                                     <span class="view-indicator">X-Ray</span>
                                 </h4>
-                                <p data-lang="bg">Оценка на състоянието и проследяване на калусообразоването 5 дни след старта на раздвижването.</p>
-                                <p data-lang="en">Evaluating fracture status and callus formation 5 days post-splint removal.</p>
+                                <p data-lang="bg">Оценка на костното калусообразуване 5 дни след раздвижването.</p>
+                                <p data-lang="en">Assessing bone union 5 days post-splint removal.</p>
                             </div>
                         </div>
 
-                        <!-- Event 7: Splint Removal -->
+                        <!-- Event 6 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250711')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">11 Jul 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролен рентген - Ден 58</span>
+                                    <span data-lang="en">Pre-MRI X-ray - Day 58</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Установена лакътна нестабилност от д-р Фирузи. Назначен ЯМР за оценка на меки тъкани и кост.</p>
+                                <p data-lang="en">Joint instability noted by Dr. Firuzi. Standard X-rays prompt MRI referral.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 7 -->
+                        <div class="timeline-item clickable" onclick="loadPDF('MRI')">
+                            <div class="timeline-badge mri">🩻</div>
+                            <div class="timeline-panel mri-item">
+                                <div class="timeline-date">24 Jul 2025</div>
+                                <h4>
+                                    <span data-lang="bg">ЯМР Изследване (Спектър)</span>
+                                    <span data-lang="en">MRI Examination (Spektr)</span>
+                                    <span class="view-indicator">MRI Report</span>
+                                </h4>
+                                <p data-lang="bg"><strong>Най-ранен сигнал за незарастване:</strong> Установени фрактурни линии с 2.5 мм отваряне (дехисценция) и парциална лезия на латералния колатерален лигамент. <strong>Кликнете за преглед на PDF.</strong></p>
+                                <p data-lang="en"><strong>Earliest evidence of non-union:</strong> Detects 2.5 mm dehiscence gap and partial tear of lateral collateral ligament. <strong>Click to load PDF.</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Event 8 -->
                         <div class="timeline-item">
-                            <div class="timeline-badge rehab">💪</div>
+                            <div class="timeline-badge rehab">🏋️‍♂️</div>
                             <div class="timeline-panel">
-                                <div class="timeline-date">05 Jun 2025</div>
+                                <div class="timeline-date">Sep 2025 - Mar 2026</div>
                                 <h4>
-                                    <span data-lang="bg">Сваляне на лонгета & Старт рехабилитация</span>
-                                    <span data-lang="en">Splint Removal & Physical Therapy</span>
+                                    <span data-lang="bg">Активни тренировки с тежести</span>
+                                    <span data-lang="en">Progressive Training & Gym Loading</span>
                                 </h4>
-                                <p data-lang="bg">Ден 22. Сваляне на гипса. Започване на активни упражнения за супинация, пронация, плуване.</p>
-                                <p data-lang="en">Day 22. Plaster removal. Initiation of physical therapy and range-of-motion movements.</p>
+                                <p data-lang="bg">Работа с дъмбели до 25 кг. Стабилност под натоварване, но с дефицит в пълното разгъване (лек стоп в ставата).</p>
+                                <p data-lang="en">Weight progression up to 25 kg chest press. Joint felt stable under load but lacked terminal extension.</p>
                             </div>
                         </div>
 
-                        <!-- Event 8: Day 9 X-ray -->
-                        <div class="timeline-item clickable" onclick="loadXrayDate('250523')">
-                            <div class="timeline-badge x-ray">🩻</div>
-                            <div class="timeline-panel">
-                                <div class="timeline-date">23 May 2025</div>
-                                <h4>
-                                    <span data-lang="bg">Контролен рентген - Ден 9</span>
-                                    <span data-lang="en">Check-up X-ray - Day 9</span>
-                                    <span class="view-indicator">X-Ray</span>
-                                </h4>
-                                <p data-lang="bg">Наблюдение на фрактурата с шиниран лакът.</p>
-                                <p data-lang="en">Checking fracture alignment during active immobilization.</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 9: Day 1 X-ray -->
-                        <div class="timeline-item clickable" onclick="loadXrayDate('250515')">
-                            <div class="timeline-badge x-ray">🩻</div>
-                            <div class="timeline-panel">
-                                <div class="timeline-date">15 May 2025</div>
-                                <h4>
-                                    <span data-lang="bg">Контролен рентген - Ден 1 (ВМА)</span>
-                                    <span data-lang="en">Splint Check-up - Day 1 (VMA)</span>
-                                    <span class="view-indicator">X-Ray</span>
-                                </h4>
-                                <p data-lang="bg">Втори ден след счупването. Нагласяне и проверка на гипсовата лонгета.</p>
-                                <p data-lang="en">First day post-injury. Alignment check of splinted limb.</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 10: Day 0 Fracture -->
-                        <div class="timeline-item clickable" onclick="loadXrayDate('250514')">
+                        <!-- Event 9 -->
+                        <div class="timeline-item">
                             <div class="timeline-badge injury">⚠️</div>
                             <div class="timeline-panel">
-                                <div class="timeline-date">14 May 2025</div>
+                                <div class="timeline-date">13 Mar 2026</div>
                                 <h4>
-                                    <span data-lang="bg">Инцидент - Рентген (Ден 0)</span>
-                                    <span data-lang="en">Incident - Emergency X-ray (Day 0)</span>
-                                    <span class="view-indicator">X-Ray</span>
+                                    <span data-lang="bg">Втора травма (падане)</span>
+                                    <span data-lang="en">Second Trauma (Accidental Fall)</span>
                                 </h4>
-                                <p data-lang="bg">Падане от велосипед. Диагностицирана фрактура на главичката на радиуса.</p>
-                                <p data-lang="en">Trauma from a bike crash. Standard diagnostics show radial head fracture.</p>
+                                <p data-lang="bg">Падане и силен удар в лакътя. Остра болка. Стандартният рентген изключва нова остра фрактура.</p>
+                                <p data-lang="en">Direct impact. Intense pain; regular X-rays show no new fractures.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 10 -->
+                        <div class="timeline-item clickable" onclick="loadPDF('CT')">
+                            <div class="timeline-badge ct">☢️</div>
+                            <div class="timeline-panel ct-item">
+                                <div class="timeline-date">23 Apr 2026</div>
+                                <h4>
+                                    <span data-lang="bg">КТ Скенер (Св. Анна)</span>
+                                    <span data-lang="en">CT Scan (St. Anna)</span>
+                                    <span class="view-indicator">CT Report</span>
+                                </h4>
+                                <p data-lang="bg"><strong>Потвърждение на незарастването:</strong> Установява хронична псевдоартроза на радиусната глава с 2 мм процеп и гладки краища. Открити два свободни фрагмента (2 мм) и ставни кисти. <strong>Кликнете за преглед на PDF.</strong></p>
+                                <p data-lang="en"><strong>Non-Union Confirmation:</strong> Reveals chronic pseudoarthrosis of the radial head with a 2 mm gap and rounded bone margins. Two free intra-articular fragments (2 mm) found. <strong>Click to load PDF.</strong></p>
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Section 4: Questions -->
+                <!-- Section 3: Questions -->
                 <div id="sec-questions" class="dossier-section">
                     <div class="questions-list">
                         
@@ -1419,6 +1244,20 @@
                 </div>
 
             </div>
+            
+            <!-- Mobile Navigation Tab Bar -->
+            <div class="mobile-nav-bar">
+                <button id="mob-btn-dossier" class="mob-nav-btn active" onclick="switchMobileTab('dossier')">
+                    <span>📋</span>
+                    <span data-lang="bg">Досие</span>
+                    <span data-lang="en">Dossier</span>
+                </button>
+                <button id="mob-btn-viewer" class="mob-nav-btn" onclick="switchMobileTab('viewer')">
+                    <span>🩻</span>
+                    <span data-lang="bg">Изследвания</span>
+                    <span data-lang="en">Viewer</span>
+                </button>
+            </div>
 
         </div>
         
@@ -1438,7 +1277,7 @@
                 </div>
             </div>
 
-            <!-- Viewer Contents -->
+            <!-- Viewer Containers -->
             <div class="viewer-contents">
                 
                 <!-- 1. X-Ray Image Viewer -->
@@ -1453,17 +1292,15 @@
                             <button class="zoom-button" id="zoomInBtn">+</button>
                             <button class="zoom-button" id="zoomOutBtn">-</button>
                         </div>
-                        
-                        <!-- Floating Image Adjust Overlay inside the display area -->
-                        <div class="image-adjust-overlay" id="imageAdjustOverlay">
-                            <div class="control-group">
-                                <label for="brightness">Brt</label>
-                                <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
-                            </div>
-                            <div class="control-group">
-                                <label for="contrast">Con</label>
-                                <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
-                            </div>
+                    </div>
+                    <div class="image-adjust-controls">
+                        <div class="control-group">
+                            <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
+                            <label for="brightness">Brt</label>
+                        </div>
+                        <div class="control-group">
+                            <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
+                            <label for="contrast">Con</label>
                         </div>
                     </div>
                 </div>
@@ -1474,7 +1311,7 @@
                 </div>
 
                 <!-- 3. Welcome Screen (Default) -->
-                <div id="welcome-viewer" class="welcome-container">
+                <div id="welcome-viewer" class="welcome-container active">
                     <div class="welcome-box">
                         <h3 data-lang="bg">🩺 Медицински панел за разглеждане</h3>
                         <h3 data-lang="en">🩺 Clinical Imaging & Report Panel</h3>
@@ -1491,20 +1328,6 @@
                 <span><strong>Days since accident:</strong> <span id="meta-days-since">0</span></span>
             </div>
 
-        </div>
-
-        <!-- ROOT LEVEL MOBILE NAV BAR (Hidden on Desktop) -->
-        <div class="mobile-nav-bar" id="mobile-nav-bar">
-            <button id="mob-btn-dossier" class="mob-nav-btn active" onclick="switchMobileTab('dossier')">
-                <span>📋</span>
-                <span data-lang="bg">Досие</span>
-                <span data-lang="en">Dossier</span>
-            </button>
-            <button id="mob-btn-viewer" class="mob-nav-btn" onclick="switchMobileTab('viewer')">
-                <span>🩻</span>
-                <span data-lang="bg">Изследвания</span>
-                <span data-lang="en">Viewer</span>
-            </button>
         </div>
 
     </div>
@@ -1778,7 +1601,7 @@
                 switchMobileTab('viewer');
             };
 
-            window.loadPDF = (type, skipMobileSwitch = false) => {
+            window.loadPDF = (type) => {
                 activeViewMode = 'pdf';
                 activePDFType = type;
                 welcomeViewer.classList.remove('active');
@@ -1821,10 +1644,7 @@
                 viewerQuickActions.appendChild(studyBtn);
 
                 updateViewerTitle();
-                
-                if (!skipMobileSwitch) {
-                    switchMobileTab('viewer');
-                }
+                switchMobileTab('viewer');
             };
 
             // Zoom Actions
@@ -1958,9 +1778,6 @@
                     changeImage(1);
                 }
             });
-
-            // INITIALIZATION: Load the 2026 CT scan by default, but keep mobile on dossier panel
-            loadPDF('CT', true);
         });
     </script>
 </body>

@@ -403,7 +403,7 @@ const appData = {
                 num: 8,
                 category: 2,
                 text: {
-                    bg: "Каква е реалистичната прогноза за „Return-to-Play" (връщане в спорта) при оперативно лечение спрямо консервативно проследяване?",
+                    bg: "Каква е реалистичната прогноза за „Return-to-Play\" (връщане в спорта) при оперативно лечение спрямо консервативно проследяване?",
                     en: "What is the realistic Return-to-Play prognosis with surgical treatment versus conservative follow-up?"
                 }
             },
@@ -411,7 +411,7 @@ const appData = {
                 num: 9,
                 category: 2,
                 text: {
-                    bg: "Какви са специфичните критерии за „безопасност", по които да преценявам безопасното увеличаване на тренировъчната тежест след операцията?",
+                    bg: "Какви са специфичните критерии за „безопасност\", по които да преценявам безопасното увеличаване на тренировъчната тежест след операцията?",
                     en: "What are the specific safety criteria for judging safe training weight increases post-surgery?"
                 }
             },

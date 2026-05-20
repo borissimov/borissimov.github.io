@@ -3,12 +3,15 @@
 // Поставете този код в Apps Script и деплойнете като Web App
 // ============================================================
 
+// ── КОНФИГУРАЦИЯ ──────────────────────────────────────────
+const SPREADSHEET_ID = '1nhT7LpwEhlpdJFwpmxTbPYobmilgu2tWMz0RRtxKrbE';
+const SHEET_NAME = 'Отговори';
+// ──────────────────────────────────────────────────────────
+
 // Конфигурация на колоните в Google Sheets:
 // A: Session ID  |  B: Дата/Час  |  C: Лекар/Д-р  |  D: Специалност
 // E: Въпрос 1    |  F: Въпрос 2  |  G: Въпрос 3   |  H: Въпрос 4
 // I: Въпрос 5    |  J: Въпрос 6  |  K: Въпрос 7   |  L: Въпрос 8
-
-const SHEET_NAME = 'Отговори'; // Името на листа в Google Sheets
 
 const COLUMN_MAP = {
   'name':       3,  // Колона C
@@ -42,7 +45,7 @@ function doPost(e) {
       return errorResponse('Липсва session_id или field');
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = ss.getSheetByName(SHEET_NAME);
 
     // Създаване на листа ако не съществува

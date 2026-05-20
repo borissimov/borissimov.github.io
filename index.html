@@ -3,710 +3,1782 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>DICOM Image Viewer</title>
+    <title>Boris Simov - Medical Case Dossier</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #2c2c2c; color: #f1f1f1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .header { display: flex; justify-content: center; background-color: #333; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; flex-shrink: 0; }
-        .tab-button { padding: 14px 20px; cursor: pointer; border: none; background-color: #333; color: white; font-size: 16px; transition: background-color 0.3s; }
-        .tab-button:hover { background-color: #555; }
-        .tab-button.active { background-color: #007bff; }
-        .tab-button.primary-tab { background-color: #e67e22; font-weight: bold; }
-        .tab-button.primary-tab:hover { background-color: #d35400; }
-        .tab-button.archive-tab { background-color: #444; font-size: 14px; opacity: 0.8; }
-        #mobile-date-select { display: none; }
-        .viewer-container, .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
-        .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
-        
-        /* Dashboard Styles */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .dashboard-card { background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .dashboard-card:hover { background: #333; transform: scale(1.02); }
-        .dashboard-card h3 { margin: 0 0 10px 0; color: #00aaff; }
-        .dashboard-card p { margin: 0; color: #ccc; font-size: 14px; }
-        .dashboard-card.ct { border-left-color: #e67e22; }
-        .dashboard-card.mri { border-left-color: #2ecc71; }
+        :root {
+            --bg-primary: #121214;
+            --bg-secondary: #1a1a1e;
+            --bg-tertiary: #232329;
+            --border-color: #2e2e36;
+            --text-primary: #f3f4f6;
+            --text-secondary: #a1a1aa;
+            --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
+            --accent-orange: #f97316;
+            --accent-orange-hover: #ea580c;
+            --accent-green: #10b981;
+            --accent-green-hover: #059669;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
 
-        .pdf-container embed, .ct-report-container embed { flex-grow: 1; border: none; }
-        .pdf-container .pdf-controls, .ct-report-container .pdf-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .action-button { padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
-        .action-button:hover { background-color: #0056b3; }
-        .action-button.mri-btn { background-color: #2ecc71; }
-        .action-button.mri-btn:hover { background-color: #27ae60; }
-        .action-button.ct-btn { background-color: #e67e22; }
-        .action-button.ct-btn:hover { background-color: #d35400; }
-        
-        .history-container, .summary-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
-        .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; flex-shrink: 0; }
-        .thumbnail-container { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; position: relative; }
-        .thumbnail-container.active { border-color: #007bff; }
-        .thumbnail-container img { width: 100%; display: block; border-radius: 2px; }
-        .image-display-area { flex-grow: 1; position: relative; cursor: grab; background-color: #000; overflow: hidden; }
-        .viewer-header { position: absolute; top: 15px; left: 20px; color: #f1f1f1; font-size: 18px; z-index: 10; background-color: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;}
-        .main-image { position: absolute; transform-origin: 0 0; will-change: transform; }
-        .nav-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(85, 85, 85, 0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px 15px; z-index: 10; user-select: none; border-radius: 5px; }
-        .prev { left: 10px; }
-        .next { right: 10px; }
-        .zoom-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
-        .zoom-button { background-color: rgba(85, 85, 85, 0.8); color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
-        .image-adjust-controls { display: flex; flex-direction: column; gap: 20px; padding: 20px; background-color: #1a1a1a; border-right: 1px solid #444; justify-content: center; } .control-group { display: flex; flex-direction: column; align-items: center; } .control-group label { font-size: 12px; margin-top: 5px; } /* Hidden by default on desktop */
-        .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); flex-shrink: 0; }
-        .metadata-sidebar p { margin: 15px 0; word-wrap: break-word; }
-        .metadata-sidebar strong { color: #00aaff; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
 
-        @media (max-width: 768px) {
-            .header { padding: 5px; }
-            .tab-button { display: none; }
-            #mobile-date-select {
-                display: block;
+        /* Language Toggle Classes */
+        body.lang-en [data-lang="bg"] { display: none !important; }
+        body.lang-bg [data-lang="en"] { display: none !important; }
+
+        /* Main layout structure */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Left Panel (Dossier) */
+        .dossier-panel {
+            width: 42%;
+            min-width: 440px;
+            max-width: 580px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+            z-index: 5;
+        }
+
+        .patient-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(26, 26, 30, 0.95);
+        }
+
+        .patient-name {
+            margin: 0 0 4px 0;
+            font-size: 21px;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .patient-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Controls */
+        .lang-switch {
+            display: flex;
+            background-color: var(--bg-tertiary);
+            border-radius: 20px;
+            padding: 2px;
+            border: 1px solid var(--border-color);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background-color: var(--accent-blue);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        /* Dossier content scrollable area */
+        .dossier-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Clinical Alert Box */
+        .clinical-alert {
+            background-color: rgba(249, 115, 22, 0.08);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .clinical-alert h4 {
+            margin: 0 0 8px 0;
+            color: var(--accent-orange);
+            font-size: 14.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clinical-alert p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #e5e7eb;
+        }
+
+        /* Nav tabs */
+        .dossier-nav {
+            display: flex;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab-btn {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab-btn.active {
+            background-color: var(--bg-secondary);
+            color: var(--accent-blue);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        /* Cards and Sections */
+        .dossier-section {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dossier-section.active {
+            display: flex;
+        }
+
+        .dossier-card {
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .dossier-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 15px;
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .summary-text {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+        
+        .summary-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .comparison-table th {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .bold-td {
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .danger-text {
+            color: #f87171;
+            background-color: rgba(239, 68, 68, 0.06);
+        }
+
+        .warning-text {
+            color: #fbbf24;
+            background-color: rgba(251, 191, 36, 0.06);
+        }
+
+        /* Timeline styles */
+        .timeline-container {
+            position: relative;
+            padding-left: 28px;
+            margin-left: 12px;
+            border-left: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item.clickable {
+            cursor: pointer;
+        }
+
+        .timeline-item.clickable:hover .timeline-panel {
+            background-color: var(--bg-tertiary);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .timeline-badge {
+            position: absolute;
+            left: -40px;
+            top: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            z-index: 2;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-item.clickable:hover .timeline-badge {
+            transform: scale(1.15);
+        }
+
+        .timeline-badge.x-ray {
+            border-color: var(--accent-blue);
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        .timeline-badge.mri {
+            border-color: var(--accent-green);
+            background-color: rgba(16, 185, 129, 0.15);
+        }
+
+        .timeline-badge.ct {
+            border-color: var(--accent-orange);
+            background-color: rgba(249, 115, 22, 0.15);
+        }
+
+        .timeline-badge.rehab {
+            border-color: #a855f7;
+            background-color: rgba(168, 85, 247, 0.15);
+        }
+
+        .timeline-badge.injury {
+            border-color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .timeline-panel {
+            background-color: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-date {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-panel h4 {
+            margin: 0 0 6px 0;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .timeline-panel h4 span.view-indicator {
+            font-size: 11px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .timeline-panel.mri-item h4 span.view-indicator {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .timeline-panel.ct-item h4 span.view-indicator {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--accent-orange);
+            border-color: rgba(249, 115, 22, 0.2);
+        }
+
+        .timeline-panel p {
+            margin: 0;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        /* Questions */
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-card {
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            gap: 15px;
+            border-left: 4px solid var(--accent-blue);
+            box-shadow: var(--shadow);
+            border-top: 1px solid rgba(255,255,255,0.01);
+            border-right: 1px solid rgba(255,255,255,0.01);
+            border-bottom: 1px solid rgba(255,255,255,0.01);
+        }
+
+        .q-num {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            width: 20px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .q-body p {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: #e5e7eb;
+        }
+
+        .q-body p[data-lang="en"] {
+            margin-top: 6px;
+            color: var(--text-secondary);
+            border-top: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-top: 6px;
+        }
+
+        /* Right Panel (Viewer) */
+        .viewer-panel {
+            flex-grow: 1;
+            background-color: #0c0c0e;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+
+        .viewer-top-bar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            height: 30px;
+            flex-shrink: 0;
+        }
+
+        .viewer-title {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .viewer-quick-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .viewer-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            height: 28px;
+            box-sizing: border-box;
+        }
+
+        .viewer-btn.primary {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+        .viewer-btn.primary:hover {
+            background-color: var(--accent-blue-hover);
+        }
+
+        .viewer-btn.mri-btn {
+            background-color: var(--accent-green);
+            color: white;
+        }
+        .viewer-btn.mri-btn:hover {
+            background-color: var(--accent-green-hover);
+        }
+
+        .viewer-btn.ct-btn {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+        .viewer-btn.ct-btn:hover {
+            background-color: var(--accent-orange-hover);
+        }
+
+        .viewer-contents {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Welcome view placeholder */
+        .welcome-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b0b0d;
+        }
+
+        .welcome-box {
+            text-align: center;
+            max-width: 440px;
+            padding: 30px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 12px 0;
+            color: var(--accent-blue);
+            font-size: 17px;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* X-Ray Image Viewer Layout */
+        #xray-viewer {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        #xray-viewer.active {
+            display: flex;
+        }
+
+        .thumbnail-sidebar {
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .thumbnail-container {
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            background-color: #000;
+            box-shadow: var(--shadow);
+        }
+
+        .thumbnail-container:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .thumbnail-container.active {
+            border-color: var(--accent-blue);
+        }
+
+        .thumbnail-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .image-display-area {
+            flex-grow: 1;
+            position: relative;
+            background-color: #000;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .main-image {
+            position: absolute;
+            transform-origin: 0 0;
+            will-change: transform;
+        }
+
+        .image-adjust-controls {
+            width: 80px;
+            background-color: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .control-group input[type="range"] {
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 15px;
+            height: 120px;
+            cursor: pointer;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        /* Zoom controls */
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .zoom-button {
+            background-color: rgba(26, 26, 30, 0.85);
+            border: 1px solid var(--border-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-button:hover {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(26, 26, 30, 0.65);
+            border: 1px solid var(--border-color);
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-button:hover {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .prev { left: 20px; }
+        .next { right: 20px; }
+
+        .viewer-header {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.65);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid var(--border-color);
+            letter-spacing: 0.5px;
+        }
+
+        /* PDF Viewer Container */
+        .pdf-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: #111;
+        }
+
+        .pdf-container.active {
+            display: flex;
+        }
+
+        .pdf-container embed {
+            border: none;
+        }
+
+        /* Footer / Metadata overlay */
+        .metadata-footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 8px 20px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 30px;
+            z-index: 10;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Nav Bar - Hidden on Desktop */
+        .mobile-nav-bar {
+            display: none;
+        }
+
+        /* Mobile Responsive Styling */
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .dossier-panel {
                 width: 100%;
-                padding: 10px;
-                background-color: #333;
-                color: white;
-                border: 1px solid #555;
-                font-size: 16px;
-            }
-            .viewer-container { 
-                flex-direction: column; 
-                height: calc(100vh - 50px); /* Adjust for header */
-            }
-            .image-display-area {
-                order: 1;
-                flex: 1 1 auto;
-                min-height: 0;
-            }
-            .image-adjust-controls {
-                order: 2;
+                max-width: none;
+                height: calc(100vh - 50px); /* Leave room for mobile tab bar */
                 display: flex;
-                flex: 0 0 auto;
-                position: relative;
-                flex-direction: row;
+                flex-direction: column;
+            }
+            
+            .dossier-panel.hidden-mobile {
+                display: none !important;
+            }
+            
+            .viewer-panel {
+                width: 100%;
+                height: calc(100vh - 50px);
+                display: none;
+            }
+            
+            .viewer-panel.active-mobile {
+                display: flex;
+            }
+            
+            .mobile-nav-bar {
+                display: flex;
+                background-color: var(--bg-secondary);
+                border-top: 1px solid var(--border-color);
+                padding: 4px 0;
                 justify-content: space-around;
-                background-color: #1a1a1a;
-                padding: 10px;
-                border-top: 1px solid #444;
-                border-radius: 0;
-                width: 100%;
+                align-items: center;
+                height: 50px;
+                flex-shrink: 0;
+                z-index: 100;
             }
-            .thumbnail-sidebar {
-                order: 3;
-                flex: 0 0 100px;
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
-                border-top: 1px solid #444;
-                border-right: none;
-            }
-            .metadata-sidebar {
-                order: 4;
-                flex: 0 0 auto;
-                width: 100%;
-                height: auto;
-                box-shadow: none;
-                border-top: 1px solid #444;
-                padding: 10px;
-            }
-            .zoom-controls { display: none; }
-            .control-group {
+            
+            .mob-nav-btn {
+                background: none;
+                border: none;
+                color: var(--text-secondary);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                font-size: 11px;
+                font-weight: bold;
+                gap: 3px;
+                cursor: pointer;
+                flex-grow: 1;
+                padding: 4px;
+                transition: color 0.2s ease;
             }
+            
+            .mob-nav-btn.active {
+                color: var(--accent-blue);
+            }
+            
+            .mob-nav-btn span:first-child {
+                font-size: 18px;
+            }
+            
+            /* X-ray viewer on tablet/mobile */
+            #xray-viewer {
+                flex-direction: column;
+            }
+            
+            .thumbnail-sidebar {
+                width: 100%;
+                height: 75px;
+                flex-direction: row;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                box-sizing: border-box;
+            }
+            
+            .thumbnail-container {
+                width: 55px;
+                height: 55px;
+                flex-shrink: 0;
+            }
+            
+            .image-adjust-controls {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                padding: 10px;
+                justify-content: space-around;
+                gap: 15px;
+            }
+            
+            .control-group {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .control-group input[type="range"] {
+                writing-mode: horizontal-tb;
+                direction: ltr;
+                width: 100px;
+                height: 15px;
+            }
+            
             .control-group label {
-                font-size: 12px;
-                margin-top: 5px;
+                font-size: 10px;
             }
+            
+            .zoom-controls {
+                display: none; /* Use multi-touch pinch to zoom instead */
+            }
+            
+            .nav-button {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+            .prev { left: 10px; }
+            .next { right: 10px; }
         }
     </style>
 </head>
-<body>
+<body class="lang-bg">
 
-<div class="header">
-    <!-- Desktop tabs will be generated here -->
-    <select id="mobile-date-select"></select>
-</div>
-<div class="viewer-container">
-    <div class="thumbnail-sidebar"></div>
-    <div class="image-display-area">
-        <div class="viewer-header"><span id="image-counter"></span></div>
-        <img class="main-image" id="mainImage">
-        <button class="nav-button prev">&#10094;</button>
-        <button class="nav-button next">&#10095;</button>
-        <div class="zoom-controls">
-            <button class="zoom-button" id="zoomInBtn">+</button>
-            <button class="zoom-button" id="zoomOutBtn">-</button>
+    <div class="app-container">
+        
+        <!-- LEFT PANEL: PATIENT DOSSIER -->
+        <div class="dossier-panel" id="dossier-panel">
+            
+            <!-- Patient Header -->
+            <div class="patient-header">
+                <div class="profile-main">
+                    <h2 class="patient-name">Simov, Boris S.</h2>
+                    <div class="patient-meta">
+                        <span>42y Male (10 Jan 1984)</span><br>
+                        <span data-lang="bg">🎯 <strong>Цел:</strong> Завръщане към тренировки (30+ кг) & планинско колоездене</span>
+                        <span data-lang="en">🎯 <strong>Goal:</strong> Return to heavy lifting (30kg+) & mountain biking</span>
+                    </div>
+                </div>
+                
+                <div class="lang-switch">
+                    <button id="btn-lang-bg" class="lang-btn active">BG</button>
+                    <button id="btn-lang-en" class="lang-btn">EN</button>
+                </div>
+            </div>
+
+            <!-- Scrollable Dossier Content -->
+            <div class="dossier-content">
+                
+                <!-- Clinical Alert Highlight -->
+                <div class="clinical-alert">
+                    <h4 data-lang="bg">⚠️ Клинична находка: Липса на костно срастване (Non-Union)</h4>
+                    <h4 data-lang="en">⚠️ Clinical Finding: Bone Non-Union / Pseudarthrosis</h4>
+                    <p data-lang="bg">
+                        <strong>ЯМР (24 Юли 2025):</strong> Най-ранно доказателство за незарастване (фрактурни линии с дехисценция до 2.5 мм).<br>
+                        <strong>КТ скенер (23 Апр 2026):</strong> Потвърждава хронична псевдоартроза (2 мм разстояние с изгладени костни ръбове) и два свободни ставни фрагмента (2 мм).
+                    </p>
+                    <p data-lang="en">
+                        <strong>MRI (24 July 2025):</strong> Earliest evidence of non-union (dehiscence gap up to 2.5 mm).<br>
+                        <strong>CT Scan (23 Apr 2026):</strong> Confirms chronic pseudarthrosis (2 mm gap with smoothed bone edges) and two free 2 mm intra-articular fragments.
+                    </p>
+                </div>
+
+                <!-- Section Selector Tabs -->
+                <div class="dossier-nav">
+                    <button class="nav-tab-btn active" data-section="sec-summary">
+                        <span data-lang="bg">Резюме</span>
+                        <span data-lang="en">Summary</span>
+                    </button>
+                    <button class="nav-tab-btn" data-section="sec-timeline">
+                        <span data-lang="bg">Хронология</span>
+                        <span data-lang="en">Timeline</span>
+                    </button>
+                    <button class="nav-tab-btn" data-section="sec-questions">
+                        <span data-lang="bg">Въпроси</span>
+                        <span data-lang="en">Questions</span>
+                    </button>
+                </div>
+
+                <!-- Section 1: Summary -->
+                <div id="sec-summary" class="dossier-section active">
+                    
+                    <div class="dossier-card">
+                        <h3 data-lang="bg">История на заболяването</h3>
+                        <h3 data-lang="en">Injury & Rehab History</h3>
+                        <div class="summary-text">
+                            <p data-lang="bg">
+                                <strong>14 Май 2025 г.</strong> - Първоначална травма след падане от велосипед. Поставена гипсова лонгета с диагноза "счупена глава на радиуса".<br><br>
+                                <strong>Юни 2025 г.</strong> - Сваляне на лонгетата (Ден 22) и започване на рехабилитация (движения за пронация/супинация, Артромот машина, плуване).<br><br>
+                                <strong>Юли 2025 г.</strong> - ЯМР открива 2.5 мм незарастнал разрез. Одобрено е леко безболезнено натоварване.<br><br>
+                                <strong>Септ 2025 - Март 2026 г.</strong> - Постепенно натоварване до 25 кг. Стабилност под товар, но с дефицит в крайното разгъване и лека периодична болка.<br><br>
+                                <strong>13 Март 2026 г.</strong> - Втора травма (падане). Силен удар и болка, но рентгенът не отчита нова остра фрактура.<br><br>
+                                <strong>23 Април 2026 г.</strong> - КТ скенер потвърждава хронична псевдоартроза и свободни вътреставни частици.
+                            </p>
+                            <p data-lang="en">
+                                <strong>May 14, 2025</strong> - Initial trauma from a bicycle fall. Plaster splint applied under "fractured radial head" diagnosis.<br><br>
+                                <strong>June 2025</strong> - Splint removal (Day 22) and commencement of physical therapy (pronation/supination, Artromot machine, swimming).<br><br>
+                                <strong>July 2025</strong> - MRI detects 2.5 mm unhealed cleft. Progressive pain-free load approved.<br><br>
+                                <strong>Sep 2025 - Mar 2026</strong> - Loading increased gradually to 25 kg. Good stability under load, but persistent terminal extension deficit and occasional post-activity pain.<br><br>
+                                <strong>March 13, 2026</strong> - Re-injury (fall). Severe strike and pain; standard X-rays rule out acute new fractures.<br><br>
+                                <strong>April 23, 2026</strong> - CT scan confirms chronic pseudarthrosis and free intra-articular fragments.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="dossier-card">
+                        <h3 data-lang="bg">Сравнение на образните изследвания</h3>
+                        <h3 data-lang="en">Comparative Scan Analysis</h3>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%">
+                                        <span data-lang="bg">Показател</span>
+                                        <span data-lang="en">Finding</span>
+                                    </th>
+                                    <th style="width: 35%">
+                                        <span data-lang="bg">ЯМР (24.07.2025)</span>
+                                        <span data-lang="en">MRI (24.07.2025)</span>
+                                    </th>
+                                    <th style="width: 35%">
+                                        <span data-lang="bg">КТ (23.04.2026)</span>
+                                        <span data-lang="en">CT (23.04.2026)</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bold-td">
+                                        <span data-lang="bg">Костно зарастване</span>
+                                        <span data-lang="en">Bone Union</span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="bg">Дехисценция до 2.5 мм (начало на несъединяване).</span>
+                                        <span data-lang="en">Dehiscence up to 2.5 mm (early non-union).</span>
+                                    </td>
+                                    <td class="danger-text">
+                                        <span data-lang="bg">Дехисценция до 2 мм с изгладени костни краища (Хронична псевдоартроза).</span>
+                                        <span data-lang="en">Dehiscence up to 2 mm with smoothed margins (Chronic pseudarthrosis).</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bold-td">
+                                        <span data-lang="bg">Ставни фрагменти</span>
+                                        <span data-lang="en">Loose Bodies</span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="bg">Не се наблюдават.</span>
+                                        <span data-lang="en">None detected.</span>
+                                    </td>
+                                    <td class="warning-text">
+                                        <span data-lang="bg">Два свободни вътреставни фрагмента (~2 мм) медиално и дорзално.</span>
+                                        <span data-lang="en">Two free intra-articular fragments (~2 mm) medially and dorsally.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bold-td">
+                                        <span data-lang="bg">Хрущял и Кисти</span>
+                                        <span data-lang="en">Cartilage & Cysts</span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="bg">Нормална артикулация.</span>
+                                        <span data-lang="en">Normal articulation.</span>
+                                    </td>
+                                    <td>
+                                        <span data-lang="bg">Ставни узури (ерозии) и малки кисти до 4 мм.</span>
+                                        <span data-lang="en">Small articular usures (erosions) and cysts up to 4 mm.</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Section 2: Interactive Timeline -->
+                <div id="sec-timeline" class="dossier-section">
+                    <div class="timeline-container">
+                        
+                        <!-- Event 1 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250514')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">14 May 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Първоначална травма - Рентгенография</span>
+                                    <span data-lang="en">Initial Trauma - Emergency X-ray</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Падане от велосипед. Диагностицирана фрактура на радиусната глава. Поставена лонгета. <strong>Кликнете за преглед на снимките.</strong></p>
+                                <p data-lang="en">Bicycle fall. Fractured radial head diagnosed. Plaster splint applied. <strong>Click to view X-rays.</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Event 2 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250515')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">15 May 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролен рентген - ВМА</span>
+                                    <span data-lang="en">Splint Check-up - VMA Hospital</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Първи ден след инцидента. Контрол на наместването в лонгетата.</p>
+                                <p data-lang="en">Day 1 post-fracture alignment verification in plaster.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 3 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250523')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">23 May 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролни снимки - 9-ти ден</span>
+                                    <span data-lang="en">Follow-up X-ray - Day 9</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Проследяване на фрактурата. Лонгетата все още е поставена.</p>
+                                <p data-lang="en">Monitoring fracture status while splinted.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 4 -->
+                        <div class="timeline-item">
+                            <div class="timeline-badge rehab">💪</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">05 Jun 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Сваляне на лонгета & Рехабилитация</span>
+                                    <span data-lang="en">Splint Removal & Physical Therapy</span>
+                                </h4>
+                                <p data-lang="bg">Ден 22. Започват активни упражнения за пронация, супинация, плуване и леки натоварвания.</p>
+                                <p data-lang="en">Day 22. Starting active rehab movements, stretching, and swimming recommendations.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 5 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250610')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">10 Jun 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролен рентген - Ден 27</span>
+                                    <span data-lang="en">Check-up X-ray - Day 27</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Оценка на костното калусообразуване 5 дни след раздвижването.</p>
+                                <p data-lang="en">Assessing bone union 5 days post-splint removal.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 6 -->
+                        <div class="timeline-item clickable" onclick="loadXrayDate('250711')">
+                            <div class="timeline-badge x-ray">🩻</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">11 Jul 2025</div>
+                                <h4>
+                                    <span data-lang="bg">Контролен рентген - Ден 58</span>
+                                    <span data-lang="en">Pre-MRI X-ray - Day 58</span>
+                                    <span class="view-indicator">X-Ray</span>
+                                </h4>
+                                <p data-lang="bg">Установена лакътна нестабилност от д-р Фирузи. Назначен ЯМР за оценка на меки тъкани и кост.</p>
+                                <p data-lang="en">Joint instability noted by Dr. Firuzi. Standard X-rays prompt MRI referral.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 7 -->
+                        <div class="timeline-item clickable" onclick="loadPDF('MRI')">
+                            <div class="timeline-badge mri">🩻</div>
+                            <div class="timeline-panel mri-item">
+                                <div class="timeline-date">24 Jul 2025</div>
+                                <h4>
+                                    <span data-lang="bg">ЯМР Изследване (Спектър)</span>
+                                    <span data-lang="en">MRI Examination (Spektr)</span>
+                                    <span class="view-indicator">MRI Report</span>
+                                </h4>
+                                <p data-lang="bg"><strong>Най-ранен сигнал за незарастване:</strong> Установени фрактурни линии с 2.5 мм отваряне (дехисценция) и парциална лезия на латералния колатерален лигамент. <strong>Кликнете за преглед на PDF.</strong></p>
+                                <p data-lang="en"><strong>Earliest evidence of non-union:</strong> Detects 2.5 mm dehiscence gap and partial tear of lateral collateral ligament. <strong>Click to load PDF.</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Event 8 -->
+                        <div class="timeline-item">
+                            <div class="timeline-badge rehab">🏋️‍♂️</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">Sep 2025 - Mar 2026</div>
+                                <h4>
+                                    <span data-lang="bg">Активни тренировки с тежести</span>
+                                    <span data-lang="en">Progressive Training & Gym Loading</span>
+                                </h4>
+                                <p data-lang="bg">Работа с дъмбели до 25 кг. Стабилност под натоварване, но с дефицит в пълното разгъване (лек стоп в ставата).</p>
+                                <p data-lang="en">Weight progression up to 25 kg chest press. Joint felt stable under load but lacked terminal extension.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 9 -->
+                        <div class="timeline-item">
+                            <div class="timeline-badge injury">⚠️</div>
+                            <div class="timeline-panel">
+                                <div class="timeline-date">13 Mar 2026</div>
+                                <h4>
+                                    <span data-lang="bg">Втора травма (падане)</span>
+                                    <span data-lang="en">Second Trauma (Accidental Fall)</span>
+                                </h4>
+                                <p data-lang="bg">Падане и силен удар в лакътя. Остра болка. Стандартният рентген изключва нова остра фрактура.</p>
+                                <p data-lang="en">Direct impact. Intense pain; regular X-rays show no new fractures.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 10 -->
+                        <div class="timeline-item clickable" onclick="loadPDF('CT')">
+                            <div class="timeline-badge ct">☢️</div>
+                            <div class="timeline-panel ct-item">
+                                <div class="timeline-date">23 Apr 2026</div>
+                                <h4>
+                                    <span data-lang="bg">КТ Скенер (Св. Анна)</span>
+                                    <span data-lang="en">CT Scan (St. Anna)</span>
+                                    <span class="view-indicator">CT Report</span>
+                                </h4>
+                                <p data-lang="bg"><strong>Потвърждение на незарастването:</strong> Установява хронична псевдоартроза на радиусната глава с 2 мм процеп и гладки краища. Открити два свободни фрагмента (2 мм) и ставни кисти. <strong>Кликнете за преглед на PDF.</strong></p>
+                                <p data-lang="en"><strong>Non-Union Confirmation:</strong> Reveals chronic pseudoarthrosis of the radial head with a 2 mm gap and rounded bone margins. Two free intra-articular fragments (2 mm) found. <strong>Click to load PDF.</strong></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Section 3: Questions -->
+                <div id="sec-questions" class="dossier-section">
+                    <div class="questions-list">
+                        
+                        <div class="question-card">
+                            <div class="q-num">1</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?</p>
+                                <p data-lang="en">Is there actual bone union and a formed callus bridge? What does the current status imply for my long-term arm function?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">2</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?</p>
+                                <p data-lang="en">Does either the MRI or CT show any joint subluxation or osseous displacement?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">3</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?</p>
+                                <p data-lang="en">Are there torn ligaments, and what is the pathological source of the elbow instability?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">4</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?</p>
+                                <p data-lang="en">What is the mechanical or biological block preventing full elbow extension?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">5</div>
+                            <div class="q-body">
+                                <p data-lang="bg">На какво се дължи прихрупващият звук, който усещам при специфични движения?</p>
+                                <p data-lang="en">What causes the popping/clicking sound perceived during specific arm movements?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">6</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?</p>
+                                <p data-lang="en">Why does a cracking sound occur when extending the elbow after prolonged flexion?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">7</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Каква е причината за локализираните болки: от вътрешната страна на мишницата (над лакътя), над главичката на радиуса и по протежение на брахиорадиалиса?</p>
+                                <p data-lang="en">What causes the focal pain localized on the medial upper arm (above the joint) and superior to the radial head/brachioradialis?</p>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="q-num">8</div>
+                            <div class="q-body">
+                                <p data-lang="bg">Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?</p>
+                                <p data-lang="en">Can we detail the structural differences between the 2025 MRI and the 2026 CT scans and how they evolved?</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Mobile Navigation Tab Bar -->
+            <div class="mobile-nav-bar">
+                <button id="mob-btn-dossier" class="mob-nav-btn active" onclick="switchMobileTab('dossier')">
+                    <span>📋</span>
+                    <span data-lang="bg">Досие</span>
+                    <span data-lang="en">Dossier</span>
+                </button>
+                <button id="mob-btn-viewer" class="mob-nav-btn" onclick="switchMobileTab('viewer')">
+                    <span>🩻</span>
+                    <span data-lang="bg">Изследвания</span>
+                    <span data-lang="en">Viewer</span>
+                </button>
+            </div>
+
         </div>
-    </div>
-    <div class="image-adjust-controls">
-        <div class="control-group">
-            <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
-            <label for="brightness">Brightness</label>
+        
+        <!-- RIGHT PANEL: INTERACTIVE MEDIA VIEWER -->
+        <div class="viewer-panel" id="viewer-panel">
+            
+            <!-- Viewer Top Bar -->
+            <div class="viewer-top-bar">
+                <div class="viewer-title">
+                    <span id="active-viewer-icon">🩻</span> 
+                    <span id="active-viewer-title-bg" data-lang="bg">Изберете изследване от хронологията вляво</span>
+                    <span id="active-viewer-title-en" data-lang="en">Select study from timeline to view</span>
+                </div>
+                
+                <div id="viewer-quick-actions" class="viewer-quick-actions">
+                    <!-- Contextual buttons inject here -->
+                </div>
+            </div>
+
+            <!-- Viewer Containers -->
+            <div class="viewer-contents">
+                
+                <!-- 1. X-Ray Image Viewer -->
+                <div id="xray-viewer" class="viewer-container">
+                    <div class="thumbnail-sidebar" id="xray-thumbnails"></div>
+                    <div class="image-display-area" id="imageDisplayArea">
+                        <div class="viewer-header"><span id="image-counter"></span></div>
+                        <img class="main-image" id="mainImage" src="">
+                        <button class="nav-button prev" id="prevImageBtn">&#10094;</button>
+                        <button class="nav-button next" id="nextImageBtn">&#10095;</button>
+                        <div class="zoom-controls">
+                            <button class="zoom-button" id="zoomInBtn">+</button>
+                            <button class="zoom-button" id="zoomOutBtn">-</button>
+                        </div>
+                    </div>
+                    <div class="image-adjust-controls">
+                        <div class="control-group">
+                            <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
+                            <label for="brightness">Brt</label>
+                        </div>
+                        <div class="control-group">
+                            <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
+                            <label for="contrast">Con</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PDF Viewer Container -->
+                <div id="pdf-viewer" class="pdf-container">
+                    <embed id="pdf-embed" src="" type="application/pdf" width="100%" height="100%">
+                </div>
+
+                <!-- 3. Welcome Screen (Default) -->
+                <div id="welcome-viewer" class="welcome-container active">
+                    <div class="welcome-box">
+                        <h3 data-lang="bg">🩺 Медицински панел за разглеждане</h3>
+                        <h3 data-lang="en">🩺 Clinical Imaging & Report Panel</h3>
+                        <p data-lang="bg">Кликнете върху събитие със син, зелен или оранжев знак в хронологията или списъка вляво, за да заредите съответните X-Ray снимки или PDF отчети на изследванията.</p>
+                        <p data-lang="en">Click on any timeline event with a blue, green, or orange indicator on the left side to load X-ray images, MRI, or CT reports here.</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Footer metadata bar -->
+            <div class="metadata-footer">
+                <span><strong>DOB:</strong> <span id="meta-dob-age">10 Jan 1984</span></span>
+                <span><strong>Days since accident:</strong> <span id="meta-days-since">0</span></span>
+            </div>
+
         </div>
-        <div class="control-group">
-            <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
-            <label for="contrast">Contrast</label>
-        </div>
-    </div>
-    <div class="metadata-sidebar">
-        <p><strong>DOB:</strong> <span id="meta-dob-age"></span></p>
-        <p><strong>Days since accident:</strong> <span id="meta-days-since"></span></p>
-    </div>
-</div>
-<div class="summary-container" style="padding: 30px; color: #eee; background: #1a1a1a; overflow-y: auto; font-family: 'Segoe UI', sans-serif;">
-    <h1 style="color: #3498db; text-align: center; border-bottom: 2px solid #444; padding-bottom: 20px;">Резюме и Въпросник за консултация</h1>
-    
-    <div style="background: #222; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid #3498db;">
-        <p><strong>Пациент:</strong> Борис Симеонов Симов, 42 г.</p>
-        <p><strong>Основна цел на лечението:</strong> Завръщане към силови тренировки с големи тежести (30+ кг) и агресивно планинско колоездене</p>
+
     </div>
 
-    <div class="dashboard-grid">
-        <div class="dashboard-card ct" onclick="openTab('CT Report')">
-            <h3>☢️ CT Report 2026</h3>
-            <p>Diagnostic report and 3D CT viewer</p>
-        </div>
-        <div class="dashboard-card mri" onclick="openTab('MRI Report')">
-            <h3>🩻 MRI Report 2025</h3>
-            <p>Diagnostic report and MRI viewer</p>
-        </div>
-        <div class="dashboard-card" onclick="openTab('Questions')">
-            <h3>❓ Consultation Questions</h3>
-            <p>8 specific questions for the surgical review</p>
-        </div>
-        <div class="dashboard-card" onclick="openTab('History')">
-            <h3>📜 Full Medical History</h3>
-            <p>Timeline from first injury to present</p>
-        </div>
-    </div>
+    <!-- Metadata loading script -->
+    <script src="metadata.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Guard metadata loading
+            if (typeof metadata === 'undefined') {
+                console.error("Error: metadata.js not found.");
+                document.getElementById('welcome-viewer').innerHTML = `
+                    <div style="padding: 30px; text-align: center;">
+                        <h3 style="color:#ef4444;">Error: Metadata Not Found</h3>
+                        <p>Could not load image series metadata. Please ensure metadata.js exists.</p>
+                    </div>
+                `;
+                return;
+            }
 
-    <h2 style="color: #eee;">1. Хронология на травмите и проведено лечение</h2>
-    <div style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 30px;">
-14 Май 2025 г. - Първоначална травма (спукване на главичката на радиуса).
-Юни 2025 г. - Започната физиотерапия, която значително подобри обема на движение. Препоръчано бе плуване и продължаване на упражненията.
-Юли 2025 г. - Направен ЯМР (показал 2.5 мм дехисценция). След ЯМР посетих двама ортопеди. Становището им бе, че зарастването отнема повече време, но няма повод за притеснение. Разрешиха ми прогресивно натоварване "в рамките на безболезненото", включително лостове, тежести и колоездене.
-Септември 2025 - Март 2026 г. - Стриктно спазвах лекарските препоръки. Достигнах до 25 кг на ръка (лежанка) и карах колело. Резултат: стабилност, но дефицит в пълното разгъване и понякога след бутащи упражнения леки болки в лакътя след тренировка.
-13 Март 2026 г. - Втора травма (падане). Рентгенът не отчита нова остра фрактура, но болката е силна. Последващ КТ скенер.
-    </div>
+            // Group images by date
+            const imagesByDate = {};
+            Object.keys(metadata).sort().forEach(file => {
+                const datePart = file.substring(0, 6);
+                if (!imagesByDate[datePart]) imagesByDate[datePart] = [];
+                imagesByDate[datePart].push(file);
+            });
+            const allImages = Object.keys(imagesByDate).sort().flatMap(date => imagesByDate[date]);
 
-    <h2 style="color: #eee;">2. Сравнителен анализ на образните изследвания</h2>
-    <table style="width:100%; border-collapse: collapse; margin: 20px 0; background: #222; font-size: 15px;">
-        <tr style="background:#333; color: #3498db;">
-            <th style="border:1px solid #444; padding:12px; text-align: left;">Критерий</th>
-            <th style="border:1px solid #444; padding:12px; text-align: left;">ЯМР (24.07.2025)</th>
-            <th style="border:1px solid #444; padding:12px; text-align: left;">КТ (23.04.2026)</th>
-        </tr>
-        <tr>
-            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Костно срастване</td>
-            <td style="border:1px solid #444; padding:12px;">Фрактурни линии с дехисценция до 2.5 мм.</td>
-            <td style="border:1px solid #444; padding:12px; color: #e74c3c;">Фрактурни линии до 2 мм. Повърхностите са изгладени (белег за хронична псевдоартроза).</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Свободни фрагменти</td>
-            <td style="border:1px solid #444; padding:12px;">Няма данни за свободни фрагменти.</td>
-            <td style="border:1px solid #444; padding:12px; color: #f1c40f;">Два вътреставни фрагмента (2 мм) медиално и дорзално.</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Ставен хрущял</td>
-            <td style="border:1px solid #444; padding:12px;">Нормална артикулация.</td>
-            <td style="border:1px solid #444; padding:12px;">Малки узури (ерозии) и субхондрални кисти до 4 мм.</td>
-        </tr>
-    </table>
-</div>
+            // DOM elements selection
+            const btnLangBg = document.getElementById('btn-lang-bg');
+            const btnLangEn = document.getElementById('btn-lang-en');
+            const dossierPanel = document.getElementById('dossier-panel');
+            const viewerPanel = document.getElementById('viewer-panel');
+            const mobBtnDossier = document.getElementById('mob-btn-dossier');
+            const mobBtnViewer = document.getElementById('mob-btn-viewer');
+            
+            const activeViewerIcon = document.getElementById('active-viewer-icon');
+            const activeViewerTitleBg = document.getElementById('active-viewer-title-bg');
+            const activeViewerTitleEn = document.getElementById('active-viewer-title-en');
+            const viewerQuickActions = document.getElementById('viewer-quick-actions');
+            
+            const xrayViewer = document.getElementById('xray-viewer');
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const welcomeViewer = document.getElementById('welcome-viewer');
+            const pdfEmbed = document.getElementById('pdf-embed');
+            
+            const mainImage = document.getElementById('mainImage');
+            const displayArea = document.getElementById('imageDisplayArea');
+            const thumbnailSidebar = document.getElementById('xray-thumbnails');
+            
+            const brightnessSlider = document.getElementById('brightness');
+            const contrastSlider = document.getElementById('contrast');
+            
+            let currentGlobalIndex = 0;
+            let currentActiveDate = "";
+            let scale = 1, isPanning = false, pointX = 0, pointY = 0, start = { x: 0, y: 0 };
+            let initialDistance = -1;
 
-<div class="history-container" style="padding: 30px; line-height: 1.6; color: #eee; background: #1a1a1a; overflow-y: auto;">
-    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Пълна история на заболяването</h1>
-    
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">14 май 2025 г. (Ден 0)</h3>
-        <p>Падане от велосипед с протегнати напред ръце. В Спешно отделение на ВМА е поставена диагноза "счупена глава на радиуса". Поставена е гипсова лонгета.</p>
-    </div>
+            // Global/Helper Actions
+            window.switchMobileTab = (tab) => {
+                if (tab === 'dossier') {
+                    dossierPanel.classList.remove('hidden-mobile');
+                    viewerPanel.classList.remove('active-mobile');
+                    mobBtnDossier.classList.add('active');
+                    mobBtnViewer.classList.remove('active');
+                } else {
+                    dossierPanel.classList.add('hidden-mobile');
+                    viewerPanel.classList.add('active-mobile');
+                    mobBtnDossier.classList.remove('active');
+                    mobBtnViewer.classList.add('active');
+                }
+            };
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">16 май – 24 май 2025 г. (Ден 2 – Ден 10)</h3>
-        <p>Проведена ранна рехабилитация и физиотерапия, включваща:</p>
-        <ul style="list-style-type: disc; margin-left: 20px;">
-            <li>Раздвижване на лакътя с машина "Артромот".</li>
-            <li>Мануално разгъване от рехабилитатор.</li>
-            <li>Упражнения за бицепс и трицепс с тежести до 1.5 кг.</li>
-            <li>Упражнения с пръчка (гребане, опъване и сгъване зад гръб).</li>
-            <li>Висене на лост с подпряни крака.</li>
-            <li>Плуване.</li>
-        </ul>
-    </div>
+            // Switch languages
+            const setLanguage = (lang) => {
+                if (lang === 'en') {
+                    document.body.className = 'lang-en';
+                    btnLangEn.classList.add('active');
+                    btnLangBg.classList.remove('active');
+                } else {
+                    document.body.className = 'lang-bg';
+                    btnLangBg.classList.add('active');
+                    btnLangEn.classList.remove('active');
+                }
+                // Refresh title text contextually
+                updateViewerTitle();
+            };
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">5 юни 2025 г. (Ден 22)</h3>
-        <p>Сваляне на гипсовата лонгета. Започват активни упражнения за супинация, пронация, сгъване и разгъване в рамките на възможния обем, както и гравитационно разгъване на лакътя от легнало положение.</p>
-    </div>
+            btnLangBg.onclick = () => setLanguage('bg');
+            btnLangEn.onclick = () => setLanguage('en');
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">11 юли 2025 г. (Ден 58)</h3>
-        <p>Преглед при д-р Бахрам Фирузи. Установена е нестабилност в лакътната става. Назначен е ЯМР и консултация с д-р Борислав Тасев.</p>
-    </div>
+            // Dossier navigation tabs
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const targetSection = btn.dataset.section;
+                    document.querySelectorAll('.dossier-section').forEach(sec => {
+                        sec.classList.remove('active');
+                    });
+                    document.getElementById(targetSection).classList.add('active');
+                };
+            });
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">24 юли 2025 г. (Ден 71 / 10-а седмица)</h3>
-        <p>Проведен ЯМР в СМДЛ "Спектър". Резултатите показват фрактурни линии с дехисценция (отваряне) до 2.5 мм и парциална увреда на латералния колатерален комплекс.</p>
-    </div>
+            // Adjust Filters
+            const applyImageFilters = () => {
+                mainImage.style.filter = `brightness(${brightnessSlider.value}%) contrast(${contrastSlider.value}%)`;
+            };
+            brightnessSlider.oninput = applyImageFilters;
+            contrastSlider.oninput = applyImageFilters;
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">Септември 2025 г. – Март 2026 г.</h3>
-        <p>Период на прогресивно натоварване според лекарските препоръки ("в рамките на безболезненото"). Достигнати тежести от 25 кг на ръка при бутащи упражнения (лежанка) и завръщане към планинското колоездене. Налице е лек дефицит в пълното разгъване и епизодични болки след интензивни тренировки.</p>
-    </div>
+            // Center image
+            const centerAndFitImage = () => {
+                const areaWidth = displayArea.clientWidth;
+                const areaHeight = displayArea.clientHeight;
+                const imgWidth = mainImage.naturalWidth;
+                const imgHeight = mainImage.naturalHeight;
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">13 март 2026 г.</h3>
-        <p>Втора травма след падане. Силна болка в ставата. Рентгенографията не показва нова остра фрактура, но симптоматиката налага по-детайлно изследване.</p>
-    </div>
+                if (imgWidth && imgHeight) {
+                    scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight);
+                    pointX = (areaWidth - imgWidth * scale) / 2;
+                    pointY = (areaHeight - imgHeight * scale) / 2;
+                    applyTransform();
+                }
+            };
 
-    <div style="margin-bottom: 20px;">
-        <h3 style="color: #e67e22;">23 април 2026 г.</h3>
-        <p>Проведен КТ скенер, който установява хронична псевдоартроза (незараснала фрактура с изгладени костни краища), два свободни вътреставни фрагмента (около 2 мм) и ставни ерозии (узури) с кисти.</p>
-    </div>
-</div>
+            const applyTransform = () => {
+                mainImage.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+            };
 
-<div class="pdf-container">
-    <div class="pdf-controls">
-        <a href="20250724_MRI_Boris_Simov.pdf" download class="action-button">⬇️ Download PDF Report</a>
-        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-button mri-btn">🩻 VIEW MRI (Online Viewer)</a>
-    </div>
-    <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
-</div>
+            const clampPan = () => {
+                const areaWidth = displayArea.clientWidth;
+                const areaHeight = displayArea.clientHeight;
+                const imgWidth = mainImage.naturalWidth * scale;
+                const imgHeight = mainImage.naturalHeight * scale;
 
-<div class="ct-report-container">
-    <div class="pdf-controls">
-        <a href="20260423_CT_Report.pdf" download class="action-button">⬇️ Download PDF Report</a>
-        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-button ct-btn">☢️ VIEW CT SCAN (Online Viewer)</a>
-    </div>
-    <embed src="20260423_CT_Report.pdf" type="application/pdf" width="100%" height="100%">
-</div>
+                const minX = areaWidth - imgWidth;
+                const minY = areaHeight - imgHeight;
 
-<div class="questions-container" style="padding: 30px; line-height: 1.8; color: #eee; background: #1a1a1a; overflow-y: auto;">
-    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Въпроси за консултацията</h1>
-    
-    <div style="background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #00aaff; margin-top: 20px;">
-        <ul style="list-style-type: none; padding: 0; margin: 0;">
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">1.</span>
-                Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">2.</span>
-                Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">3.</span>
-                Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">4.</span>
-                Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">5.</span>
-                На какво се дължи прихрупващият звук, който усещам при специфични движения?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">6.</span>
-                Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">7.</span>
-                Каква е причината за локализираните болки:
-                <ul style="list-style-type: disc; margin-top: 10px; margin-left: 20px;">
-                    <li>От вътрешната страна на мишницата (над лакътя)?</li>
-                    <li>Над главичката на радиуса и по протежение на брахиорадиалиса?</li>
-                </ul>
-            </li>
-            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
-                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">8.</span>
-                Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?
-            </li>
-        </ul>
-    </div>
-</div>
+                if (imgWidth <= areaWidth) {
+                    pointX = (areaWidth - imgWidth) / 2;
+                } else {
+                    pointX = Math.max(minX, Math.min(0, pointX));
+                }
 
-<script src="metadata.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof metadata === 'undefined') {
-        console.error("Error: metadata.js could not be loaded or is empty. Please ensure the file exists and is correctly formatted.");
-        document.querySelector('.viewer-container').innerHTML = '<div style="padding: 20px; text-align: center; width: 100%;"><h1>Error: Metadata Not Found</h1><p>Could not load image metadata. Please run the <code>update_metadata.py</code> script to generate it.</p></div>';
-        return;
-    }
+                if (imgHeight <= areaHeight) {
+                    pointY = (areaHeight - imgHeight) / 2;
+                } else {
+                    pointY = Math.max(minY, Math.min(0, pointY));
+                }
+            };
 
-    const imagesByDate = {};
-    Object.keys(metadata).sort().forEach(file => {
-        const datePart = file.substring(0, 6);
-        if (!imagesByDate[datePart]) imagesByDate[datePart] = [];
-        imagesByDate[datePart].push(file);
-    });
+            const updateUIForCurrentImage = () => {
+                const imageFile = allImages[currentGlobalIndex];
+                const datePart = imageFile.substring(0, 6);
+                currentActiveDate = datePart;
 
-    const allImages = Object.keys(imagesByDate).sort().flatMap(date => imagesByDate[date]);
-    
-    const header = document.querySelector('.header');
-    const mobileDateSelect = document.getElementById('mobile-date-select');
-    const viewerContainer = document.querySelector('.viewer-container');
-    const historyContainer = document.querySelector('.history-container');
-    const pdfContainer = document.querySelector('.pdf-container');
-    const ctReportContainer = document.querySelector('.ct-report-container');
-    const questionsContainer = document.querySelector('.questions-container');
-    const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
-    const mainImage = document.getElementById('mainImage');
-    const displayArea = document.querySelector('.image-display-area');
-    const brightnessSlider = document.getElementById('brightness');
-    const contrastSlider = document.getElementById('contrast');
+                // Load sidebar thumbnails
+                const currentImageList = imagesByDate[datePart];
+                thumbnailSidebar.innerHTML = '';
+                currentImageList.forEach((file) => {
+                    const thumbContainer = document.createElement('div');
+                    thumbContainer.className = 'thumbnail-container';
+                    if (file === imageFile) {
+                        thumbContainer.classList.add('active');
+                    }
+                    thumbContainer.onclick = () => {
+                        currentGlobalIndex = allImages.indexOf(file);
+                        updateUIForCurrentImage();
+                    };
+                    const thumbImg = document.createElement('img');
+                    thumbImg.src = file;
+                    thumbContainer.appendChild(thumbImg);
+                    thumbnailSidebar.appendChild(thumbContainer);
+                });
 
-    let currentGlobalIndex = 0;
-    let scale = 1, isPanning = false, pointX = 0, pointY = 0, start = { x: 0, y: 0 };
-    let initialDistance = -1;
+                // Update main image source
+                mainImage.src = imageFile;
+                const localIndex = currentImageList.indexOf(imageFile);
+                document.getElementById('image-counter').textContent = `${localIndex + 1} / ${currentImageList.length}`;
 
-    const applyTransform = () => {
-        mainImage.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-    };
+                // Calculate metadata
+                const meta = metadata[imageFile];
+                const birthDate = new Date('1984-01-10');
+                const studyDate = new Date(meta.study_date);
+                const firstXrayDate = new Date('2025-05-14');
 
-    const clampPan = () => {
-        const areaWidth = displayArea.clientWidth;
-        const areaHeight = displayArea.clientHeight;
-        const imgWidth = mainImage.naturalWidth * scale;
-        const imgHeight = mainImage.naturalHeight * scale;
+                let age = studyDate.getFullYear() - birthDate.getFullYear();
+                const m = studyDate.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && studyDate.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                const diffDays = Math.ceil(Math.abs(studyDate - firstXrayDate) / (1000 * 60 * 60 * 24));
+                
+                document.getElementById('meta-dob-age').textContent = `10 Jan 1984 (Age: ${age})`;
+                document.getElementById('meta-days-since').textContent = diffDays;
 
-        const minX = areaWidth - imgWidth;
-        const minY = areaHeight - imgHeight;
+                brightnessSlider.value = 100;
+                contrastSlider.value = 100;
+                applyImageFilters();
 
-        if (imgWidth <= areaWidth) {
-            pointX = (areaWidth - imgWidth) / 2;
-        } else {
-            pointX = Math.max(minX, Math.min(0, pointX));
-        }
+                mainImage.onload = () => {
+                    centerAndFitImage();
+                    mainImage.onload = null;
+                };
 
-        if (imgHeight <= areaHeight) {
-            pointY = (areaHeight - imgHeight) / 2;
-        } else {
-            pointY = Math.max(minY, Math.min(0, pointY));
-        }
-    };
+                updateViewerTitle();
+            };
 
-    const applyImageFilters = () => {
-        const brightness = brightnessSlider.value;
-        const contrast = contrastSlider.value;
-        mainImage.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
-    };
+            // Formatting helper for titles
+            const getFormattedDateText = (datePart) => {
+                if(!datePart) return "";
+                const monthsBG = ["Май", "Юни", "Юли", "Авг", "Сеп", "Окт", "Ное", "Дек", "Яну", "Фев", "Мар", "Апр"];
+                const monthsEN = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+                const yy = datePart.substring(0, 2);
+                const mm = parseInt(datePart.substring(2, 4), 10);
+                const dd = parseInt(datePart.substring(4, 6), 10);
+                
+                // Map based on months
+                const mIdx = mm === 5 ? 0 : mm === 6 ? 1 : mm === 7 ? 2 : mm === 8 ? 3 : mm === 9 ? 4 : mm === 10 ? 5 : mm === 11 ? 6 : mm === 12 ? 7 : mm === 1 ? 8 : mm === 2 ? 9 : mm === 3 ? 10 : 11;
+                
+                return {
+                    bg: `${dd} ${monthsBG[mIdx]} 20${yy} г.`,
+                    en: `${dd} ${monthsEN[mIdx]} 20${yy}`
+                };
+            };
 
-    const centerAndFitImage = () => {
-        const areaWidth = displayArea.clientWidth;
-        const areaHeight = displayArea.clientHeight;
-        const imgWidth = mainImage.naturalWidth;
-        const imgHeight = mainImage.naturalHeight;
+            let activeViewMode = 'welcome'; // 'welcome', 'xray', 'pdf'
+            let activePDFType = ''; // 'MRI', 'CT'
 
-        if (imgWidth && imgHeight) {
-            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight);
-            pointX = 0;
-            pointY = 0;
-            clampPan();
-            applyTransform();
-        }
-    };
+            const updateViewerTitle = () => {
+                if (activeViewMode === 'welcome') {
+                    activeViewerIcon.textContent = '🩺';
+                    activeViewerTitleBg.textContent = 'Изберете изследване от хронологията вляво';
+                    activeViewerTitleEn.textContent = 'Select study from timeline to view';
+                } else if (activeViewMode === 'xray') {
+                    activeViewerIcon.textContent = '🩻';
+                    const dateText = getFormattedDateText(currentActiveDate);
+                    activeViewerTitleBg.textContent = `Рентгенови снимки от ${dateText.bg}`;
+                    activeViewerTitleEn.textContent = `X-Rays from ${dateText.en}`;
+                } else if (activeViewMode === 'pdf') {
+                    activeViewerIcon.textContent = activePDFType === 'MRI' ? '📄' : '☢️';
+                    if (activePDFType === 'MRI') {
+                        activeViewerTitleBg.textContent = 'ЯМР Доклад (24.07.2025 г.)';
+                        activeViewerTitleEn.textContent = 'MRI Study Report (24.07.2025)';
+                    } else {
+                        activeViewerTitleBg.textContent = 'КТ Скенер Доклад (23.04.2026 г.)';
+                        activeViewerTitleEn.textContent = 'CT Scan Report (23.04.2026)';
+                    }
+                }
+            };
 
-    brightnessSlider.oninput = applyImageFilters;
-    contrastSlider.oninput = applyImageFilters;
+            // Public functions bounded to window for DOM onclick events
+            window.loadXrayDate = (datePart) => {
+                activeViewMode = 'xray';
+                welcomeViewer.classList.remove('active');
+                pdfViewer.classList.remove('active');
+                xrayViewer.classList.add('active');
+                
+                // Clear quick actions
+                viewerQuickActions.innerHTML = '';
 
-    const openTab = (tabName) => {
-        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
-        const activeButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
+                // Find first image for that date
+                const firstImage = imagesByDate[datePart][0];
+                currentGlobalIndex = allImages.indexOf(firstImage);
+                updateUIForCurrentImage();
+                
+                // On mobile, auto-switch to viewer panel
+                switchMobileTab('viewer');
+            };
 
-        viewerContainer.style.display = 'none';
-        const sumCont = document.querySelector('.summary-container'); if(sumCont) sumCont.style.display = 'none';
-        historyContainer.style.display = 'none';
-        pdfContainer.style.display = 'none';
-        ctReportContainer.style.display = 'none';
-        questionsContainer.style.display = 'none';
+            window.loadPDF = (type) => {
+                activeViewMode = 'pdf';
+                activePDFType = type;
+                welcomeViewer.classList.remove('active');
+                xrayViewer.classList.remove('active');
+                pdfViewer.classList.add('active');
 
-        if (tabName === 'Summary 2026') {
-            document.querySelector('.summary-container').style.display = 'block';
-        } else if (tabName === 'History') {
-            historyContainer.style.display = 'block';
-        } else if (tabName === 'MRI Report') {
-            pdfContainer.style.display = 'flex';
-        } else if (tabName === 'CT Report') {
-            ctReportContainer.style.display = 'flex';
-        } else if (tabName === 'Questions') {
-            questionsContainer.style.display = 'block';
-        } else {
-            viewerContainer.style.display = 'flex';
-            const firstImageOfDate = imagesByDate[tabName][0];
-            currentGlobalIndex = allImages.indexOf(firstImageOfDate);
-            updateUIForCurrentImage();
-        }
-    };
+                // Render PDF quick actions and links
+                viewerQuickActions.innerHTML = '';
+                
+                let pdfFile = '';
+                let dicomUrl = '';
+                let btnColorClass = '';
+                
+                if (type === 'MRI') {
+                    pdfFile = '20250724_MRI_Boris_Simov.pdf';
+                    dicomUrl = 'https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244';
+                    btnColorClass = 'mri-btn';
+                } else {
+                    pdfFile = '20260423_CT_Report.pdf';
+                    dicomUrl = 'https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070';
+                    btnColorClass = 'ct-btn';
+                }
 
-    const updateUIForCurrentImage = () => {
-        const imageFile = allImages[currentGlobalIndex];
-        const datePart = imageFile.substring(0, 6);
+                pdfEmbed.src = pdfFile;
 
-        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.tab === datePart));
-        if (mobileDateSelect.value !== datePart) {
-            mobileDateSelect.value = datePart;
-        }
+                // Download Button
+                const dlBtn = document.createElement('a');
+                dlBtn.className = 'viewer-btn primary';
+                dlBtn.href = pdfFile;
+                dlBtn.download = pdfFile;
+                dlBtn.innerHTML = `⬇️ <span data-lang="bg">Свали PDF</span><span data-lang="en">Download PDF</span>`;
+                viewerQuickActions.appendChild(dlBtn);
 
-        const currentImageList = imagesByDate[datePart];
-        thumbnailSidebar.innerHTML = '';
-        currentImageList.forEach((file, index) => {
-            const thumbContainer = document.createElement('div');
-            thumbContainer.className = 'thumbnail-container';
-            thumbContainer.onclick = () => {
-                currentGlobalIndex = allImages.indexOf(file);
+                // View Online Study Button
+                const studyBtn = document.createElement('a');
+                studyBtn.className = `viewer-btn ${btnColorClass}`;
+                studyBtn.href = dicomUrl;
+                studyBtn.target = '_blank';
+                studyBtn.innerHTML = `🩻 <span data-lang="bg">Отвори DICOM Изследване</span><span data-lang="en">Open DICOM Study</span>`;
+                viewerQuickActions.appendChild(studyBtn);
+
+                updateViewerTitle();
+                switchMobileTab('viewer');
+            };
+
+            // Zoom Actions
+            const zoom = (factor, center) => {
+                const rect = displayArea.getBoundingClientRect();
+                const mouseX = center.x - rect.left;
+                const mouseY = center.y - rect.top;
+
+                const xs = (mouseX - pointX) / scale;
+                const ys = (mouseY - pointY) / scale;
+                
+                const oldScale = scale;
+                let newScale = scale * factor;
+                
+                const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight);
+                newScale = Math.max(minScale, Math.min(newScale, 20));
+
+                if (newScale === oldScale) return;
+
+                pointX = mouseX - xs * newScale;
+                pointY = mouseY - ys * newScale;
+                scale = newScale;
+
+                clampPan();
+                applyTransform();
+            };
+
+            // Bounded zoom buttons
+            document.getElementById("zoomInBtn").onclick = () => zoom(1.2, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+            document.getElementById("zoomOutBtn").onclick = () => zoom(0.8, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+            
+            // Image navigation
+            const changeImage = (direction) => {
+                if (activeViewMode !== 'xray') return;
+                const currentImageList = imagesByDate[currentActiveDate];
+                const currentFile = allImages[currentGlobalIndex];
+                const localIndex = currentImageList.indexOf(currentFile);
+                
+                // Restrict changes within current series only
+                const newLocalIndex = (localIndex + direction + currentImageList.length) % currentImageList.length;
+                const nextFile = currentImageList[newLocalIndex];
+                currentGlobalIndex = allImages.indexOf(nextFile);
                 updateUIForCurrentImage();
             };
-            const thumbImg = document.createElement('img');
-            thumbImg.src = file;
-            thumbContainer.appendChild(thumbImg);
-            thumbnailSidebar.appendChild(thumbContainer);
-        });
-        
-        const localIndex = currentImageList.indexOf(imageFile);
-        document.querySelectorAll('.thumbnail-container').forEach((thumb, idx) => {
-            thumb.classList.toggle('active', idx === localIndex);
-            if (idx === localIndex) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
 
-        mainImage.src = imageFile;
-        const meta = metadata[imageFile];
-        document.getElementById('image-counter').textContent = `${localIndex + 1} of ${currentImageList.length}`;
+            document.getElementById('prevImageBtn').onclick = () => changeImage(-1);
+            document.getElementById('nextImageBtn').onclick = () => changeImage(1);
 
-        const birthDate = new Date('1984-01-10');
-        const studyDate = new Date(meta.study_date);
-        const firstXrayDate = new Date('2025-05-14');
-
-        let age = studyDate.getFullYear() - birthDate.getFullYear();
-        const m = studyDate.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && studyDate.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        
-        const diffTime = Math.abs(studyDate - firstXrayDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        document.getElementById('meta-dob-age').textContent = `10 Jan 1984 (Age: ${age})`;
-        document.getElementById('meta-days-since').textContent = diffDays;
-
-        brightnessSlider.value = 100;
-        contrastSlider.value = 100;
-        applyImageFilters();
-
-        mainImage.onload = () => {
-            centerAndFitImage();
-            mainImage.onload = null;
-        };
-    };
-
-    const sortedDates = Object.keys(imagesByDate).sort();
-    if (sortedDates.length > 0) {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        
-        // --- PRIMARY TABS ---
-        
-        // Summary 2026 Tab
-        const summaryButton = document.createElement('button');
-        summaryButton.className = 'tab-button primary-tab';
-        summaryButton.textContent = '📋 Summary 2026';
-        summaryButton.dataset.tab = 'Summary 2026';
-        summaryButton.onclick = () => openTab('Summary 2026');
-        header.appendChild(summaryButton);
-
-        const summaryOption = document.createElement('option');
-        summaryOption.value = 'Summary 2026';
-        summaryOption.textContent = '📋 Summary 2026';
-        mobileDateSelect.appendChild(summaryOption);
-
-        // CT Report Tab
-        const ctReportButton = document.createElement('button');
-        ctReportButton.className = 'tab-button primary-tab';
-        ctReportButton.textContent = '☢️ CT Report 2026';
-        ctReportButton.dataset.tab = 'CT Report';
-        ctReportButton.onclick = () => openTab('CT Report');
-        header.appendChild(ctReportButton);
-
-        const ctReportOption = document.createElement('option');
-        ctReportOption.value = 'CT Report';
-        ctReportOption.textContent = '☢️ CT Report 2026';
-        mobileDateSelect.appendChild(ctReportOption);
-
-        // MRI Report Tab
-        const mriButton = document.createElement('button');
-        mriButton.className = 'tab-button primary-tab';
-        mriButton.textContent = '📄 MRI Report 2025';
-        mriButton.dataset.tab = 'MRI Report';
-        mriButton.onclick = () => openTab('MRI Report');
-        header.appendChild(mriButton);
-
-        const mriOption = document.createElement('option');
-        mriOption.value = 'MRI Report';
-        mriOption.textContent = '📄 MRI Report 2025';
-        mobileDateSelect.appendChild(mriOption);
-
-        // Questions Tab
-        const questionsButton = document.createElement('button');
-        questionsButton.className = 'tab-button primary-tab';
-        questionsButton.textContent = '❓ Questions';
-        questionsButton.dataset.tab = 'Questions';
-        questionsButton.onclick = () => openTab('Questions');
-        header.appendChild(questionsButton);
-
-        const questionsOption = document.createElement('option');
-        questionsOption.value = 'Questions';
-        questionsOption.textContent = '❓ Questions';
-        mobileDateSelect.appendChild(questionsOption);
-
-        // History Tab
-        const historyButton = document.createElement('button');
-        historyButton.className = 'tab-button';
-        historyButton.textContent = '📜 History';
-        historyButton.dataset.tab = 'History';
-        historyButton.onclick = () => openTab('History');
-        header.appendChild(historyButton);
-
-        const historyOption = document.createElement('option');
-        historyOption.value = 'History';
-        historyOption.textContent = '📜 History';
-        mobileDateSelect.appendChild(historyOption);
-
-        // --- ARCHIVE TABS ---
-        
-        const archiveLabel = document.createElement('div');
-        archiveLabel.textContent = 'Archive 2025:';
-        archiveLabel.style.padding = '14px 10px';
-        archiveLabel.style.fontSize = '12px';
-        archiveLabel.style.color = '#888';
-        archiveLabel.style.alignSelf = 'center';
-        header.appendChild(archiveLabel);
-
-        sortedDates.forEach((datePart) => {
-            const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
-            const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+            // Drag and drop pan controls
+            displayArea.onmousedown = (e) => {
+                if (e.target !== mainImage) return;
+                e.preventDefault();
+                start = { x: e.clientX - pointX, y: e.clientY - pointY };
+                isPanning = true;
+                displayArea.style.cursor = 'grabbing';
+            };
             
-            const tabButton = document.createElement('button');
-            tabButton.className = 'tab-button archive-tab';
-            tabButton.textContent = formattedDate;
-            tabButton.dataset.tab = datePart;
-            tabButton.onclick = () => openTab(datePart);
-            header.appendChild(tabButton);
+            window.onmouseup = () => { 
+                isPanning = false; 
+                displayArea.style.cursor = 'grab'; 
+            };
+            
+            window.onmousemove = (e) => { 
+                if (isPanning) { 
+                    pointX = e.clientX - start.x; 
+                    pointY = e.clientY - start.y; 
+                    clampPan();
+                    applyTransform();
+                } 
+            };
 
-            const option = document.createElement('option');
-            option.value = datePart;
-            option.textContent = `📁 Archive: ${formattedDate}`;
-            mobileDateSelect.appendChild(option);
+            displayArea.onwheel = (e) => {
+                e.preventDefault();
+                const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+                const factor = delta > 0 ? 1.1 : 0.9;
+                zoom(factor, {x: e.clientX, y: e.clientY});
+            };
+
+            // Touch events for mobile gesture zooming and panning
+            displayArea.addEventListener('touchstart', (e) => {
+                if (e.target !== mainImage) return;
+                e.preventDefault();
+                if (e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    start = { x: touch.clientX - pointX, y: touch.clientY - pointY };
+                    isPanning = true;
+                } else if (e.touches.length === 2) {
+                    isPanning = false;
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    initialDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                }
+            });
+
+            displayArea.addEventListener('touchend', () => {
+                isPanning = false;
+                initialDistance = -1;
+            });
+
+            displayArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (isPanning && e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    pointX = touch.clientX - start.x;
+                    pointY = touch.clientY - start.y;
+                    clampPan();
+                    applyTransform();
+                } else if (e.touches.length === 2 && initialDistance > 0) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    const factor = currentDistance / initialDistance;
+                    zoom(factor, {x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2});
+                    initialDistance = currentDistance;
+                }
+            });
+
+            // Handle window resizing
+            window.onresize = () => {
+                if (activeViewMode === 'xray') {
+                    centerAndFitImage();
+                }
+            };
+
+            // Keyboard arrow shortcuts to browse images
+            document.addEventListener('keydown', (e) => {
+                if (activeViewMode !== 'xray') return;
+                if (e.key === 'ArrowLeft') {
+                    changeImage(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeImage(1);
+                }
+            });
         });
-
-        mobileDateSelect.onchange = () => {
-            openTab(mobileDateSelect.value);
-        };
-
-        openTab('Summary 2026'); // Open the first date tab by default
-    } else {
-        document.querySelector('.viewer-container').innerHTML = '<p style="margin: 20px;">No images found.</p>';
-    }
-
-    const changeImage = (direction) => {
-        currentGlobalIndex = (currentGlobalIndex + direction + allImages.length) % allImages.length;
-        updateUIForCurrentImage();
-    };
-
-    displayArea.addEventListener('touchstart', (e) => {
-        if (e.target !== mainImage) return;
-        e.preventDefault();
-        if (e.touches.length === 1) {
-            const touch = e.touches[0];
-            start = { x: touch.clientX - pointX, y: touch.clientY - pointY };
-            isPanning = true;
-        } else if (e.touches.length === 2) {
-            isPanning = false;
-            const t1 = e.touches[0];
-            const t2 = e.touches[1];
-            initialDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-        }
-    });
-
-    displayArea.addEventListener('touchend', (e) => {
-        isPanning = false;
-        initialDistance = -1;
-    });
-
-    displayArea.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (isPanning && e.touches.length === 1) {
-            const touch = e.touches[0];
-            pointX = touch.clientX - start.x;
-            pointY = touch.clientY - start.y;
-            clampPan();
-            applyTransform();
-        } else if (e.touches.length === 2 && initialDistance > 0) {
-            const t1 = e.touches[0];
-            const t2 = e.touches[1];
-            const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-            const factor = currentDistance / initialDistance;
-            zoom(factor, {x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2});
-            initialDistance = currentDistance;
-        }
-    });
-
-    displayArea.onmousedown = (e) => {
-        if (e.target !== mainImage) return;
-        e.preventDefault();
-        start = { x: e.clientX - pointX, y: e.clientY - pointY };
-        isPanning = true;
-        displayArea.style.cursor = 'grabbing';
-    };
-    window.onmouseup = () => { isPanning = false; displayArea.style.cursor = 'grab'; };
-    window.onmousemove = (e) => { 
-        if (isPanning) { 
-            pointX = e.clientX - start.x; 
-            pointY = e.clientY - start.y; 
-            clampPan();
-            applyTransform();
-        } 
-    };
-    displayArea.onwheel = (e) => {
-        e.preventDefault();
-        const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
-        const factor = delta > 0 ? 1.1 : 0.9;
-        zoom(factor, {x: e.clientX, y: e.clientY});
-    };
-    
-    const zoom = (factor, center) => {
-        const rect = displayArea.getBoundingClientRect();
-        const mouseX = center.x - rect.left;
-        const mouseY = center.y - rect.top;
-
-        const xs = (mouseX - pointX) / scale;
-        const ys = (mouseY - pointY) / scale;
-        
-        const oldScale = scale;
-        let newScale = scale * factor;
-        
-        const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight);
-        newScale = Math.max(minScale, Math.min(newScale, 20));
-
-        if (newScale === oldScale) return;
-
-        pointX = mouseX - xs * newScale;
-        pointY = mouseY - ys * newScale;
-        scale = newScale;
-
-        clampPan();
-        applyTransform();
-    };
-
-    window.onresize = centerAndFitImage;
-
-    document.getElementById("zoomInBtn").onclick = () => zoom(1.2, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
-    document.getElementById("zoomOutBtn").onclick = () => zoom(0.8, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
-    document.querySelector('.prev').onclick = () => changeImage(-1);
-    document.querySelector('.next').onclick = () => changeImage(1);
-});
-</script>
+    </script>
 </body>
 </html>

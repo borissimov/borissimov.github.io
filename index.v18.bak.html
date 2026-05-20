@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DICOM Image Viewer</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #2c2c2c; color: #f1f1f1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .header { display: flex; justify-content: center; background-color: #333; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; flex-shrink: 0; }
+        .tab-button { padding: 14px 20px; cursor: pointer; border: none; background-color: #333; color: white; font-size: 16px; transition: background-color 0.3s; }
+        .tab-button:hover { background-color: #555; }
+        .tab-button.active { background-color: #007bff; }
+        .tab-button.primary-tab { background-color: #e67e22; font-weight: bold; }
+        .tab-button.primary-tab:hover { background-color: #d35400; }
+        .tab-button.archive-tab { background-color: #444; font-size: 14px; opacity: 0.8; }
+        #mobile-date-select { display: none; }
+        .viewer-container, .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .history-container, .summary-container, .pdf-container, .ct-report-container, .questions-container { padding: 20px; display: none; flex-direction: column; }
+        
+        /* Dashboard Styles */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .dashboard-card { background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .dashboard-card:hover { background: #333; transform: scale(1.02); }
+        .dashboard-card h3 { margin: 0 0 10px 0; color: #00aaff; }
+        .dashboard-card p { margin: 0; color: #ccc; font-size: 14px; }
+        .dashboard-card.ct { border-left-color: #e67e22; }
+        .dashboard-card.mri { border-left-color: #2ecc71; }
+
+        .pdf-container embed, .ct-report-container embed { flex-grow: 1; border: none; }
+        .pdf-container .pdf-controls, .ct-report-container .pdf-controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .action-button { padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
+        .action-button:hover { background-color: #0056b3; }
+        .action-button.mri-btn { background-color: #2ecc71; }
+        .action-button.mri-btn:hover { background-color: #27ae60; }
+        .action-button.ct-btn { background-color: #e67e22; }
+        .action-button.ct-btn:hover { background-color: #d35400; }
+        
+        .history-container, .summary-container, .questions-container { white-space: pre-wrap; overflow-y: auto; }
+        .thumbnail-sidebar { width: 180px; background-color: #1a1a1a; padding: 10px; overflow-y: auto; border-right: 1px solid #444; flex-shrink: 0; }
+        .thumbnail-container { margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; position: relative; }
+        .thumbnail-container.active { border-color: #007bff; }
+        .thumbnail-container img { width: 100%; display: block; border-radius: 2px; }
+        .image-display-area { flex-grow: 1; position: relative; cursor: grab; background-color: #000; overflow: hidden; }
+        .viewer-header { position: absolute; top: 15px; left: 20px; color: #f1f1f1; font-size: 18px; z-index: 10; background-color: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;}
+        .main-image { position: absolute; transform-origin: 0 0; will-change: transform; }
+        .nav-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(85, 85, 85, 0.5); color: white; border: none; font-size: 30px; cursor: pointer; padding: 10px 15px; z-index: 10; user-select: none; border-radius: 5px; }
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        .zoom-controls { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+        .zoom-button { background-color: rgba(85, 85, 85, 0.8); color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
+        .image-adjust-controls { display: flex; flex-direction: column; gap: 20px; padding: 20px; background-color: #1a1a1a; border-right: 1px solid #444; justify-content: center; } .control-group { display: flex; flex-direction: column; align-items: center; } .control-group label { font-size: 12px; margin-top: 5px; } /* Hidden by default on desktop */
+        .metadata-sidebar { width: 280px; background-color: #2c2c2c; color: #f1f1f1; padding: 20px; overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.5); flex-shrink: 0; }
+        .metadata-sidebar p { margin: 15px 0; word-wrap: break-word; }
+        .metadata-sidebar strong { color: #00aaff; }
+
+        @media (max-width: 768px) {
+            .header { padding: 5px; }
+            .tab-button { display: none; }
+            #mobile-date-select {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                background-color: #333;
+                color: white;
+                border: 1px solid #555;
+                font-size: 16px;
+            }
+            .viewer-container { 
+                flex-direction: column; 
+                height: calc(100vh - 50px); /* Adjust for header */
+            }
+            .image-display-area {
+                order: 1;
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+            .image-adjust-controls {
+                order: 2;
+                display: flex;
+                flex: 0 0 auto;
+                position: relative;
+                flex-direction: row;
+                justify-content: space-around;
+                background-color: #1a1a1a;
+                padding: 10px;
+                border-top: 1px solid #444;
+                border-radius: 0;
+                width: 100%;
+            }
+            .thumbnail-sidebar {
+                order: 3;
+                flex: 0 0 100px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                border-top: 1px solid #444;
+                border-right: none;
+            }
+            .metadata-sidebar {
+                order: 4;
+                flex: 0 0 auto;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                border-top: 1px solid #444;
+                padding: 10px;
+            }
+            .zoom-controls { display: none; }
+            .control-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .control-group label {
+                font-size: 12px;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <!-- Desktop tabs will be generated here -->
+    <select id="mobile-date-select"></select>
+</div>
+<div class="viewer-container">
+    <div class="thumbnail-sidebar"></div>
+    <div class="image-display-area">
+        <div class="viewer-header"><span id="image-counter"></span></div>
+        <img class="main-image" id="mainImage">
+        <button class="nav-button prev">&#10094;</button>
+        <button class="nav-button next">&#10095;</button>
+        <div class="zoom-controls">
+            <button class="zoom-button" id="zoomInBtn">+</button>
+            <button class="zoom-button" id="zoomOutBtn">-</button>
+        </div>
+    </div>
+    <div class="image-adjust-controls">
+        <div class="control-group">
+            <input type="range" id="brightness" min="0" max="200" value="100" title="Brightness">
+            <label for="brightness">Brightness</label>
+        </div>
+        <div class="control-group">
+            <input type="range" id="contrast" min="0" max="200" value="100" title="Contrast">
+            <label for="contrast">Contrast</label>
+        </div>
+    </div>
+    <div class="metadata-sidebar">
+        <p><strong>DOB:</strong> <span id="meta-dob-age"></span></p>
+        <p><strong>Days since accident:</strong> <span id="meta-days-since"></span></p>
+    </div>
+</div>
+<div class="summary-container" style="padding: 30px; color: #eee; background: #1a1a1a; overflow-y: auto; font-family: 'Segoe UI', sans-serif;">
+    <h1 style="color: #3498db; text-align: center; border-bottom: 2px solid #444; padding-bottom: 20px;">Резюме и Въпросник за консултация</h1>
+    
+    <div style="background: #222; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid #3498db;">
+        <p><strong>Пациент:</strong> Борис Симеонов Симов, 42 г.</p>
+        <p><strong>Основна цел на лечението:</strong> Завръщане към силови тренировки с големи тежести (30+ кг) и агресивно планинско колоездене</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card ct" onclick="openTab('CT Report')">
+            <h3>☢️ CT Report 2026</h3>
+            <p>Diagnostic report and 3D CT viewer</p>
+        </div>
+        <div class="dashboard-card mri" onclick="openTab('MRI Report')">
+            <h3>🩻 MRI Report 2025</h3>
+            <p>Diagnostic report and MRI viewer</p>
+        </div>
+        <div class="dashboard-card" onclick="openTab('Questions')">
+            <h3>❓ Consultation Questions</h3>
+            <p>8 specific questions for the surgical review</p>
+        </div>
+        <div class="dashboard-card" onclick="openTab('History')">
+            <h3>📜 Full Medical History</h3>
+            <p>Timeline from first injury to present</p>
+        </div>
+    </div>
+
+    <h2 style="color: #eee;">1. Хронология на травмите и проведено лечение</h2>
+    <div style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 30px;">
+14 Май 2025 г. - Първоначална травма (спукване на главичката на радиуса).
+Юни 2025 г. - Започната физиотерапия, която значително подобри обема на движение. Препоръчано бе плуване и продължаване на упражненията.
+Юли 2025 г. - Направен ЯМР (показал 2.5 мм дехисценция). След ЯМР посетих двама ортопеди. Становището им бе, че зарастването отнема повече време, но няма повод за притеснение. Разрешиха ми прогресивно натоварване "в рамките на безболезненото", включително лостове, тежести и колоездене.
+Септември 2025 - Март 2026 г. - Стриктно спазвах лекарските препоръки. Достигнах до 25 кг на ръка (лежанка) и карах колело. Резултат: стабилност, но дефицит в пълното разгъване и понякога след бутащи упражнения леки болки в лакътя след тренировка.
+13 Март 2026 г. - Втора травма (падане). Рентгенът не отчита нова остра фрактура, но болката е силна. Последващ КТ скенер.
+    </div>
+
+    <h2 style="color: #eee;">2. Сравнителен анализ на образните изследвания</h2>
+    <table style="width:100%; border-collapse: collapse; margin: 20px 0; background: #222; font-size: 15px;">
+        <tr style="background:#333; color: #3498db;">
+            <th style="border:1px solid #444; padding:12px; text-align: left;">Критерий</th>
+            <th style="border:1px solid #444; padding:12px; text-align: left;">ЯМР (24.07.2025)</th>
+            <th style="border:1px solid #444; padding:12px; text-align: left;">КТ (23.04.2026)</th>
+        </tr>
+        <tr>
+            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Костно срастване</td>
+            <td style="border:1px solid #444; padding:12px;">Фрактурни линии с дехисценция до 2.5 мм.</td>
+            <td style="border:1px solid #444; padding:12px; color: #e74c3c;">Фрактурни линии до 2 мм. Повърхностите са изгладени (белег за хронична псевдоартроза).</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Свободни фрагменти</td>
+            <td style="border:1px solid #444; padding:12px;">Няма данни за свободни фрагменти.</td>
+            <td style="border:1px solid #444; padding:12px; color: #f1c40f;">Два вътреставни фрагмента (2 мм) медиално и дорзално.</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #444; padding:12px; font-weight:bold;">Ставен хрущял</td>
+            <td style="border:1px solid #444; padding:12px;">Нормална артикулация.</td>
+            <td style="border:1px solid #444; padding:12px;">Малки узури (ерозии) и субхондрални кисти до 4 мм.</td>
+        </tr>
+    </table>
+</div>
+
+<div class="history-container" style="padding: 30px; line-height: 1.6; color: #eee; background: #1a1a1a; overflow-y: auto;">
+    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Пълна история на заболяването</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">14 май 2025 г. (Ден 0)</h3>
+        <p>Падане от велосипед с протегнати напред ръце. В Спешно отделение на ВМА е поставена диагноза "счупена глава на радиуса". Поставена е гипсова лонгета.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">16 май – 24 май 2025 г. (Ден 2 – Ден 10)</h3>
+        <p>Проведена ранна рехабилитация и физиотерапия, включваща:</p>
+        <ul style="list-style-type: disc; margin-left: 20px;">
+            <li>Раздвижване на лакътя с машина "Артромот".</li>
+            <li>Мануално разгъване от рехабилитатор.</li>
+            <li>Упражнения за бицепс и трицепс с тежести до 1.5 кг.</li>
+            <li>Упражнения с пръчка (гребане, опъване и сгъване зад гръб).</li>
+            <li>Висене на лост с подпряни крака.</li>
+            <li>Плуване.</li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">5 юни 2025 г. (Ден 22)</h3>
+        <p>Сваляне на гипсовата лонгета. Започват активни упражнения за супинация, пронация, сгъване и разгъване в рамките на възможния обем, както и гравитационно разгъване на лакътя от легнало положение.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">11 юли 2025 г. (Ден 58)</h3>
+        <p>Преглед при д-р Бахрам Фирузи. Установена е нестабилност в лакътната става. Назначен е ЯМР и консултация с д-р Борислав Тасев.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">24 юли 2025 г. (Ден 71 / 10-а седмица)</h3>
+        <p>Проведен ЯМР в СМДЛ "Спектър". Резултатите показват фрактурни линии с дехисценция (отваряне) до 2.5 мм и парциална увреда на латералния колатерален комплекс.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">Септември 2025 г. – Март 2026 г.</h3>
+        <p>Период на прогресивно натоварване според лекарските препоръки ("в рамките на безболезненото"). Достигнати тежести от 25 кг на ръка при бутащи упражнения (лежанка) и завръщане към планинското колоездене. Налице е лек дефицит в пълното разгъване и епизодични болки след интензивни тренировки.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">13 март 2026 г.</h3>
+        <p>Втора травма след падане. Силна болка в ставата. Рентгенографията не показва нова остра фрактура, но симптоматиката налага по-детайлно изследване.</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="color: #e67e22;">23 април 2026 г.</h3>
+        <p>Проведен КТ скенер, който установява хронична псевдоартроза (незараснала фрактура с изгладени костни краища), два свободни вътреставни фрагмента (около 2 мм) и ставни ерозии (узури) с кисти.</p>
+    </div>
+</div>
+
+<div class="pdf-container">
+    <div class="pdf-controls">
+        <a href="20250724_MRI_Boris_Simov.pdf" download class="action-button">⬇️ Download PDF Report</a>
+        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-button mri-btn">🩻 VIEW MRI (Online Viewer)</a>
+    </div>
+    <embed src="20250724_MRI_Boris_Simov.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<div class="ct-report-container">
+    <div class="pdf-controls">
+        <a href="20260423_CT_Report.pdf" download class="action-button">⬇️ Download PDF Report</a>
+        <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-button ct-btn">☢️ VIEW CT SCAN (Online Viewer)</a>
+    </div>
+    <embed src="20260423_CT_Report.pdf" type="application/pdf" width="100%" height="100%">
+</div>
+
+<div class="questions-container" style="padding: 30px; line-height: 1.8; color: #eee; background: #1a1a1a; overflow-y: auto;">
+    <h1 style="color: #3498db; border-bottom: 2px solid #444; padding-bottom: 10px;">Въпроси за консултацията</h1>
+    
+    <div style="background: #222; padding: 25px; border-radius: 10px; border-left: 5px solid #00aaff; margin-top: 20px;">
+        <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">1.</span>
+                Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">2.</span>
+                Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">3.</span>
+                Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">4.</span>
+                Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">5.</span>
+                На какво се дължи прихрупващият звук, който усещам при специфични движения?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">6.</span>
+                Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">7.</span>
+                Каква е причината за локализираните болки:
+                <ul style="list-style-type: disc; margin-top: 10px; margin-left: 20px;">
+                    <li>От вътрешната страна на мишницата (над лакътя)?</li>
+                    <li>Над главичката на радиуса и по протежение на брахиорадиалиса?</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 20px; padding-left: 40px; position: relative;">
+                <span style="position: absolute; left: 0; top: 0; color: #00aaff; font-weight: bold; font-size: 20px;">8.</span>
+                Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script src="metadata.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof metadata === 'undefined') {
+        console.error("Error: metadata.js could not be loaded or is empty. Please ensure the file exists and is correctly formatted.");
+        document.querySelector('.viewer-container').innerHTML = '<div style="padding: 20px; text-align: center; width: 100%;"><h1>Error: Metadata Not Found</h1><p>Could not load image metadata. Please run the <code>update_metadata.py</code> script to generate it.</p></div>';
+        return;
+    }
+
+    const imagesByDate = {};
+    Object.keys(metadata).sort().forEach(file => {
+        const datePart = file.substring(0, 6);
+        if (!imagesByDate[datePart]) imagesByDate[datePart] = [];
+        imagesByDate[datePart].push(file);
+    });
+
+    const allImages = Object.keys(imagesByDate).sort().flatMap(date => imagesByDate[date]);
+    
+    const header = document.querySelector('.header');
+    const mobileDateSelect = document.getElementById('mobile-date-select');
+    const viewerContainer = document.querySelector('.viewer-container');
+    const historyContainer = document.querySelector('.history-container');
+    const pdfContainer = document.querySelector('.pdf-container');
+    const ctReportContainer = document.querySelector('.ct-report-container');
+    const questionsContainer = document.querySelector('.questions-container');
+    const thumbnailSidebar = document.querySelector('.thumbnail-sidebar');
+    const mainImage = document.getElementById('mainImage');
+    const displayArea = document.querySelector('.image-display-area');
+    const brightnessSlider = document.getElementById('brightness');
+    const contrastSlider = document.getElementById('contrast');
+
+    let currentGlobalIndex = 0;
+    let scale = 1, isPanning = false, pointX = 0, pointY = 0, start = { x: 0, y: 0 };
+    let initialDistance = -1;
+
+    const applyTransform = () => {
+        mainImage.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    };
+
+    const clampPan = () => {
+        const areaWidth = displayArea.clientWidth;
+        const areaHeight = displayArea.clientHeight;
+        const imgWidth = mainImage.naturalWidth * scale;
+        const imgHeight = mainImage.naturalHeight * scale;
+
+        const minX = areaWidth - imgWidth;
+        const minY = areaHeight - imgHeight;
+
+        if (imgWidth <= areaWidth) {
+            pointX = (areaWidth - imgWidth) / 2;
+        } else {
+            pointX = Math.max(minX, Math.min(0, pointX));
+        }
+
+        if (imgHeight <= areaHeight) {
+            pointY = (areaHeight - imgHeight) / 2;
+        } else {
+            pointY = Math.max(minY, Math.min(0, pointY));
+        }
+    };
+
+    const applyImageFilters = () => {
+        const brightness = brightnessSlider.value;
+        const contrast = contrastSlider.value;
+        mainImage.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+    };
+
+    const centerAndFitImage = () => {
+        const areaWidth = displayArea.clientWidth;
+        const areaHeight = displayArea.clientHeight;
+        const imgWidth = mainImage.naturalWidth;
+        const imgHeight = mainImage.naturalHeight;
+
+        if (imgWidth && imgHeight) {
+            scale = Math.min(areaWidth / imgWidth, areaHeight / imgHeight);
+            pointX = 0;
+            pointY = 0;
+            clampPan();
+            applyTransform();
+        }
+    };
+
+    brightnessSlider.oninput = applyImageFilters;
+    contrastSlider.oninput = applyImageFilters;
+
+    const openTab = (tabName) => {
+        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
+        const activeButton = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        viewerContainer.style.display = 'none';
+        const sumCont = document.querySelector('.summary-container'); if(sumCont) sumCont.style.display = 'none';
+        historyContainer.style.display = 'none';
+        pdfContainer.style.display = 'none';
+        ctReportContainer.style.display = 'none';
+        questionsContainer.style.display = 'none';
+
+        if (tabName === 'Summary 2026') {
+            document.querySelector('.summary-container').style.display = 'block';
+        } else if (tabName === 'History') {
+            historyContainer.style.display = 'block';
+        } else if (tabName === 'MRI Report') {
+            pdfContainer.style.display = 'flex';
+        } else if (tabName === 'CT Report') {
+            ctReportContainer.style.display = 'flex';
+        } else if (tabName === 'Questions') {
+            questionsContainer.style.display = 'block';
+        } else {
+            viewerContainer.style.display = 'flex';
+            const firstImageOfDate = imagesByDate[tabName][0];
+            currentGlobalIndex = allImages.indexOf(firstImageOfDate);
+            updateUIForCurrentImage();
+        }
+    };
+
+    const updateUIForCurrentImage = () => {
+        const imageFile = allImages[currentGlobalIndex];
+        const datePart = imageFile.substring(0, 6);
+
+        document.querySelectorAll('.tab-button').forEach(tb => tb.classList.toggle('active', tb.dataset.tab === datePart));
+        if (mobileDateSelect.value !== datePart) {
+            mobileDateSelect.value = datePart;
+        }
+
+        const currentImageList = imagesByDate[datePart];
+        thumbnailSidebar.innerHTML = '';
+        currentImageList.forEach((file, index) => {
+            const thumbContainer = document.createElement('div');
+            thumbContainer.className = 'thumbnail-container';
+            thumbContainer.onclick = () => {
+                currentGlobalIndex = allImages.indexOf(file);
+                updateUIForCurrentImage();
+            };
+            const thumbImg = document.createElement('img');
+            thumbImg.src = file;
+            thumbContainer.appendChild(thumbImg);
+            thumbnailSidebar.appendChild(thumbContainer);
+        });
+        
+        const localIndex = currentImageList.indexOf(imageFile);
+        document.querySelectorAll('.thumbnail-container').forEach((thumb, idx) => {
+            thumb.classList.toggle('active', idx === localIndex);
+            if (idx === localIndex) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        mainImage.src = imageFile;
+        const meta = metadata[imageFile];
+        document.getElementById('image-counter').textContent = `${localIndex + 1} of ${currentImageList.length}`;
+
+        const birthDate = new Date('1984-01-10');
+        const studyDate = new Date(meta.study_date);
+        const firstXrayDate = new Date('2025-05-14');
+
+        let age = studyDate.getFullYear() - birthDate.getFullYear();
+        const m = studyDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && studyDate.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        const diffTime = Math.abs(studyDate - firstXrayDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        document.getElementById('meta-dob-age').textContent = `10 Jan 1984 (Age: ${age})`;
+        document.getElementById('meta-days-since').textContent = diffDays;
+
+        brightnessSlider.value = 100;
+        contrastSlider.value = 100;
+        applyImageFilters();
+
+        mainImage.onload = () => {
+            centerAndFitImage();
+            mainImage.onload = null;
+        };
+    };
+
+    const sortedDates = Object.keys(imagesByDate).sort();
+    if (sortedDates.length > 0) {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // --- PRIMARY TABS ---
+        
+        // Summary 2026 Tab
+        const summaryButton = document.createElement('button');
+        summaryButton.className = 'tab-button primary-tab';
+        summaryButton.textContent = '📋 Summary 2026';
+        summaryButton.dataset.tab = 'Summary 2026';
+        summaryButton.onclick = () => openTab('Summary 2026');
+        header.appendChild(summaryButton);
+
+        const summaryOption = document.createElement('option');
+        summaryOption.value = 'Summary 2026';
+        summaryOption.textContent = '📋 Summary 2026';
+        mobileDateSelect.appendChild(summaryOption);
+
+        // CT Report Tab
+        const ctReportButton = document.createElement('button');
+        ctReportButton.className = 'tab-button primary-tab';
+        ctReportButton.textContent = '☢️ CT Report 2026';
+        ctReportButton.dataset.tab = 'CT Report';
+        ctReportButton.onclick = () => openTab('CT Report');
+        header.appendChild(ctReportButton);
+
+        const ctReportOption = document.createElement('option');
+        ctReportOption.value = 'CT Report';
+        ctReportOption.textContent = '☢️ CT Report 2026';
+        mobileDateSelect.appendChild(ctReportOption);
+
+        // MRI Report Tab
+        const mriButton = document.createElement('button');
+        mriButton.className = 'tab-button primary-tab';
+        mriButton.textContent = '📄 MRI Report 2025';
+        mriButton.dataset.tab = 'MRI Report';
+        mriButton.onclick = () => openTab('MRI Report');
+        header.appendChild(mriButton);
+
+        const mriOption = document.createElement('option');
+        mriOption.value = 'MRI Report';
+        mriOption.textContent = '📄 MRI Report 2025';
+        mobileDateSelect.appendChild(mriOption);
+
+        // Questions Tab
+        const questionsButton = document.createElement('button');
+        questionsButton.className = 'tab-button primary-tab';
+        questionsButton.textContent = '❓ Questions';
+        questionsButton.dataset.tab = 'Questions';
+        questionsButton.onclick = () => openTab('Questions');
+        header.appendChild(questionsButton);
+
+        const questionsOption = document.createElement('option');
+        questionsOption.value = 'Questions';
+        questionsOption.textContent = '❓ Questions';
+        mobileDateSelect.appendChild(questionsOption);
+
+        // History Tab
+        const historyButton = document.createElement('button');
+        historyButton.className = 'tab-button';
+        historyButton.textContent = '📜 History';
+        historyButton.dataset.tab = 'History';
+        historyButton.onclick = () => openTab('History');
+        header.appendChild(historyButton);
+
+        const historyOption = document.createElement('option');
+        historyOption.value = 'History';
+        historyOption.textContent = '📜 History';
+        mobileDateSelect.appendChild(historyOption);
+
+        // --- ARCHIVE TABS ---
+        
+        const archiveLabel = document.createElement('div');
+        archiveLabel.textContent = 'Archive 2025:';
+        archiveLabel.style.padding = '14px 10px';
+        archiveLabel.style.fontSize = '12px';
+        archiveLabel.style.color = '#888';
+        archiveLabel.style.alignSelf = 'center';
+        header.appendChild(archiveLabel);
+
+        sortedDates.forEach((datePart) => {
+            const dateObj = new Date(`20${datePart.substring(0,2)}-${datePart.substring(2,4)}-${datePart.substring(4,6)}`);
+            const formattedDate = isNaN(dateObj) ? `Date: ${datePart}` : `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+            
+            const tabButton = document.createElement('button');
+            tabButton.className = 'tab-button archive-tab';
+            tabButton.textContent = formattedDate;
+            tabButton.dataset.tab = datePart;
+            tabButton.onclick = () => openTab(datePart);
+            header.appendChild(tabButton);
+
+            const option = document.createElement('option');
+            option.value = datePart;
+            option.textContent = `📁 Archive: ${formattedDate}`;
+            mobileDateSelect.appendChild(option);
+        });
+
+        mobileDateSelect.onchange = () => {
+            openTab(mobileDateSelect.value);
+        };
+
+        openTab('Summary 2026'); // Open the first date tab by default
+    } else {
+        document.querySelector('.viewer-container').innerHTML = '<p style="margin: 20px;">No images found.</p>';
+    }
+
+    const changeImage = (direction) => {
+        currentGlobalIndex = (currentGlobalIndex + direction + allImages.length) % allImages.length;
+        updateUIForCurrentImage();
+    };
+
+    displayArea.addEventListener('touchstart', (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            start = { x: touch.clientX - pointX, y: touch.clientY - pointY };
+            isPanning = true;
+        } else if (e.touches.length === 2) {
+            isPanning = false;
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            initialDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
+    });
+
+    displayArea.addEventListener('touchend', (e) => {
+        isPanning = false;
+        initialDistance = -1;
+    });
+
+    displayArea.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (isPanning && e.touches.length === 1) {
+            const touch = e.touches[0];
+            pointX = touch.clientX - start.x;
+            pointY = touch.clientY - start.y;
+            clampPan();
+            applyTransform();
+        } else if (e.touches.length === 2 && initialDistance > 0) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+            const factor = currentDistance / initialDistance;
+            zoom(factor, {x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2});
+            initialDistance = currentDistance;
+        }
+    });
+
+    displayArea.onmousedown = (e) => {
+        if (e.target !== mainImage) return;
+        e.preventDefault();
+        start = { x: e.clientX - pointX, y: e.clientY - pointY };
+        isPanning = true;
+        displayArea.style.cursor = 'grabbing';
+    };
+    window.onmouseup = () => { isPanning = false; displayArea.style.cursor = 'grab'; };
+    window.onmousemove = (e) => { 
+        if (isPanning) { 
+            pointX = e.clientX - start.x; 
+            pointY = e.clientY - start.y; 
+            clampPan();
+            applyTransform();
+        } 
+    };
+    displayArea.onwheel = (e) => {
+        e.preventDefault();
+        const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+        const factor = delta > 0 ? 1.1 : 0.9;
+        zoom(factor, {x: e.clientX, y: e.clientY});
+    };
+    
+    const zoom = (factor, center) => {
+        const rect = displayArea.getBoundingClientRect();
+        const mouseX = center.x - rect.left;
+        const mouseY = center.y - rect.top;
+
+        const xs = (mouseX - pointX) / scale;
+        const ys = (mouseY - pointY) / scale;
+        
+        const oldScale = scale;
+        let newScale = scale * factor;
+        
+        const minScale = Math.min(displayArea.clientWidth / mainImage.naturalWidth, displayArea.clientHeight / mainImage.naturalHeight);
+        newScale = Math.max(minScale, Math.min(newScale, 20));
+
+        if (newScale === oldScale) return;
+
+        pointX = mouseX - xs * newScale;
+        pointY = mouseY - ys * newScale;
+        scale = newScale;
+
+        clampPan();
+        applyTransform();
+    };
+
+    window.onresize = centerAndFitImage;
+
+    document.getElementById("zoomInBtn").onclick = () => zoom(1.2, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+    document.getElementById("zoomOutBtn").onclick = () => zoom(0.8, {x: displayArea.clientWidth / 2, y: displayArea.clientHeight / 2});
+    document.querySelector('.prev').onclick = () => changeImage(-1);
+    document.querySelector('.next').onclick = () => changeImage(1);
+});
+</script>
+</body>
+</html>

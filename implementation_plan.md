@@ -1,31 +1,37 @@
-# Updated Implementation Plan - Medical Dashboard Restructure V4
+# Updated Implementation Plan - Medical Dashboard Restructure V5
 
-This plan addresses layout bugs on Galaxy A41, CSS overlap rendering bugs in the media viewer pane, and event bubbling for online DICOM study links.
+This plan addresses study card clickability, renaming of reports and external links, wrapping of viewer action buttons on mobile, and transforming the comparison table to be fully responsive without horizontal scrolling.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> Please review the proposed V4 fixes before approval.
+> Please review the proposed V5 fixes before approval.
 
 We propose the following updates:
-1.  **Fix Galaxy A41 Horizontal Overflow:**
-    *   Set `min-width: 0;` on `.dossier-panel` inside the mobile media query (`max-width: 1024px`). This allows the panel to correctly shrink to 360px on Galaxy A41 without clipping or horizontal scroll.
-2.  **Fix Media Viewer Split Pane Layout Bug:**
-    *   Currently, when a PDF report is loaded, the welcome/placeholder panel ("Medical Viewing Panel") stays visible side-by-side because it lacks a `display: none` rule when inactive.
-    *   Modify the CSS so that `.welcome-container` is set to `display: none` by default and `display: flex` only when it has the `.active` class. This allows the loaded PDF or X-rays to take 100% of the right pane's screen size.
-3.  **Fix DICOM Links and Click Bubbling:**
-    *   Remove `onclick="loadPDF('CT' | 'MRI')"` from the parent `.study-card` containers to prevent click bubbling.
-    *   Bind the `onclick="loadPDF(...)"` handler specifically to the "View Report PDF" text span.
-    *   Change the "Online DICOM Scan" links into actual `<a>` tags pointing directly to the DICOM library URLs with `target="_blank"` so they open the online scans in a new tab.
-4.  **Full Backup:**
-    *   Create a full copy of the current version to `index.v20.bak.html` in the workspace folder.
+1.  **Card Clickability with Event Stop Propagation:**
+    *   Add `onclick="loadPDF('CT')"` back to the outer `.ct-card` and `onclick="loadPDF('MRI')"` back to the outer `.mri-card`.
+    *   Add `onclick="event.stopPropagation()"` to the external DICOM `<a>` links. This allows the user to click anywhere on the card to open the report PDF, while clicking the external link only opens that link in a new tab without loading the PDF.
+2.  **Renaming Links and Reports:**
+    *   Rename "📄 Преглед на Доклад" to "📄 Разчитане".
+    *   Rename "🩻 Онлайн 3D Скенер" to "🩻 Виж КТ изследване" (CT card).
+    *   Rename "🩻 Онлайн ЯМР" to "🩻 Виж ЯМР изследване" (MRI card).
+    *   Update dynamic actions in JavaScript to reflect these names for the viewer top bar buttons.
+3.  **Viewer Top Bar Layout on Mobile:**
+    *   Add CSS rules to stack the `.viewer-top-bar` vertically on mobile screen widths (`max-width: 768px`).
+    *   Display buttons in a horizontal row below the title, with `flex-grow: 1` so they take 50% width each and fit cleanly on small viewports.
+4.  **Responsive Comparison Table:**
+    *   Add mobile CSS rules for `.comparison-table` (`max-width: 600px`) that stack columns vertically.
+    *   The indicator name ("Показател") becomes the section title, while the MRI and CT findings stack below it, prefixed with "ЯМР (2025):" and "КТ (2026):" (automatically translated based on current language toggle).
+5.  **Full Backup:**
+    *   Create a full copy of the current version to `index.v21.bak.html`.
 
 ---
 
 ## Verification Plan
 
-*   **Width Test:** Verify the page doesn't scroll horizontally on mobile.
-*   **Viewer Layout Test:** Verify that when the CT or MRI is loaded, the PDF occupies the entire width of the right panel without showing the placeholder box.
-*   **Link Click Test:** Click "Online 3D Scanner" and verify it opens the DICOM library in a new tab rather than loading the PDF in the viewer.
+*   **Card Click Test:** Click the CT scan card body. Verify it opens the PDF in the viewer. Click the "Виж КТ изследване" link. Verify it opens DICOM library in a new tab without switching the viewer's active document.
+*   **Renaming Test:** Verify the link names are updated correctly in Bulgarian and English.
+*   **Table Test:** Verify that the comparison table renders as stacked cards on mobile and fits within 360px without scrolling horizontally.
+*   **Top Bar Button Fit Test:** Verify the top bar layout on mobile scales correctly and text fits inside buttons without clipping.

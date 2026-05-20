@@ -340,77 +340,6 @@
             font-weight: 700;
         }
 
-        @media (max-width: 600px) {
-            .comparison-table, 
-            .comparison-table thead, 
-            .comparison-table tbody, 
-            .comparison-table th, 
-            .comparison-table td, 
-            .comparison-table tr { 
-                display: block; 
-            }
-            
-            .comparison-table thead tr { 
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-            
-            .comparison-table tr {
-                border: 1px solid var(--border-color);
-                margin-bottom: 12px;
-                border-radius: 8px;
-                background-color: rgba(255, 255, 255, 0.015);
-                padding: 10px;
-            }
-            
-            .comparison-table td { 
-                border: none;
-                position: relative;
-                padding: 6px 6px 6px 115px; 
-                font-size: 12px;
-                min-height: 18px;
-            }
-            
-            .comparison-table td::before { 
-                position: absolute;
-                top: 6px;
-                left: 8px;
-                width: 95px; 
-                padding-right: 8px; 
-                white-space: nowrap;
-                font-weight: bold;
-                color: var(--accent-blue);
-            }
-            
-            .comparison-table td:nth-of-type(1) {
-                font-weight: 700;
-                color: var(--text-primary);
-                padding-left: 8px;
-                border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
-                margin-bottom: 8px;
-                padding-bottom: 8px;
-                font-size: 13px;
-            }
-            .comparison-table td:nth-of-type(1)::before {
-                content: "";
-            }
-            
-            .comparison-table td:nth-of-type(2)::before { 
-                content: "ЯМР (2025):"; 
-            }
-            body.lang-en .comparison-table td:nth-of-type(2)::before {
-                content: "MRI (2025):";
-            }
-            
-            .comparison-table td:nth-of-type(3)::before { 
-                content: "КТ (2026):"; 
-            }
-            body.lang-en .comparison-table td:nth-of-type(3)::before {
-                content: "CT (2026):";
-            }
-        }
-
         .bold-td {
             font-weight: 700;
             color: var(--text-primary);
@@ -1036,32 +965,6 @@
             }
             .prev { left: 10px; }
             .next { right: 10px; }
-            
-            /* Stack the viewer top bar on smaller mobile devices */
-            .viewer-top-bar {
-                flex-direction: column;
-                height: auto;
-                align-items: stretch;
-                gap: 10px;
-                padding: 10px 15px;
-            }
-            .viewer-title {
-                font-size: 13px;
-                justify-content: center;
-                text-align: center;
-            }
-            .viewer-quick-actions {
-                justify-content: center;
-                width: 100%;
-                gap: 8px;
-            }
-            .viewer-btn {
-                flex-grow: 1;
-                justify-content: center;
-                font-size: 11px;
-                padding: 6px 8px;
-                white-space: nowrap;
-            }
         }
     </style>
 </head>
@@ -1225,35 +1128,35 @@
                 <div id="sec-studies" class="dossier-section">
                     
                     <!-- CT Card -->
-                    <div class="study-card ct-card" onclick="loadPDF('CT')">
+                    <div class="study-card ct-card">
                         <div class="study-card-icon">☢️</div>
                         <div class="study-card-content">
                             <h4 data-lang="bg">КТ Скенер (23.04.2026)</h4>
-                            <h4 data-lang="en">CT Scan (23.04.2026)</h4>
+                            <h4 data-lang="en">CT Scan Report (23.04.2026)</h4>
                             <p data-lang="bg">Потвърждава хронична псевдоартроза на радиусната глава с 2 мм процеп и два свободни вътреставни фрагмента.</p>
                             <p data-lang="en">Confirms chronic pseudarthrosis of the radial head with a 2 mm gap and two free intra-articular fragments.</p>
                             <div class="study-card-actions">
-                                <span class="action-link" onclick="loadPDF('CT')" data-lang="bg">📄 Разчитане</span>
-                                <span class="action-link" onclick="loadPDF('CT')" data-lang="en">📄 Report</span>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" onclick="event.stopPropagation()" class="action-link" data-lang="bg">🩻 Виж КТ изследване</a>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" onclick="event.stopPropagation()" class="action-link" data-lang="en">🩻 View CT Scan</a>
+                                <span class="action-link" onclick="loadPDF('CT')" data-lang="bg">📄 Преглед на Доклад</span>
+                                <span class="action-link" onclick="loadPDF('CT')" data-lang="en">📄 View Report PDF</span>
+                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-link" data-lang="bg">🩻 Онлайн 3D Скенер</a>
+                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-link" data-lang="en">🩻 Online DICOM Scan</a>
                             </div>
                         </div>
                     </div>
 
                     <!-- MRI Card -->
-                    <div class="study-card mri-card" onclick="loadPDF('MRI')">
+                    <div class="study-card mri-card">
                         <div class="study-card-icon">🩻</div>
                         <div class="study-card-content">
                             <h4 data-lang="bg">ЯМР Изследване (24.07.2025)</h4>
-                            <h4 data-lang="en">MRI Study (24.07.2025)</h4>
+                            <h4 data-lang="en">MRI Examination (24.07.2025)</h4>
                             <p data-lang="bg">Най-ранно разкриване на незарастване (2.5 мм дехисценция) и деструкция на външните връзки (лигаменти).</p>
                             <p data-lang="en">Earliest indication of non-union (2.5 mm cleft) and damage to lateral collateral complex.</p>
                             <div class="study-card-actions">
-                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="bg">📄 Разчитане</span>
-                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="en">📄 Report</span>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" onclick="event.stopPropagation()" class="action-link" data-lang="bg">🩻 Виж ЯМР изследване</a>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" onclick="event.stopPropagation()" class="action-link" data-lang="en">🩻 View MRI Scan</a>
+                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="bg">📄 Преглед на Доклад</span>
+                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="en">📄 View Report PDF</span>
+                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-link" data-lang="bg">🩻 Онлайн ЯМР</a>
+                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-link" data-lang="en">🩻 Online DICOM Scan</a>
                             </div>
                         </div>
                     </div>
@@ -1857,11 +1760,11 @@
                 } else if (activeViewMode === 'pdf') {
                     activeViewerIcon.textContent = activePDFType === 'MRI' ? '📄' : '☢️';
                     if (activePDFType === 'MRI') {
-                        activeViewerTitleBg.textContent = 'ЯМР Разчитане (24.07.2025 г.)';
-                        activeViewerTitleEn.textContent = 'MRI Report (24.07.2025)';
+                        activeViewerTitleBg.textContent = 'ЯМР Доклад (24.07.2025 г.)';
+                        activeViewerTitleEn.textContent = 'MRI Study Report (24.07.2025)';
                     } else {
-                        activeViewerTitleBg.textContent = 'КТ Разчитане (23.04.2026 г.)';
-                        activeViewerTitleEn.textContent = 'CT Report (23.04.2026)';
+                        activeViewerTitleBg.textContent = 'КТ Скенер Доклад (23.04.2026 г.)';
+                        activeViewerTitleEn.textContent = 'CT Scan Report (23.04.2026)';
                     }
                 }
             };
@@ -1924,11 +1827,7 @@
                 studyBtn.className = `viewer-btn ${btnColorClass}`;
                 studyBtn.href = dicomUrl;
                 studyBtn.target = '_blank';
-                if (type === 'MRI') {
-                    studyBtn.innerHTML = `🩻 <span data-lang="bg">Виж ЯМР изследване</span><span data-lang="en">View MRI Scan</span>`;
-                } else {
-                    studyBtn.innerHTML = `🩻 <span data-lang="bg">Виж КТ изследване</span><span data-lang="en">View CT Scan</span>`;
-                }
+                studyBtn.innerHTML = `🩻 <span data-lang="bg">Отвори DICOM Изследване</span><span data-lang="en">Open DICOM Study</span>`;
                 viewerQuickActions.appendChild(studyBtn);
 
                 updateViewerTitle();

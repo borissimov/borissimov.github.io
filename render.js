@@ -214,24 +214,13 @@ function renderTimelineSection() {
 function renderQuestionsSection() {
     const section = document.getElementById('sec-questions');
     const q = appData.questions;
-    
-    const questions = q.items.map(item => `
-        <div class="question-card">
-            <div class="q-num">${item.num}</div>
-            <div class="q-body">
-                <p data-lang="bg">${item.text.bg}</p>
-                <p data-lang="en">${item.text.en}</p>
-                <label class="answer-label" for="ans-q${item.num}">✏️ Отговор / Answer</label>
-                <textarea class="q-answer" id="ans-q${item.num}" data-field="q${item.num}" placeholder="Напишете вашия коментар тук..."></textarea>
-            </div>
-        </div>
-    `).join('');
 
-    section.innerHTML = `
+    let html = `
         <div class="questions-list">
             <div class="doctor-identity-panel">
-                <h4>${q.doctorPanel.title.bg.replace('🩺 ', '')}<span data-lang="en">${q.doctorPanel.title.en.replace('🩺 ', '')}</span></h4>
+                <h4>🩺 <span data-lang="bg">${q.doctorPanel.title.bg.replace('🩺 ', '')}</span><span data-lang="en">${q.doctorPanel.title.en.replace('🩺 ', '')}</span></h4>
                 <div class="doctor-identity-fields">
+                    <input type="date" id="consultation-date" title="${q.doctorPanel.consultationDateLabel.bg}">
                     <input type="text" id="doctor-name" placeholder="${q.doctorPanel.namePlaceholder}" autocomplete="off">
                     <input type="text" id="doctor-specialty" placeholder="${q.doctorPanel.specialtyPlaceholder}" autocomplete="off">
                 </div>
@@ -241,10 +230,39 @@ function renderQuestionsSection() {
                     <span id="autosave-text-en" data-lang="en">${appData.autosave.status.idle.en}</span>
                 </div>
             </div>
-
-            ${questions}
-        </div>
     `;
+
+    let currentCategory = -1;
+    q.items.forEach(item => {
+        if (item.category !== currentCategory) {
+            currentCategory = item.category;
+            const cat = q.categories[currentCategory];
+            html += `
+                <div class="question-category">
+                    <h4 class="category-title">
+                        <span class="category-num">${cat.num}.</span>
+                        <span data-lang="bg">${cat.title.bg}</span>
+                        <span data-lang="en">${cat.title.en}</span>
+                    </h4>
+                </div>
+            `;
+        }
+
+        html += `
+            <div class="question-card">
+                <div class="q-num">${item.num}</div>
+                <div class="q-body">
+                    <p data-lang="bg">${item.text.bg}</p>
+                    <p data-lang="en">${item.text.en}</p>
+                    <label class="answer-label" for="ans-q${item.num}">✏️ Отговор / Answer</label>
+                    <textarea class="q-answer" id="ans-q${item.num}" data-field="q${item.num}" placeholder="Напишете вашия коментар тук..."></textarea>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    section.innerHTML = html;
 }
 
 function renderMobileNav() {

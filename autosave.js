@@ -72,6 +72,7 @@ function initAutosave() {
 
     const doctorNameEl = document.getElementById('doctor-name');
     const doctorSpecialtyEl = document.getElementById('doctor-specialty');
+    const consultationDateEl = document.getElementById('consultation-date');
 
     document.querySelectorAll('.q-answer').forEach(textarea => {
         const field = textarea.dataset.field;
@@ -95,12 +96,19 @@ function initAutosave() {
         });
     }
 
-    const fields = ['name', 'specialty', 'q1','q2','q3','q4','q5','q6','q7','q8'];
+    if (consultationDateEl) {
+        consultationDateEl.addEventListener('change', () => {
+            onFieldChange('consultation_date', consultationDateEl.value);
+        });
+    }
+
+    const fields = ['name', 'specialty', 'consultation_date','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13'];
     fields.forEach(f => {
         const cached = localStorage.getItem('ans_' + sessionId + '_' + f);
         if (cached) {
             const el = f === 'name' ? doctorNameEl
                      : f === 'specialty' ? doctorSpecialtyEl
+                     : f === 'consultation_date' ? consultationDateEl
                      : document.getElementById('ans-' + f);
             if (el) {
                 el.value = cached;
@@ -121,5 +129,8 @@ function initAutosave() {
     });
     if (doctorSpecialtyEl) doctorSpecialtyEl.addEventListener('input', () => {
         localStorage.setItem('ans_' + sessionId + '_specialty', doctorSpecialtyEl.value);
+    });
+    if (consultationDateEl) consultationDateEl.addEventListener('change', () => {
+        localStorage.setItem('ans_' + sessionId + '_consultation_date', consultationDateEl.value);
     });
 }

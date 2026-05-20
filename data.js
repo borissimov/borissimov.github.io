@@ -305,64 +305,146 @@ const appData = {
                 bg: "🩺 Информация за специалиста (незадължително)",
                 en: "🩺 Clinician Information (optional)"
             },
+            consultationDateLabel: {
+                bg: "Дата на консултация",
+                en: "Consultation Date"
+            },
             namePlaceholder: "Д-р Имe / Dr. Name",
             specialtyPlaceholder: "Специалност / Болница"
         },
+        categories: [
+            {
+                num: "I",
+                title: {
+                    bg: "Диагноза и биологично състояние на травмата",
+                    en: "Diagnosis & Biological State of the Injury"
+                }
+            },
+            {
+                num: "II",
+                title: {
+                    bg: "Хирургична стратегия и алтернативи",
+                    en: "Surgical Strategy & Alternatives"
+                }
+            },
+            {
+                num: "III",
+                title: {
+                    bg: "Прогноза за спортна дейност и възстановяване",
+                    en: "Sports Activity Prognosis & Recovery"
+                }
+            },
+            {
+                num: "IV",
+                title: {
+                    bg: "План за рехабилитация и поддържаща терапия",
+                    en: "Rehabilitation Plan & Supportive Therapy"
+                }
+            }
+        ],
         items: [
             {
                 num: 1,
+                category: 0,
                 text: {
-                    bg: "Имам ли реално зарастване на радиуса и изграден костен мост (калус)? Какво означава текущото състояние за бъдещата функция на ръката ми?",
-                    en: "Is there actual bone union and a formed callus bridge? What does the current status imply for my long-term arm function?"
+                    bg: "Предвид 11-месечната липса на консолидация на фрактурата, налице ли е окончателно оформена псевдоартроза?",
+                    en: "Given the 11-month lack of fracture consolidation, is a fully formed pseudarthrosis present?"
                 }
             },
             {
                 num: 2,
+                category: 0,
                 text: {
-                    bg: "Вижда ли се на образните изследвания (ЯМР/КТ) сублуксация на ставата или разместване на някоя от костите?",
-                    en: "Does either the MRI or CT show any joint subluxation or osseous displacement?"
+                    bg: "Въз основа на КТ изследването от 23.04.2026 г., притежава ли костта биологичен потенциал за срастване или промените (кисти, узури) показват необратимост?",
+                    en: "Based on the CT scan from 23.04.2026, does the bone retain biological potential for union, or do the changes (cysts, erosions) indicate irreversibility?"
                 }
             },
             {
                 num: 3,
+                category: 0,
                 text: {
-                    bg: "Имам ли скъсани лигаменти (връзки) и на какво точно се дължи усещането за нестабилност в лакътя?",
-                    en: "Are there torn ligaments, and what is the pathological source of the elbow instability?"
+                    bg: "Каква е ролята на свободните фрагменти (2 мм медиално и дорзално) за блокирането на пълната екстензия (разгъване) на лакътя?",
+                    en: "What role do the free fragments (2 mm medially and dorsally) play in blocking full elbow extension?"
                 }
             },
             {
                 num: 4,
+                category: 1,
                 text: {
-                    bg: "Каква е конкретната механична или биологична причина, която пречи на пълното разгъване на лакътя?",
-                    en: "What is the mechanical or biological block preventing full elbow extension?"
+                    bg: "Възможно ли е запазване на собствената кост чрез остеосинтеза (планка/винтове) и костна присадка (спонгиопластика), или рискът от неуспех е твърде висок?",
+                    en: "Is bone preservation via osteosynthesis (plate/screws) and bone graft (spongioplasty) feasible, or is the failure risk too high?"
                 }
             },
             {
                 num: 5,
+                category: 1,
                 text: {
-                    bg: "На какво се дължи прихрупващият звук, който усещам при специфични движения?",
-                    en: "What causes the popping/clicking sound perceived during specific arm movements?"
+                    bg: "При наличие на кисти до 4 мм и неравен хрущял на раменната кост, доколко ефективна ще бъде остеосинтезата за дългосрочна стабилност?",
+                    en: "With cysts up to 4 mm and uneven humeral cartilage, how effective would osteosynthesis be for long-term stability?"
                 }
             },
             {
                 num: 6,
+                category: 1,
                 text: {
-                    bg: "Защо се появява изпукващ звук при разгъване на лакътя след продължително сгъване?",
-                    en: "Why does a cracking sound occur when extending the elbow after prolonged flexion?"
+                    bg: "Технически изпълнимо ли е артроскопско премахване на свободните фрагменти и извършване на артролиза за освобождаване на срастванията в същата сесия?",
+                    en: "Is it technically feasible to arthroscopically remove free fragments and perform arthrolysis to release adhesions in the same session?"
                 }
             },
             {
                 num: 7,
+                category: 1,
                 text: {
-                    bg: "Каква е причината за локализираните болки: от вътрешната страна на мишницата (над лакътя), над главичката на радиуса и по протежение на брахиорадиалиса?",
-                    en: "What causes the focal pain localized on the medial upper arm (above the joint) and superior to the radial head/brachioradialis?"
+                    bg: "Защо ендопротезирането се разглежда като алтернатива и кои са неговите критични ограничения спрямо моите цели за натоварване до 30 кг?",
+                    en: "Why is arthroplasty considered as an alternative, and what are its critical limitations relative to my goal of loading up to 30 kg?"
                 }
             },
             {
                 num: 8,
+                category: 2,
                 text: {
-                    bg: "Можем ли да коментираме подробно находките от ЯМР и КТ и как те се промениха за последната година?",
-                    en: "Can we detail the structural differences between the 2025 MRI and the 2026 CT scans and how they evolved?"
+                    bg: "Каква е реалистичната прогноза за „Return-to-Play" (връщане в спорта) при оперативно лечение спрямо консервативно проследяване?",
+                    en: "What is the realistic Return-to-Play prognosis with surgical treatment versus conservative follow-up?"
+                }
+            },
+            {
+                num: 9,
+                category: 2,
+                text: {
+                    bg: "Какви са специфичните критерии за „безопасност", по които да преценявам безопасното увеличаване на тренировъчната тежест след операцията?",
+                    en: "What are the specific safety criteria for judging safe training weight increases post-surgery?"
+                }
+            },
+            {
+                num: 10,
+                category: 2,
+                text: {
+                    bg: "Съществува ли риск от хронични усложнения или прогресивно износване на ставата, ако след операцията продължа с интензивни силови тренировки?",
+                    en: "Is there a risk of chronic complications or progressive joint wear if I resume intensive strength training after surgery?"
+                }
+            },
+            {
+                num: 11,
+                category: 3,
+                text: {
+                    bg: "Какъв е препоръчителният протокол за рехабилитация веднага след операцията, за да се избегне повторна загуба на обем на движение?",
+                    en: "What is the recommended rehabilitation protocol immediately post-surgery to prevent renewed loss of range of motion?"
+                }
+            },
+            {
+                num: 12,
+                category: 3,
+                text: {
+                    bg: "Необходима ли е допълнителна биологична поддръжка на тъканите (PRP, хиалуронова киселина и др.) за подпомагане на вкалцяването?",
+                    en: "Is additional biological tissue support (PRP, hyaluronic acid, etc.) necessary to aid calcification?"
+                }
+            },
+            {
+                num: 13,
+                category: 3,
+                text: {
+                    bg: "Кои са най-честите грешки в рехабилитационния процес при спортисти с подобни фрактури на радиуса, които водят до неуспех?",
+                    en: "What are the most common rehabilitation mistakes in athletes with similar radial fractures that lead to failure?"
                 }
             }
         ]

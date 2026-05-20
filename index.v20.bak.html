@@ -271,15 +271,10 @@
             gap: 12px;
             font-size: 11.5px;
             font-weight: 700;
-        }
-
-        .study-card-actions .action-link {
             color: var(--accent-blue);
-            text-decoration: none;
-            cursor: pointer;
         }
 
-        .study-card-actions .action-link:hover {
+        .study-card-actions span.action-link:hover {
             text-decoration: underline;
         }
 
@@ -607,16 +602,12 @@
 
         /* Welcome view placeholder */
         .welcome-container {
-            display: none;
+            display: flex;
             width: 100%;
             height: 100%;
             align-items: center;
             justify-content: center;
             background-color: #0b0b0d;
-        }
-
-        .welcome-container.active {
-            display: flex;
         }
 
         .welcome-box {
@@ -859,7 +850,6 @@
             
             .dossier-panel {
                 width: 100%;
-                min-width: 0;
                 max-width: none;
                 height: calc(100vh - 50px); /* Leave room for mobile nav bar */
                 display: flex;
@@ -1128,7 +1118,7 @@
                 <div id="sec-studies" class="dossier-section">
                     
                     <!-- CT Card -->
-                    <div class="study-card ct-card">
+                    <div class="study-card ct-card" onclick="loadPDF('CT')">
                         <div class="study-card-icon">☢️</div>
                         <div class="study-card-content">
                             <h4 data-lang="bg">КТ Скенер (23.04.2026)</h4>
@@ -1136,16 +1126,16 @@
                             <p data-lang="bg">Потвърждава хронична псевдоартроза на радиусната глава с 2 мм процеп и два свободни вътреставни фрагмента.</p>
                             <p data-lang="en">Confirms chronic pseudarthrosis of the radial head with a 2 mm gap and two free intra-articular fragments.</p>
                             <div class="study-card-actions">
-                                <span class="action-link" onclick="loadPDF('CT')" data-lang="bg">📄 Преглед на Доклад</span>
-                                <span class="action-link" onclick="loadPDF('CT')" data-lang="en">📄 View Report PDF</span>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-link" data-lang="bg">🩻 Онлайн 3D Скенер</a>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.2026051715178511.599163768516177572070" target="_blank" class="action-link" data-lang="en">🩻 Online DICOM Scan</a>
+                                <span class="action-link" data-lang="bg">📄 Преглед на Доклад</span>
+                                <span class="action-link" data-lang="en">📄 View Report PDF</span>
+                                <span class="action-link" data-lang="bg">🩻 Онлайн 3D Скенер</span>
+                                <span class="action-link" data-lang="en">🩻 Online DICOM Scan</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- MRI Card -->
-                    <div class="study-card mri-card">
+                    <div class="study-card mri-card" onclick="loadPDF('MRI')">
                         <div class="study-card-icon">🩻</div>
                         <div class="study-card-content">
                             <h4 data-lang="bg">ЯМР Изследване (24.07.2025)</h4>
@@ -1153,10 +1143,10 @@
                             <p data-lang="bg">Най-ранно разкриване на незарастване (2.5 мм дехисценция) и деструкция на външните връзки (лигаменти).</p>
                             <p data-lang="en">Earliest indication of non-union (2.5 mm cleft) and damage to lateral collateral complex.</p>
                             <div class="study-card-actions">
-                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="bg">📄 Преглед на Доклад</span>
-                                <span class="action-link" onclick="loadPDF('MRI')" data-lang="en">📄 View Report PDF</span>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-link" data-lang="bg">🩻 Онлайн ЯМР</a>
-                                <a href="https://www.dicomlibrary.com?study=1.3.6.1.4.1.44316.6.102.1.20260519103520833.49447669852157873244" target="_blank" class="action-link" data-lang="en">🩻 Online DICOM Scan</a>
+                                <span class="action-link" data-lang="bg">📄 Преглед на Доклад</span>
+                                <span class="action-link" data-lang="en">📄 View Report PDF</span>
+                                <span class="action-link" data-lang="bg">🩻 Онлайн ЯМР</span>
+                                <span class="action-link" data-lang="en">🩻 Online DICOM Scan</span>
                             </div>
                         </div>
                     </div>

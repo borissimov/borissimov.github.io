@@ -157,6 +157,7 @@ function fetchSession(sessionId, skipPassword) {
     fetch(url)
         .then(r => r.json())
         .then(data => {
+            console.log('Session loaded:', data);
             if (data.status === 'ok' && data.session) {
                 populateForm(data.session);
                 currentSessionId = sessionId;
@@ -193,7 +194,7 @@ function populateForm(session) {
 
     session.answers.forEach(a => {
         if (a.question_num && a.question_num.startsWith('q')) {
-            const el = document.getElementById('ans-' + a.question_num.replace('q', ''));
+            const el = document.getElementById('ans-' + a.question_num);
             if (el) {
                 el.value = a.answer;
                 el.classList.toggle('has-content', a.answer.trim().length > 0);

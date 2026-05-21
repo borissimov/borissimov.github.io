@@ -365,6 +365,14 @@ function switchModalTab(tab) {
     }
 }
 
+function getSessionLabel(session, allSessions) {
+    const doctorName = session.doctor_name || 'Без име';
+    const doctorSessions = (allSessions || []).filter(s => s.doctor_name === doctorName);
+    const index = doctorSessions.findIndex(s => s.session_id === session.session_id);
+    const num = index >= 0 ? index + 1 : '?';
+    return `${doctorName} — Сесия ${num}`;
+}
+
 function renderMySessionsList(container) {
     const sessions = restoreMySessions();
     if (sessions.length === 0) {
@@ -372,17 +380,48 @@ function renderMySessionsList(container) {
         return;
     }
 
-    container.innerHTML = sessions.map(sid => {
-        const isActive = sid === currentSessionId;
-        return `
-            <div class="modal-session-item ${isActive ? 'active' : ''}" onclick="selectSession('${sid}')">
-                <div class="session-item-id">${sid.substring(0, 24)}...</div>
-                <div class="session-item-actions">
-                    <span class="session-badge ${isActive ? 'current' : ''}">${isActive ? '● Active' : '○'}</span>
+    // Fetch my sessions data to get doctor names
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'list', password: ACCESS_PASSWORD })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                const allSessions = data.sessions;
+                const mySessionsData = sessions
+                    .map(sid => allSessions.find(s => s.session_id === sid))
+                    .filter(Boolean);
+
+                container.innerHTML = mySessionsData.map(s => {
+                    const isActive = s.session_id === currentSessionId;
+                    const label = getSessionLabel(s, allSessions);
+                    return `
+                        <div class="modal-session-item ${isActive ? 'active' : ''}" onclick="selectSession('${s.session_id}')">
+                            <div class="session-item-info">
+                                <div class="session-item-id">${label}</div>
+                                <div class="session-item-meta">
+                                    ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
+                                    ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                                    <span>💬 ${s.answer_count} отговора</span>
+                                </div>
+                            </div>
+                            <div class="session-item-actions">
+                                <span class="session-badge ${isActive ? 'current' : ''}">${isActive ? '● Active' : '○'}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('') + `<button class="modal-btn" style="margin:12px auto;display:block;" onclick="clearAllMySessions()">🗑️ Clear all local sessions</button>`;
+            }
+        })
+        .catch(() => {
+            container.innerHTML = sessions.map(sid => `
+                <div class="modal-session-item" onclick="selectSession('${sid}')">
+                    <div class="session-item-id">${sid.substring(0, 24)}...</div>
                 </div>
-            </div>
-        `;
-    }).join('') + `<button class="modal-btn" style="margin:12px auto;display:block;" onclick="clearAllMySessions()">🗑️ Clear all local sessions</button>`;
+            `).join('');
+        });
 }
 
 function renderAllSessionsList(container, sessions) {
@@ -394,12 +433,12 @@ function renderAllSessionsList(container, sessions) {
     container.innerHTML = sessions.map(s => {
         const isMine = isMySession(s.session_id);
         const isActive = s.session_id === currentSessionId;
+        const label = getSessionLabel(s, sessions);
         return `
             <div class="modal-session-item ${isActive ? 'active' : ''}" onclick="selectSession('${s.session_id}')">
                 <div class="session-item-info">
-                    <div class="session-item-id">${s.session_id.substring(0, 24)}...</div>
+                    <div class="session-item-id">${label}</div>
                     <div class="session-item-meta">
-                        ${s.doctor_name ? `<span>👨‍⚕️ ${s.doctor_name}</span>` : ''}
                         ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
                         ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
                         <span>💬 ${s.answer_count} отговора</span>

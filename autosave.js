@@ -79,6 +79,7 @@ function setupEventListeners() {
     if (doctorNameEl) {
         doctorNameEl.addEventListener('input', () => {
             onFieldChange('name', doctorNameEl.value);
+            updateSessionUI();
         });
     }
     if (doctorSpecialtyEl) {
@@ -244,7 +245,30 @@ function clearForm() {
 function updateSessionUI() {
     const sessionIdDisplay = document.getElementById('current-session-id');
     if (sessionIdDisplay) {
-        sessionIdDisplay.textContent = currentSessionId.substring(0, 24) + '...';
+        const doctorNameEl = document.getElementById('doctor-name');
+        const doctorName = doctorNameEl && doctorNameEl.value ? doctorNameEl.value : '—';
+        const mySessions = restoreMySessions();
+        const doctorSessions = [];
+
+        // Fetch to get session number
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'list', password: ACCESS_PASSWORD })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    const allSessions = data.sessions;
+                    const doctorSessionsList = allSessions.filter(s => s.doctor_name === doctorName);
+                    const idx = doctorSessionsList.findIndex(s => s.session_id === currentSessionId);
+                    const num = idx >= 0 ? idx + 1 : '?';
+                    sessionIdDisplay.textContent = `${doctorName} — Сесия ${num}`;
+                }
+            })
+            .catch(() => {
+                sessionIdDisplay.textContent = `${doctorName} — ${currentSessionId.substring(0, 12)}...`;
+            });
     }
 }
 

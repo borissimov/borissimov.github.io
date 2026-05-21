@@ -155,17 +155,14 @@ function getQuestionText(fieldName) {
 
 function fetchSession(sessionId, skipPassword) {
     isLoadingSession = true;
-    const password = (skipPassword && isMySession(sessionId)) ? '' : ACCESS_PASSWORD;
 
     console.log('Loading session:', sessionId, 'skipPassword:', skipPassword);
 
     const payload = {
         action: 'load',
-        session_id: sessionId
+        session_id: sessionId,
+        password: ACCESS_PASSWORD
     };
-    if (password) {
-        payload.password = password;
-    }
 
     fetch(SCRIPT_URL, {
         method: 'POST',

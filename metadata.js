@@ -64,5 +64,29 @@ const metadata = {
         "study_date": "2025-07-11",
         "view": "UPPER EXTREMITY",
         "body_part": "ELBOW"
+    },
+    "260313_DX_Hand_PA_DX000000.png": {
+        "patient_name": "SIMOV BORIS SIMEONOV",
+        "study_date": "2026-03-13",
+        "view": "Hand PA",
+        "body_part": "HAND"
+    },
+    "260313_DX_Elbow_AP_DX000000.png": {
+        "patient_name": "SIMOV BORIS SIMEONOV",
+        "study_date": "2026-03-13",
+        "view": "Elbow AP",
+        "body_part": "ARM"
+    },
+    "260313_DX_Elbow_LAT_DX000000.png": {
+        "patient_name": "SIMOV BORIS SIMEONOV",
+        "study_date": "2026-03-13",
+        "view": "Elbow LAT",
+        "body_part": "ARM"
+    },
+    "260313_DX_Hand_PA_OBL_DX000000.png": {
+        "patient_name": "SIMOV BORIS SIMEONOV",
+        "study_date": "2026-03-13",
+        "view": "Hand PA OBL",
+        "body_part": "HAND"
     }
 };

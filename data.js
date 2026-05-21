@@ -126,14 +126,15 @@ const appData = {
         },
         xrayArchive: {
             title: {
-                bg: "Рентгенови снимки (Архив 2025)",
-                en: "X-Ray Image Archives (2025)"
+                bg: "Рентгенови снимки (Архив 2025-2026)",
+                en: "X-Ray Image Archives (2025-2026)"
             },
             subtitle: {
                 bg: "Контролни графии за проследяване на фрактурата и рехабилитацията.",
                 en: "Check-up X-rays tracing bone healing and rehabilitation."
             },
             dates: [
+                { id: "260313", date: "13.03.2026", label: { bg: "Втора травма", en: "Second Trauma" } },
                 { id: "250711", date: "11.07.2025", label: { bg: "Ден 58 Контрола", en: "Day 58 Check-up" } },
                 { id: "250610", date: "10.06.2025", label: { bg: "Ден 27 Контрола", en: "Day 27 Check-up" } },
                 { id: "250523", date: "23.05.2025", label: { bg: "Ден 9 Контрола", en: "Day 9 Check-up" } },
@@ -149,8 +150,8 @@ const appData = {
             badge: "ct",
             badgeIcon: "☢️",
             title: {
-                bg: "КТ Скенер (УМБАЛ \"Св. Анна\")",
-                en: "CT Scan (St. Anna Hospital)"
+                bg: "КТ Скенер (МДЛ \"Спектър\")",
+                en: "CT Scan (Spektr Laboratory)"
             },
             viewIndicator: "CT Report",
             description: {
@@ -166,13 +167,15 @@ const appData = {
             badge: "injury",
             badgeIcon: "⚠️",
             title: {
-                bg: "Втора травма (падане)",
-                en: "Second Trauma (Fall)"
+                bg: "Втора травма (падане) & Рентген",
+                en: "Second Trauma (Fall) & X-Ray"
             },
             description: {
-                bg: "Падане с директен удар и силна болка в лакътя. Стандартната рентгенография изключва нова остра фрактура.",
-                en: "Accidental fall with direct joint strike and acute pain. Standard X-rays rule out new acute fractures."
-            }
+                bg: "Падане с директен удар и силна болка в лакътя. Рентген при д-р Фирузи — няма нова остра фрактура. <strong>Кликнете за преглед на рентгена.</strong>",
+                en: "Accidental fall with direct joint strike and acute pain. X-ray at Dr. Firuzi — no new acute fracture. <strong>Click to view X-ray.</strong>"
+            },
+            clickable: true,
+            action: "loadXrayDate('260313')"
         },
         {
             date: "Sep 2025 - Mar 2026",
@@ -192,7 +195,7 @@ const appData = {
             badge: "mri",
             badgeIcon: "🩻",
             title: {
-                bg: "ЯМР Изследване (СМДЛ \"Спектър\")",
+                bg: "ЯМР Изследване (МДЛ \"Спектър\")",
                 en: "MRI Study (Spektr Laboratory)"
             },
             viewIndicator: "MRI Report",
@@ -259,8 +262,8 @@ const appData = {
             },
             viewIndicator: "X-Ray",
             description: {
-                bg: "Наблюдение на фрактурата с шиниран лакът.",
-                en: "Checking fracture alignment during active immobilization."
+                bg: "Контролен рентген със свалена лонгета. Проследяване на фрактурата след премахване на гипса.",
+                en: "Check-up X-ray with splint removed. Monitoring fracture status after plaster removal."
             },
             clickable: true,
             action: "loadXrayDate('250523')"
@@ -275,8 +278,8 @@ const appData = {
             },
             viewIndicator: "X-Ray",
             description: {
-                bg: "Втори ден след счупването. Нагласяне и проверка на гипсовата лонгета.",
-                en: "First day post-injury. Alignment check of splinted limb."
+                bg: "Втори ден след счупването. Посещение при д-р Бахрам Фирузи за контролна снимка и установяване на контакт за проследяване на травмата.",
+                en: "Second day post-injury. Visit to Dr. Bahram Firuzi for control X-ray and establishing follow-up contact for the injury."
             },
             clickable: true,
             action: "loadXrayDate('250515')"

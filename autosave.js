@@ -216,7 +216,7 @@ function populateForm(session) {
             const el = document.getElementById('ans-' + a.question_num);
             if (el) {
                 el.value = a.answer;
-                el.classList.toggle('has-content', a.answer.trim().length > 0);
+                el.classList.toggle('has-content', String(a.answer).trim().length > 0);
             }
         } else if (a.question_num === 'name' && doctorNameEl) {
             doctorNameEl.value = a.answer;

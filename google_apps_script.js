@@ -138,6 +138,8 @@ function listSessions() {
     const allData = sheet.getDataRange().getValues();
     const sessions = {};
 
+    const OLD_COL_MAP = { 'name': 3, 'specialty': 4, 'q1': 5, 'q2': 6, 'q3': 7, 'q4': 8, 'q5': 9, 'q6': 10, 'q7': 11, 'q8': 12 };
+
     for (let i = 1; i < allData.length; i++) {
       const row = allData[i];
       const sid = row[0];
@@ -154,12 +156,25 @@ function listSessions() {
         };
       }
 
-      if (row[5] && row[7] !== '') {
+      // New format
+      if (row[5] !== undefined && row[7] !== undefined && row[7] !== '') {
         sessions[sid].answers.push({
           question_num: row[5],
           question_text: row[6] || '',
           answer: row[7] || ''
         });
+      }
+      // Old format fallback
+      else if (row.length >= 13 && row[5] !== '') {
+        for (const [key, colIdx] of Object.entries(OLD_COL_MAP)) {
+          if (row[colIdx] !== undefined && row[colIdx] !== '') {
+            sessions[sid].answers.push({
+              question_num: key,
+              question_text: '',
+              answer: row[colIdx] || ''
+            });
+          }
+        }
       }
     }
 
@@ -202,6 +217,8 @@ function loadSession(sessionId) {
       last_modified: ''
     };
 
+    const OLD_COL_MAP = { 'name': 3, 'specialty': 4, 'q1': 5, 'q2': 6, 'q3': 7, 'q4': 8, 'q5': 9, 'q6': 10, 'q7': 11, 'q8': 12 };
+
     for (let i = 1; i < allData.length; i++) {
       const row = allData[i];
       if (row[0] !== sessionId) continue;
@@ -211,12 +228,25 @@ function loadSession(sessionId) {
       if (!session.specialty && row[4]) session.specialty = row[4];
       if (!session.last_modified || row[1] > session.last_modified) session.last_modified = row[1];
 
-      if (row[5] && row[7] !== '') {
+      // New format: row[5]=question_num, row[6]=question_text, row[7]=answer
+      if (row[5] !== undefined && row[7] !== undefined && row[7] !== '') {
         session.answers.push({
           question_num: row[5],
           question_text: row[6] || '',
           answer: row[7] || ''
         });
+      }
+      // Old format fallback: columns F-R (indices 5-12) contain q1-q8 answers
+      else if (row.length >= 13 && row[5] !== '') {
+        for (const [key, colIdx] of Object.entries(OLD_COL_MAP)) {
+          if (row[colIdx] !== undefined && row[colIdx] !== '') {
+            session.answers.push({
+              question_num: key,
+              question_text: '',
+              answer: row[colIdx] || ''
+            });
+          }
+        }
       }
     }
 

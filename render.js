@@ -382,7 +382,7 @@ function renderMySessionsList(container) {
                 </div>
             </div>
         `;
-    }).join('');
+    }).join('') + `<button class="modal-btn" style="margin:12px auto;display:block;" onclick="clearAllMySessions()">🗑️ Clear all local sessions</button>`;
 }
 
 function renderAllSessionsList(container, sessions) {
@@ -461,5 +461,12 @@ function selectSession(sessionId) {
         window.loadSession(sessionId, false);
         closeSessionModal();
     }
+}
+
+function clearAllMySessions() {
+    localStorage.removeItem(STORAGE_KEY_SESSIONS);
+    localStorage.removeItem(STORAGE_KEY_CURRENT);
+    createNewSession();
+    closeSessionModal();
 }
 

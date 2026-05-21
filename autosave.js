@@ -180,6 +180,11 @@ function fetchSession(sessionId, skipPassword) {
                 updateSessionUI();
             } else {
                 console.error('Failed to load session:', data.message);
+                // Clean up stale session from localStorage
+                removeMySession(sessionId);
+                if (!isMySession(sessionId) || restoreMySessions().length === 0) {
+                    createNewSession();
+                }
             }
             isLoadingSession = false;
         })
@@ -237,23 +242,6 @@ function clearForm() {
 }
 
 function updateSessionUI() {
-    const sessions = restoreMySessions();
-    const sessionListEl = document.getElementById('session-list');
-    if (!sessionListEl) return;
-
-    sessionListEl.innerHTML = '';
-    sessions.forEach(sid => {
-        const isActive = sid === currentSessionId;
-        const btn = document.createElement('button');
-        btn.className = 'session-btn' + (isActive ? ' active' : '');
-        btn.textContent = sid.substring(0, 18) + '...';
-        btn.onclick = () => {
-            if (sid === currentSessionId) return;
-            fetchSession(sid, isMySession(sid));
-        };
-        sessionListEl.appendChild(btn);
-    });
-
     const sessionIdDisplay = document.getElementById('current-session-id');
     if (sessionIdDisplay) {
         sessionIdDisplay.textContent = currentSessionId.substring(0, 24) + '...';

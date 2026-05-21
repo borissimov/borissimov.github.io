@@ -92,7 +92,15 @@ function doGet(e) {
 // POST — save answer OR load/list sessions
 function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return jsonResponse({ status: 'error', message: 'No post data received' });
+    }
+
     const data = JSON.parse(e.postData.contents);
+    if (!data) {
+      return jsonResponse({ status: 'error', message: 'Invalid JSON' });
+    }
+
     const action = data.action || 'save';
     const password = data.password || '';
 
@@ -233,7 +241,7 @@ function saveAnswer(data) {
   const specialty = data.specialty || '';
 
   if (!sessionId || !questionNum) {
-    return jsonResponse({ status: 'error', message: 'Missing session_id or question_num' });
+    return jsonResponse({ status: 'error', message: 'Missing session_id or question_num. Received: ' + JSON.stringify(data) });
   }
 
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);

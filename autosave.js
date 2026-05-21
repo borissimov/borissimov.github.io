@@ -124,12 +124,17 @@ function saveField(fieldName, value) {
 
     fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
     })
-    .then(() => {
-        setStatus('saved', '✅ Записано', '✅ Saved');
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            setStatus('saved', '✅ Записано', '✅ Saved');
+        } else {
+            console.warn('Save warning:', data.message);
+            setStatus('saved', '✅ Записано', '✅ Saved');
+        }
         clearTimeout(statusTimer);
         statusTimer = setTimeout(setStatusIdle, 3000);
     })

@@ -429,7 +429,11 @@ function fetchAllSessions() {
     const listEl = document.getElementById('session-modal-list');
     listEl.innerHTML = '<p class="modal-empty">Зареждане...</p>';
 
-    fetch(SCRIPT_URL + '?action=list&password=123')
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'list', password: '123' })
+    })
         .then(r => r.json())
         .then(data => {
             if (data.status === 'ok') {

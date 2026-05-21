@@ -150,11 +150,23 @@ function getQuestionText(fieldName) {
 
 function fetchSession(sessionId, skipPassword) {
     isLoadingSession = true;
-    const url = skipPassword && isMySession(sessionId)
-        ? SCRIPT_URL + '?action=load&session_id=' + encodeURIComponent(sessionId)
-        : SCRIPT_URL + '?action=load&session_id=' + encodeURIComponent(sessionId) + '&password=' + encodeURIComponent(ACCESS_PASSWORD);
+    const password = (skipPassword && isMySession(sessionId)) ? '' : ACCESS_PASSWORD;
 
-    fetch(url)
+    console.log('Loading session:', sessionId, 'skipPassword:', skipPassword);
+
+    const payload = {
+        action: 'load',
+        session_id: sessionId
+    };
+    if (password) {
+        payload.password = password;
+    }
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+    })
         .then(r => r.json())
         .then(data => {
             console.log('Session loaded:', data);

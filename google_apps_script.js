@@ -9,7 +9,7 @@ const ACCESS_PASSWORD = '123';
 
 // GET — list sessions, load session, or health check
 function doGet(e) {
-  const params = e.parameter || {};
+  const params = (e && e.parameter) ? e.parameter : {};
   const action = params.action || 'health';
   const password = params.password || '';
 

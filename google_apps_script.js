@@ -1,115 +1,166 @@
 // ============================================================
 // Google Apps Script - Автоматично записване на отговори
-// Поставете този код в Apps Script и деплойнете като Web App
+// Row-per-Answer модел + Password-protected session management
 // ============================================================
 
-// ── КОНФИГУРАЦИЯ ──────────────────────────────────────────
 const SPREADSHEET_ID = '1nhT7LpwEhlpdJFwpmxTbPYobmilgu2tWMz0RRtxKrbE';
 const SHEET_NAME = 'Отговори';
-// ──────────────────────────────────────────────────────────
+const ACCESS_PASSWORD = '123';
 
-// Конфигурация на колоните в Google Sheets:
-// A: Session ID  |  B: Дата/Час  |  C: Дата на консултация  |  D: Лекар/Д-р  |  E: Специалност
-// F: Въпрос 1    |  G: Въпрос 2  |  H: Въпрос 3   |  I: Въпрос 4   |  J: Въпрос 5
-// K: Въпрос 6    |  L: Въпрос 7  |  M: Въпрос 8   |  N: Въпрос 9   |  O: Въпрос 10
-// P: Въпрос 11   |  Q: Въпрос 12 |  R: Въпрос 13
-
-const COLUMN_MAP = {
-  'name':              4,  // Колона D
-  'specialty':         5,  // Колона E
-  'consultation_date': 3,  // Колона C
-  'q1':                6,  // Колона F
-  'q2':                7,  // Колона G
-  'q3':                8,  // Колона H
-  'q4':                9,  // Колона I
-  'q5':               10,  // Колона J
-  'q6':               11,  // Колона K
-  'q7':               12,  // Колона L
-  'q8':               13,  // Колона M
-  'q9':               14,  // Колона N
-  'q10':              15,  // Колона O
-  'q11':              16,  // Колона P
-  'q12':              17,  // Колона Q
-  'q13':              18  // Колона R
-};
-
-// Обработка на GET заявки (проверка дали скриптът работи)
+// GET — list sessions, load session, or health check
 function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok', message: 'Script is running.' }))
-    .setMimeType(ContentService.MimeType.JSON);
+  const params = e.parameter || {};
+  const action = params.action || 'health';
+  const password = params.password || '';
+
+  if (action === 'health') {
+    return jsonResponse({ status: 'ok', message: 'Script is running.' });
+  }
+
+  if (password !== ACCESS_PASSWORD) {
+    return jsonResponse({ status: 'error', message: 'Unauthorized' }, 403);
+  }
+
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+
+    if (!sheet) {
+      return jsonResponse({ status: 'ok', sessions: [] });
+    }
+
+    const allData = sheet.getDataRange().getValues();
+    const sessions = {};
+
+    for (let i = 1; i < allData.length; i++) {
+      const row = allData[i];
+      const sid = row[0];
+      if (!sid) continue;
+
+      if (!sessions[sid]) {
+        sessions[sid] = {
+          session_id: sid,
+          consultation_date: row[2] || '',
+          doctor_name: row[3] || '',
+          specialty: row[4] || '',
+          answers: [],
+          last_modified: row[1] || ''
+        };
+      }
+
+      if (row[5] && row[7] !== '') {
+        sessions[sid].answers.push({
+          question_num: row[5],
+          question_text: row[6] || '',
+          answer: row[7] || ''
+        });
+      }
+    }
+
+    if (action === 'list') {
+      const sessionList = Object.values(sessions).map(s => ({
+        session_id: s.session_id,
+        consultation_date: s.consultation_date,
+        doctor_name: s.doctor_name,
+        specialty: s.specialty,
+        answer_count: s.answers.filter(a => a.answer !== '').length,
+        last_modified: s.last_modified
+      }));
+      sessionList.sort((a, b) => {
+        if (a.consultation_date && b.consultation_date) return b.consultation_date.localeCompare(a.consultation_date);
+        if (a.last_modified && b.last_modified) return new Date(b.last_modified) - new Date(a.last_modified);
+        return 0;
+      });
+      return jsonResponse({ status: 'ok', sessions: sessionList });
+    }
+
+    if (action === 'load' && params.session_id) {
+      const session = sessions[params.session_id];
+      if (session) {
+        return jsonResponse({ status: 'ok', session: session });
+      }
+      return jsonResponse({ status: 'error', message: 'Session not found' });
+    }
+
+    return jsonResponse({ status: 'error', message: 'Unknown action' });
+
+  } catch (err) {
+    return jsonResponse({ status: 'error', message: err.message });
+  }
 }
 
-// Обработка на POST заявки (автоматично запазване на отговори)
+// POST — save or update a single answer
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const sessionId = data.session_id;
-    const field = data.field;
-    const value = data.value;
+    const questionNum = data.question_num;
+    const questionText = data.question_text || '';
+    const answer = data.value || '';
+    const consultationDate = data.consultation_date || '';
+    const doctorName = data.doctor_name || '';
+    const specialty = data.specialty || '';
 
-    if (!sessionId || !field) {
-      return errorResponse('Липсва session_id или field');
+    if (!sessionId || !questionNum) {
+      return jsonResponse({ status: 'error', message: 'Missing session_id or question_num' });
     }
 
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    
     let sheet = ss.getSheetByName(SHEET_NAME);
 
-    // Създаване на листа ако не съществува
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      // Добавяме заглавния ред
-      sheet.getRange(1, 1, 1, 18).setValues([[
-        'Сесия ID', 'Последна промяна', 'Дата на консултация', 'Лекар / Д-р', 'Специалност',
-        'Въпрос 1', 'Въпрос 2', 'Въпрос 3', 'Въпрос 4', 'Въпрос 5',
-        'Въпрос 6', 'Въпрос 7', 'Въпрос 8', 'Въпрос 9', 'Въпрос 10',
-        'Въпрос 11', 'Въпрос 12', 'Въпрос 13'
+      sheet.getRange(1, 1, 1, 8).setValues([[
+        'Session ID', 'Timestamp', 'Дата консултация', 'Лекар / Д-р',
+        'Специалност', 'Въпрос #', 'Текст на въпроса', 'Отговор'
       ]]);
-      // Форматиране на заглавния ред
-      sheet.getRange(1, 1, 1, 18).setFontWeight('bold').setBackground('#4a90d9').setFontColor('#ffffff');
+      sheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#4a90d9').setFontColor('#ffffff');
       sheet.setFrozenRows(1);
+      sheet.setColumnWidth(1, 120);
+      sheet.setColumnWidth(2, 160);
+      sheet.setColumnWidth(3, 120);
+      sheet.setColumnWidth(4, 140);
+      sheet.setColumnWidth(5, 140);
+      sheet.setColumnWidth(6, 70);
+      sheet.setColumnWidth(7, 350);
+      sheet.setColumnWidth(8, 500);
     }
 
-    // Намиране на съществуващ ред за тази сесия
     const allData = sheet.getDataRange().getValues();
     let rowIndex = -1;
 
     for (let i = 1; i < allData.length; i++) {
-      if (allData[i][0] === sessionId) {
-        rowIndex = i + 1; // 1-индексиран ред в Sheets
+      if (allData[i][0] === sessionId && allData[i][5] == questionNum) {
+        rowIndex = i + 1;
         break;
       }
     }
 
-    // Ако няма ред за тази сесия — създаваме нов
+    const now = new Date();
+
     if (rowIndex === -1) {
-      const newRow = new Array(18).fill('');
-      newRow[0] = sessionId;
-      newRow[1] = new Date();
-      sheet.appendRow(newRow);
+      sheet.appendRow([sessionId, now, consultationDate, doctorName, specialty, questionNum, questionText, answer]);
       rowIndex = sheet.getLastRow();
+    } else {
+      sheet.getRange(rowIndex, 2).setValue(now);
+      if (consultationDate) sheet.getRange(rowIndex, 3).setValue(consultationDate);
+      if (doctorName) sheet.getRange(rowIndex, 4).setValue(doctorName);
+      if (specialty) sheet.getRange(rowIndex, 5).setValue(specialty);
+      if (questionText) sheet.getRange(rowIndex, 7).setValue(questionText);
+      sheet.getRange(rowIndex, 8).setValue(answer);
     }
 
-    // Записване на стойността в правилната колона
-    const col = COLUMN_MAP[field];
-    if (col) {
-      sheet.getRange(rowIndex, col).setValue(value);
-      // Актуализиране на времето на последна промяна
-      sheet.getRange(rowIndex, 2).setValue(new Date());
-    }
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'ok', session: sessionId, field: field }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ status: 'ok', session: sessionId, question_num: questionNum });
 
   } catch (err) {
-    return errorResponse(err.message);
+    return jsonResponse({ status: 'error', message: err.message });
   }
 }
 
-function errorResponse(msg) {
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'error', message: msg }))
-    .setMimeType(ContentService.MimeType.JSON);
+function jsonResponse(obj, code) {
+  const output = ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+  if (code) {
+    return output;
+  }
+  return output;
 }

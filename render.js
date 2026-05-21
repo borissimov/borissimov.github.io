@@ -224,6 +224,16 @@ function renderQuestionsSection() {
                     <input type="text" id="doctor-name" placeholder="${q.doctorPanel.namePlaceholder}" autocomplete="off">
                     <input type="text" id="doctor-specialty" placeholder="${q.doctorPanel.specialtyPlaceholder}" autocomplete="off">
                 </div>
+                <div class="session-controls">
+                    <span class="session-id-display">
+                        <span data-lang="bg">Сесия:</span><span data-lang="en">Session:</span>
+                        <span id="current-session-id"></span>
+                    </span>
+                    <div class="session-actions">
+                        <button class="session-btn" onclick="window.createNewSession()" title="Нова сесия">➕ <span data-lang="bg">Нова</span><span data-lang="en">New</span></button>
+                        <button class="session-btn" onclick="showSessionModal()" title="Зареди сесия">📂 <span data-lang="bg">Зареди</span><span data-lang="en">Load</span></button>
+                    </div>
+                </div>
                 <div class="autosave-status" id="autosave-status">
                     <div class="status-dot"></div>
                     <span id="autosave-text" data-lang="bg">${appData.autosave.status.idle.bg}</span>
@@ -282,3 +292,170 @@ function renderMobileNav() {
         </button>
     `;
 }
+
+function showSessionModal() {
+    let modal = document.getElementById('session-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'session-modal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 data-lang="bg">Избери сесия</h3>
+                    <h3 data-lang="en">Select Session</h3>
+                    <button class="modal-close" onclick="closeSessionModal()">✕</button>
+                </div>
+                <div class="modal-tabs">
+                    <button class="modal-tab active" data-tab="my" onclick="switchModalTab('my')">
+                        <span data-lang="bg">Моите сесии</span>
+                        <span data-lang="en">My Sessions</span>
+                    </button>
+                    <button class="modal-tab" data-tab="all" onclick="switchModalTab('all')">
+                        <span data-lang="bg">Всички сесии</span>
+                        <span data-lang="en">All Sessions</span>
+                    </button>
+                </div>
+                <div id="modal-password-section" style="display:none;">
+                    <div class="password-input-group">
+                        <input type="password" id="modal-password" placeholder="Парола / Password">
+                        <button class="modal-btn primary" onclick="unlockAllSessions()">
+                            <span data-lang="bg">Отключи</span>
+                            <span data-lang="en">Unlock</span>
+                        </button>
+                    </div>
+                    <p class="password-hint" data-lang="bg">Нужна е парола за достъп до всички сесии</p>
+                    <p class="password-hint" data-lang="en">Password required to access all sessions</p>
+                </div>
+                <div id="session-modal-list" class="modal-session-list"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    modal.classList.add('active');
+    switchModalTab('my');
+}
+
+function closeSessionModal() {
+    const modal = document.getElementById('session-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+let allSessionsUnlocked = false;
+
+function switchModalTab(tab) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.modal-tab[data-tab="${tab}"]`).classList.add('active');
+
+    const passwordSection = document.getElementById('modal-password-section');
+    const listEl = document.getElementById('session-modal-list');
+
+    if (tab === 'my') {
+        passwordSection.style.display = 'none';
+        renderMySessionsList(listEl);
+    } else {
+        if (allSessionsUnlocked) {
+            passwordSection.style.display = 'none';
+            renderAllSessionsList(listEl);
+        } else {
+            passwordSection.style.display = 'block';
+            listEl.innerHTML = '';
+        }
+    }
+}
+
+function renderMySessionsList(container) {
+    const sessions = restoreMySessions();
+    if (sessions.length === 0) {
+        container.innerHTML = `<p class="modal-empty" data-lang="bg">Няма запазени сесии</p><p class="modal-empty" data-lang="en">No saved sessions</p>`;
+        return;
+    }
+
+    container.innerHTML = sessions.map(sid => {
+        const isActive = sid === currentSessionId;
+        return `
+            <div class="modal-session-item ${isActive ? 'active' : ''}" onclick="selectSession('${sid}')">
+                <div class="session-item-id">${sid.substring(0, 24)}...</div>
+                <div class="session-item-actions">
+                    <span class="session-badge ${isActive ? 'current' : ''}">${isActive ? '● Active' : '○'}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderAllSessionsList(container, sessions) {
+    if (!sessions || sessions.length === 0) {
+        container.innerHTML = `<p class="modal-empty" data-lang="bg">Няма намерени сесии</p><p class="modal-empty" data-lang="en">No sessions found</p>`;
+        return;
+    }
+
+    container.innerHTML = sessions.map(s => {
+        const isMine = isMySession(s.session_id);
+        const isActive = s.session_id === currentSessionId;
+        return `
+            <div class="modal-session-item ${isActive ? 'active' : ''}" onclick="selectSession('${s.session_id}')">
+                <div class="session-item-info">
+                    <div class="session-item-id">${s.session_id.substring(0, 24)}...</div>
+                    <div class="session-item-meta">
+                        ${s.doctor_name ? `<span>👨‍⚕️ ${s.doctor_name}</span>` : ''}
+                        ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
+                        ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                        <span>💬 ${s.answer_count} отговора</span>
+                    </div>
+                </div>
+                <div class="session-item-actions">
+                    ${isMine ? '<span class="session-badge mine">Моя</span>' : ''}
+                    <span class="session-badge ${isActive ? 'current' : ''}">${isActive ? '● Active' : '○'}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function unlockAllSessions() {
+    const passwordInput = document.getElementById('modal-password');
+    if (passwordInput.value === '123') {
+        allSessionsUnlocked = true;
+        fetchAllSessions();
+    } else {
+        passwordInput.style.borderColor = '#f87171';
+        setTimeout(() => { passwordInput.style.borderColor = ''; }, 2000);
+    }
+}
+
+function fetchAllSessions() {
+    const listEl = document.getElementById('session-modal-list');
+    listEl.innerHTML = '<p class="modal-empty">Зареждане...</p>';
+
+    fetch(SCRIPT_URL + '?action=list&password=123')
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                renderAllSessionsList(listEl, data.sessions);
+            } else {
+                listEl.innerHTML = '<p class="modal-empty">Грешка при зареждане</p>';
+            }
+        })
+        .catch(() => {
+            listEl.innerHTML = '<p class="modal-empty">Грешка при зареждане</p>';
+        });
+}
+
+function selectSession(sessionId) {
+    if (sessionId === currentSessionId) {
+        closeSessionModal();
+        return;
+    }
+
+    const isMine = isMySession(sessionId);
+    if (isMine) {
+        window.loadSession(sessionId, true);
+        closeSessionModal();
+    } else {
+        window.loadSession(sessionId, false);
+        closeSessionModal();
+    }
+}
+

@@ -1,136 +1,268 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdaiWKhiORA9zpH-ATt0ypSRmZbgcpk0zEV5zjjtNpW86C92EwXiuWkdColflLBW8/exec';
-const AUTOSAVE_STORAGE_KEY = 'dossier_session_id';
+const ACCESS_PASSWORD = '123';
+const STORAGE_KEY_SESSIONS = 'my_sessions';
+const STORAGE_KEY_CURRENT = 'current_session_id';
 const AUTOSAVE_DEBOUNCE_MS = 1500;
 
+let currentSessionId = '';
+let saveTimers = {};
+let statusTimer = null;
+let isLoadingSession = false;
+
 function initAutosave() {
-    function getSessionId() {
-        let id = localStorage.getItem(AUTOSAVE_STORAGE_KEY);
-        if (!id) {
-            id = 'sess-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
-            localStorage.setItem(AUTOSAVE_STORAGE_KEY, id);
-        }
-        return id;
+    restoreMySessions();
+    loadLastSession();
+    setupEventListeners();
+}
+
+function restoreMySessions() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY_SESSIONS);
+        return stored ? JSON.parse(stored) : [];
+    } catch {
+        return [];
     }
+}
 
-    const sessionId = getSessionId();
-    let saveTimers = {};
+function saveMySessions(sessions) {
+    localStorage.setItem(STORAGE_KEY_SESSIONS, JSON.stringify(sessions));
+}
 
-    const statusEl = document.getElementById('autosave-status');
-    const statusDot = statusEl ? statusEl.querySelector('.status-dot') : null;
-    let statusTimer = null;
-
-    function setStatus(state, textBg, textEn) {
-        if (!statusEl) return;
-        statusEl.className = 'autosave-status ' + state;
-        const bgSpan = document.getElementById('autosave-text');
-        const enSpan = document.getElementById('autosave-text-en');
-        if (bgSpan) bgSpan.textContent = textBg;
-        if (enSpan) enSpan.textContent = textEn;
-        if (statusDot) {
-            statusDot.classList.toggle('pulse', state === 'saving');
-        }
+function addMySession(sid) {
+    const sessions = restoreMySessions();
+    if (!sessions.includes(sid)) {
+        sessions.unshift(sid);
+        saveMySessions(sessions);
     }
+}
 
-    function setStatusIdle() {
-        setStatus('', appData.autosave.status.idle.bg, appData.autosave.status.idle.en);
+function removeMySession(sid) {
+    const sessions = restoreMySessions().filter(s => s !== sid);
+    saveMySessions(sessions);
+}
+
+function isMySession(sid) {
+    return restoreMySessions().includes(sid);
+}
+
+function loadLastSession() {
+    const lastId = localStorage.getItem(STORAGE_KEY_CURRENT);
+    if (lastId && isMySession(lastId)) {
+        fetchSession(lastId, true);
+    } else {
+        createNewSession();
     }
+}
 
-    function saveField(fieldName, value) {
-        setStatus('saving', appData.autosave.status.saving.bg, appData.autosave.status.saving.en);
+function createNewSession() {
+    currentSessionId = 'sess-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem(STORAGE_KEY_CURRENT, currentSessionId);
+    addMySession(currentSessionId);
+    clearForm();
+    updateSessionUI();
+}
 
-        const payload = {
-            session_id: sessionId,
-            field: fieldName,
-            value: value
-        };
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            setStatus('saved', appData.autosave.status.saved.bg, appData.autosave.status.saved.en);
-            clearTimeout(statusTimer);
-            statusTimer = setTimeout(setStatusIdle, 3000);
-        })
-        .catch((err) => {
-            setStatus('error', appData.autosave.status.error.bg, appData.autosave.status.error.en);
-            console.warn('AutoSave error:', err);
-            clearTimeout(statusTimer);
-            statusTimer = setTimeout(setStatusIdle, 4000);
-        });
-    }
-
-    function onFieldChange(fieldName, value) {
-        clearTimeout(saveTimers[fieldName]);
-        saveTimers[fieldName] = setTimeout(() => {
-            saveField(fieldName, value);
-        }, AUTOSAVE_DEBOUNCE_MS);
-    }
-
-    const doctorNameEl = document.getElementById('doctor-name');
-    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
-    const consultationDateEl = document.getElementById('consultation-date');
-
+function setupEventListeners() {
     document.querySelectorAll('.q-answer').forEach(textarea => {
         const field = textarea.dataset.field;
         if (!field) return;
-
         textarea.addEventListener('input', () => {
             textarea.classList.toggle('has-content', textarea.value.trim().length > 0);
             onFieldChange(field, textarea.value);
         });
     });
 
+    const doctorNameEl = document.getElementById('doctor-name');
+    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
+    const consultationDateEl = document.getElementById('consultation-date');
+
     if (doctorNameEl) {
         doctorNameEl.addEventListener('input', () => {
             onFieldChange('name', doctorNameEl.value);
         });
     }
-
     if (doctorSpecialtyEl) {
         doctorSpecialtyEl.addEventListener('input', () => {
             onFieldChange('specialty', doctorSpecialtyEl.value);
         });
     }
-
     if (consultationDateEl) {
         consultationDateEl.addEventListener('change', () => {
             onFieldChange('consultation_date', consultationDateEl.value);
         });
     }
+}
 
-    const fields = ['name', 'specialty', 'consultation_date','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13'];
-    fields.forEach(f => {
-        const cached = localStorage.getItem('ans_' + sessionId + '_' + f);
-        if (cached) {
-            const el = f === 'name' ? doctorNameEl
-                     : f === 'specialty' ? doctorSpecialtyEl
-                     : f === 'consultation_date' ? consultationDateEl
-                     : document.getElementById('ans-' + f);
-            if (el) {
-                el.value = cached;
-                if (el.classList.contains('q-answer')) {
-                    el.classList.toggle('has-content', cached.trim().length > 0);
-                }
-            }
-        }
-    });
+function onFieldChange(fieldName, value) {
+    clearTimeout(saveTimers[fieldName]);
+    saveTimers[fieldName] = setTimeout(() => {
+        saveField(fieldName, value);
+    }, AUTOSAVE_DEBOUNCE_MS);
+}
 
-    document.querySelectorAll('.q-answer').forEach(textarea => {
-        textarea.addEventListener('input', () => {
-            localStorage.setItem('ans_' + sessionId + '_' + textarea.dataset.field, textarea.value);
-        });
-    });
-    if (doctorNameEl) doctorNameEl.addEventListener('input', () => {
-        localStorage.setItem('ans_' + sessionId + '_name', doctorNameEl.value);
-    });
-    if (doctorSpecialtyEl) doctorSpecialtyEl.addEventListener('input', () => {
-        localStorage.setItem('ans_' + sessionId + '_specialty', doctorSpecialtyEl.value);
-    });
-    if (consultationDateEl) consultationDateEl.addEventListener('change', () => {
-        localStorage.setItem('ans_' + sessionId + '_consultation_date', consultationDateEl.value);
+function saveField(fieldName, value) {
+    if (isLoadingSession) return;
+    setStatus('saving', '⏳ Записване...', '⏳ Saving...');
+
+    const questionMap = { name: 'name', specialty: 'specialty', consultation_date: 'consultation_date' };
+    const questionNum = questionMap[fieldName] || fieldName;
+    const questionText = getQuestionText(fieldName);
+
+    const doctorNameEl = document.getElementById('doctor-name');
+    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
+    const consultationDateEl = document.getElementById('consultation-date');
+
+    const payload = {
+        session_id: currentSessionId,
+        question_num: questionNum,
+        question_text: questionText,
+        value: value,
+        consultation_date: consultationDateEl ? consultationDateEl.value : '',
+        doctor_name: doctorNameEl ? doctorNameEl.value : '',
+        specialty: doctorSpecialtyEl ? doctorSpecialtyEl.value : ''
+    };
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        setStatus('saved', '✅ Записано', '✅ Saved');
+        clearTimeout(statusTimer);
+        statusTimer = setTimeout(setStatusIdle, 3000);
+    })
+    .catch((err) => {
+        setStatus('error', '⚠️ Грешка при записване', '⚠️ Save error');
+        clearTimeout(statusTimer);
+        statusTimer = setTimeout(setStatusIdle, 4000);
     });
 }
+
+function getQuestionText(fieldName) {
+    if (fieldName === 'name') return 'Лекар / Д-р';
+    if (fieldName === 'specialty') return 'Специалност';
+    if (fieldName === 'consultation_date') return 'Дата на консултация';
+    const q = appData.questions.items.find(q => 'q' + q.num === fieldName);
+    return q ? (q.text.bg + ' | ' + q.text.en) : fieldName;
+}
+
+function fetchSession(sessionId, skipPassword) {
+    isLoadingSession = true;
+    const url = skipPassword && isMySession(sessionId)
+        ? SCRIPT_URL + '?action=load&session_id=' + encodeURIComponent(sessionId)
+        : SCRIPT_URL + '?action=load&session_id=' + encodeURIComponent(sessionId) + '&password=' + encodeURIComponent(ACCESS_PASSWORD);
+
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok' && data.session) {
+                populateForm(data.session);
+                currentSessionId = sessionId;
+                localStorage.setItem(STORAGE_KEY_CURRENT, currentSessionId);
+                addMySession(currentSessionId);
+                updateSessionUI();
+            } else {
+                console.error('Failed to load session:', data.message);
+            }
+            isLoadingSession = false;
+        })
+        .catch(err => {
+            console.error('Error loading session:', err);
+            isLoadingSession = false;
+        });
+}
+
+function populateForm(session) {
+    clearForm();
+
+    const doctorNameEl = document.getElementById('doctor-name');
+    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
+    const consultationDateEl = document.getElementById('consultation-date');
+
+    if (doctorNameEl && session.doctor_name) {
+        doctorNameEl.value = session.doctor_name;
+    }
+    if (doctorSpecialtyEl && session.specialty) {
+        doctorSpecialtyEl.value = session.specialty;
+    }
+    if (consultationDateEl && session.consultation_date) {
+        consultationDateEl.value = session.consultation_date;
+    }
+
+    session.answers.forEach(a => {
+        if (a.question_num && a.question_num.startsWith('q')) {
+            const el = document.getElementById('ans-' + a.question_num.replace('q', ''));
+            if (el) {
+                el.value = a.answer;
+                el.classList.toggle('has-content', a.answer.trim().length > 0);
+            }
+        } else if (a.question_num === 'name' && doctorNameEl) {
+            doctorNameEl.value = a.answer;
+        } else if (a.question_num === 'specialty' && doctorSpecialtyEl) {
+            doctorSpecialtyEl.value = a.answer;
+        } else if (a.question_num === 'consultation_date' && consultationDateEl) {
+            consultationDateEl.value = a.answer;
+        }
+    });
+}
+
+function clearForm() {
+    document.querySelectorAll('.q-answer').forEach(ta => {
+        ta.value = '';
+        ta.classList.remove('has-content');
+    });
+    const doctorNameEl = document.getElementById('doctor-name');
+    const doctorSpecialtyEl = document.getElementById('doctor-specialty');
+    const consultationDateEl = document.getElementById('consultation-date');
+    if (doctorNameEl) doctorNameEl.value = '';
+    if (doctorSpecialtyEl) doctorSpecialtyEl.value = '';
+    if (consultationDateEl) consultationDateEl.value = '';
+}
+
+function updateSessionUI() {
+    const sessions = restoreMySessions();
+    const sessionListEl = document.getElementById('session-list');
+    if (!sessionListEl) return;
+
+    sessionListEl.innerHTML = '';
+    sessions.forEach(sid => {
+        const isActive = sid === currentSessionId;
+        const btn = document.createElement('button');
+        btn.className = 'session-btn' + (isActive ? ' active' : '');
+        btn.textContent = sid.substring(0, 18) + '...';
+        btn.onclick = () => {
+            if (sid === currentSessionId) return;
+            fetchSession(sid, isMySession(sid));
+        };
+        sessionListEl.appendChild(btn);
+    });
+
+    const sessionIdDisplay = document.getElementById('current-session-id');
+    if (sessionIdDisplay) {
+        sessionIdDisplay.textContent = currentSessionId.substring(0, 24) + '...';
+    }
+}
+
+function setStatus(state, textBg, textEn) {
+    const statusEl = document.getElementById('autosave-status');
+    if (!statusEl) return;
+    statusEl.className = 'autosave-status ' + state;
+    const bgSpan = document.getElementById('autosave-text');
+    const enSpan = document.getElementById('autosave-text-en');
+    if (bgSpan) bgSpan.textContent = textBg;
+    if (enSpan) enSpan.textContent = textEn;
+    const statusDot = statusEl.querySelector('.status-dot');
+    if (statusDot) {
+        statusDot.classList.toggle('pulse', state === 'saving');
+    }
+}
+
+function setStatusIdle() {
+    setStatus('', appData.autosave.status.idle.bg, appData.autosave.status.idle.en);
+}
+
+// Public API
+window.createNewSession = createNewSession;
+window.loadSession = fetchSession;

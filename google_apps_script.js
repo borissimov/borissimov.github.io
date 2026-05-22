@@ -40,7 +40,7 @@ function doGet(e) {
       if (!sessions[sid]) {
         sessions[sid] = {
           session_id: sid,
-          consultation_date: row[2] || '',
+          consultation_date: formatCellDate(row[2]),
           doctor_name: row[3] || '',
           specialty: row[4] || '',
           answers: [],
@@ -148,7 +148,7 @@ function listSessions() {
       if (!sessions[sid]) {
         sessions[sid] = {
           session_id: sid,
-          consultation_date: row[2] || '',
+          consultation_date: formatCellDate(row[2]),
           doctor_name: row[3] || '',
           specialty: row[4] || '',
           answers: [],
@@ -223,7 +223,7 @@ function loadSession(sessionId) {
       const row = allData[i];
       if (row[0] !== sessionId) continue;
 
-      if (!session.consultation_date && row[2]) session.consultation_date = row[2];
+      if (!session.consultation_date && row[2]) session.consultation_date = formatCellDate(row[2]);
       if (!session.doctor_name && row[3]) session.doctor_name = row[3];
       if (!session.specialty && row[4]) session.specialty = row[4];
       if (!session.last_modified || row[1] > session.last_modified) session.last_modified = row[1];
@@ -320,6 +320,19 @@ function saveAnswer(data) {
   }
 
   return jsonResponse({ status: 'ok', session: sessionId, question_num: questionNum });
+}
+
+function formatCellDate(v) {
+  if (!v) return '';
+  if (typeof v === 'string') return v.split('T')[0];
+  try {
+    const y = v.getFullYear();
+    const m = String(v.getMonth() + 1).padStart(2, '0');
+    const d = String(v.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  } catch {
+    return String(v);
+  }
 }
 
 function jsonResponse(obj, code) {

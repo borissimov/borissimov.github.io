@@ -9,6 +9,12 @@ let saveTimers = {};
 let statusTimer = null;
 let isLoadingSession = false;
 
+function normalizeDate(d) {
+    if (!d) return '';
+    if (d.includes('T')) return d.split('T')[0];
+    return d;
+}
+
 function initAutosave() {
     restoreMySessions();
     loadLastSession();
@@ -217,7 +223,7 @@ function populateForm(session) {
         doctorSpecialtyEl.value = session.specialty;
     }
     if (consultationDateEl && session.consultation_date) {
-        consultationDateEl.value = session.consultation_date;
+        consultationDateEl.value = normalizeDate(session.consultation_date);
     }
 
     session.answers.forEach(a => {

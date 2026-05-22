@@ -415,7 +415,7 @@ function renderMySessionsList(container) {
                                 <div class="session-item-id">${label}</div>
                                 <div class="session-item-meta">
                                     ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
-                                    ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                                    ${s.consultation_date ? `<span>📅 ${normalizeDate(s.consultation_date)}</span>` : ''}
                                     ${s.last_modified ? `<span>🕐 ${formatTimestamp(s.last_modified)}</span>` : ''}
                                     <span>💬 ${s.answer_count} отговора</span>
                                 </div>
@@ -453,7 +453,7 @@ function renderAllSessionsList(container, sessions) {
                     <div class="session-item-id">${label}</div>
                     <div class="session-item-meta">
                         ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
-                        ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                        ${s.consultation_date ? `<span>📅 ${normalizeDate(s.consultation_date)}</span>` : ''}
                         ${s.last_modified ? `<span>🕐 ${formatTimestamp(s.last_modified)}</span>` : ''}
                         <span>💬 ${s.answer_count} отговора</span>
                     </div>

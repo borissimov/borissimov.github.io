@@ -9,6 +9,18 @@ function renderApp() {
     renderMobileNav();
 }
 
+function formatTimestamp(isoStr) {
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    return `${dd}.${mm}.${yyyy} ${hh}:${mi}`;
+}
+
 function renderPatientHeader() {
     const p = appData.patient;
     document.querySelector('.patient-name').textContent = p.name;
@@ -220,7 +232,7 @@ function renderQuestionsSection() {
             <div class="doctor-identity-panel">
                 <h4>🩺 <span data-lang="bg">${q.doctorPanel.title.bg.replace('🩺 ', '')}</span><span data-lang="en">${q.doctorPanel.title.en.replace('🩺 ', '')}</span></h4>
                 <div class="doctor-identity-fields">
-                    <input type="date" id="consultation-date" title="${q.doctorPanel.consultationDateLabel.bg}">
+                    <input type="date" id="consultation-date" title="${q.doctorPanel.consultationDateLabel.bg}" placeholder="${q.doctorPanel.consultationDateLabel.bg}">
                     <input type="text" id="doctor-name" placeholder="${q.doctorPanel.namePlaceholder}" autocomplete="off">
                     <input type="text" id="doctor-specialty" placeholder="${q.doctorPanel.specialtyPlaceholder}" autocomplete="off">
                 </div>
@@ -404,6 +416,7 @@ function renderMySessionsList(container) {
                                 <div class="session-item-meta">
                                     ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
                                     ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                                    ${s.last_modified ? `<span>🕐 ${formatTimestamp(s.last_modified)}</span>` : ''}
                                     <span>💬 ${s.answer_count} отговора</span>
                                 </div>
                             </div>
@@ -441,6 +454,7 @@ function renderAllSessionsList(container, sessions) {
                     <div class="session-item-meta">
                         ${s.specialty ? `<span>🏥 ${s.specialty}</span>` : ''}
                         ${s.consultation_date ? `<span>📅 ${s.consultation_date}</span>` : ''}
+                        ${s.last_modified ? `<span>🕐 ${formatTimestamp(s.last_modified)}</span>` : ''}
                         <span>💬 ${s.answer_count} отговора</span>
                     </div>
                 </div>
